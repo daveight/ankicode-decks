@@ -1,0 +1,553 @@
+"Equal subset sum partition"	"Given a subset of integers, determine whether a given set can be partitioned into 2 subset, such that
+sum of elements in both subsets is the same.
+
+Example #1:
+[1, 10, 2, 11, 2]
+
+Output: true
+This array can be partitioned as [1, 10, 2] and [11, 2]
+
+Example #2:
+[1, 100, 200]
+
+Output: false
+There is no partitioning which will satisfy the condition"	"can_be_partitioned"	"### Equal subset sum partition
+[Geek for geeks](https://www.geeksforgeeks.org/partition-problem-dp-18/)
+
+- Time Complexity: O(sum * n).
+- Auxiliary Space: O(sum * n).
+
+### Java
+```java
+public class Solution {
+    private boolean hasPartitionWithSum(int[] src, int n, int sum) {
+        if (sum == 0) {
+            return true;
+        }
+
+        if (n == 0 && sum != 0) {
+            return false;
+        }
+
+        if (src[n - 1] > sum) {
+            return hasPartitionWithSum(src, n - 1, sum);
+        }
+
+        return hasPartitionWithSum(src, n - 1, sum) ||
+            hasPartitionWithSum(src, n - 1, sum - src[n - 1]);
+    }
+
+    public boolean canBePartitioned(int[] src) {
+        int sum = 0;
+        for (int i = 0; i < src.length; i++) {
+            sum += src[i];
+        }
+
+        // no partitioning exists if sum is odd
+        if (sum % 2 != 0) {
+            return false;
+        }
+
+        return hasPartitionWithSum(src, src.length, sum / 2);
+    }
+}
+```
+### C++
+```cpp
+class Solution {
+private:
+    bool has_partition_with_sum(vector<int> src, int n, int sum) {
+        if (sum == 0) {
+            return true;
+        }
+
+        if (n == 0 && sum != 0) {
+            return false;
+        }
+
+        if (src[n - 1] > sum) {
+            return has_partition_with_sum(src, n - 1, sum);
+        }
+
+        return has_partition_with_sum(src, n - 1, sum) ||
+            has_partition_with_sum(src, n - 1, sum - src[n - 1]);
+    }
+
+public:
+    bool can_be_partitioned(vector<int> src) {
+        int sum = 0;
+        for (int i = 0; i < src.size(); i++) {
+            sum += src[i];
+        }
+
+        // no partitioning exists if sum is odd
+        if (sum % 2 != 0) {
+            return false;
+        }
+
+        return has_partition_with_sum(src, src.size(), sum / 2);
+    }
+};
+```
+### JavaScript
+```js
+function has_partition_with_sum(src, n, sum) {
+    if (sum === 0) {
+        return true;
+    }
+
+    if (n === 0 && sum !== 0) {
+        return false;
+    }
+
+    if (src[n - 1] > sum) {
+        return hasPartitionWithSum(src, n - 1, sum);
+    }
+
+    return has_partition_with_sum(src, n - 1, sum) ||
+        has_partition_with_sum(src, n - 1, sum - src[n - 1]);
+}
+
+function can_be_partitioned(src) {
+    let sum = 0;
+    for (let i = 0; i < src.length; i++) {
+        sum += src[i];
+    }
+
+    // no partitioning exists if sum is odd
+    if (sum % 2 != 0) {
+        return false;
+    }
+
+    return has_partition_with_sum(src, src.length, sum / 2);
+}
+```
+### Python
+```python
+def has_partition_with_sum(src, n, sum):
+    if sum == 0:
+        return True
+
+    if n == 0 and sum != 0:
+        return False
+
+    if src[n - 1] > sum:
+        return has_partition_with_sum(src, n - 1, sum)
+
+    return has_partition_with_sum(src, n - 1, sum) or has_partition_with_sum(src, n - 1, sum - src[n - 1])
+
+def can_be_partitioned(src):
+    sum = 0
+    for i in range(0, len(src)):
+        sum += src[i]
+
+    # no partitioning exists if sum is odd
+    if sum % 2 != 0:
+        return False
+
+    return has_partition_with_sum(src, len(src), sum / 2)
+```"	"array(int)[src];bool
+[1,10,2,13];true
+[1,1,2,2,3,3];true
+[1,0];false
+[10,0,2,5];false
+"
+"Find first and last positions in array"	"Given a sorted array of integers, return the low and high index of the given key. Return -1 if not found.
+
+Example #1:
+[1, 2, 5, 5, 5, 5, 5, 5, 5, 20]
+key = 1
+Output:
+low = 0, high = 0
+
+Example #2:
+[1, 2, 5, 5, 5, 5, 5, 5, 5, 5, 20]
+key = 5
+Output:
+low = 2, high = 9"	"high_low_index"	"### Find first and last positions in array
+[Geek for geeks](https://www.geeksforgeeks.org/find-first-and-last-positions-of-an-element-in-a-sorted-array/)
+
+- Time Complexity : O(log n).
+- Auxiliary Space : O(1).
+### Java
+```java
+public class Solution {
+    private int findLow(int[] a, int key) {
+        int low = 0;
+        int high = a.length - 1;
+        int mid = high / 2;
+
+        while (low < high) {
+            int val = a[mid];
+            if (val < key) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+            mid = low + (high - low) / 2;
+        }
+
+        if (low < a.length && a[low] == key) {
+            return low;
+        }
+
+        return -1;
+    }
+
+    private int findHigh(int[] a, int key) {
+        int low = 0;
+        int high = a.length - 1;
+        int mid = high / 2;
+
+        while (low <= high) {
+            int val = a[mid];
+            if (val <= key) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+            mid = low + (high - low) / 2;
+        }
+
+        if (high >= 0 && high < a.length && a[high] == key) {
+            return high;
+        }
+
+        return -1;
+    }
+
+    public int[] highLowIndex(int[] a, int key) {
+        return new int[] { findLow(a, key), findHigh(a, key) };
+    }
+}
+```
+### C++
+```cpp
+class Solution {
+private:
+    int find_high(vector<int> a, int key) {
+        int low = 0;
+        int high = a.size() - 1;
+        int mid = high / 2;
+
+        while (low < high) {
+            int val = a[mid];
+            if (val < key) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+            mid = low + (high - low) / 2;
+        }
+
+        if (low < a.size() && a[low] == key) {
+            return low;
+        }
+
+        return -1;
+    }
+
+    int find_low(vector<int> a, int key) {
+        int low = 0;
+        int high = a.size() - 1;
+        int mid = high / 2;
+
+        while (low <= high) {
+            int val = a[mid];
+            if (val <= key) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+            mid = low + (high - low) / 2;
+        }
+
+        if (high >= 0 && high < a.size() && a[high] == key) {
+            return high;
+        }
+
+        return -1;
+    }
+public:
+    vector<int> high_low_index(vector<int> a, int key) {
+        vector<int> result;
+        result.push_back(find_high(a, key));
+        result.push_back(find_low(a, key));
+        return result;
+    }
+};
+```
+### JavaScript
+```js
+function find_low(a, key) {
+    let low = 0
+    let high = a.length - 1
+    let mid = Math.floor(high / 2)
+
+    while (low < high) {
+        const val = a[mid]
+        if (val < key) {
+            low = mid + 1
+        } else {
+            high = mid - 1
+        }
+        mid = low + Math.floor((high - low) / 2)
+    }
+
+    if (low < a.length && a[low] === key) {
+        return low
+    }
+
+    return -1
+}
+
+function find_high(a, key) {
+    let low = 0
+    let high = a.length - 1
+    let mid = Math.floor(high / 2)
+
+    while (low <= high) {
+        const val = a[mid]
+        if (val <= key) {
+            low = mid + 1
+        } else {
+            high = mid - 1
+        }
+        mid = low + Math.floor((high - low) / 2)
+    }
+
+    if (high >= 0 && high < a.length && a[high] === key) {
+        return high
+    }
+
+    return -1
+}
+
+function high_low_index(a, key) {
+    return [ find_low(a, key), find_high(a, key) ]
+}
+```
+
+### Python
+```python
+import math
+
+def find_low(a, key):
+    low = 0
+    high = len(a) - 1
+    mid = math.floor(high / 2)
+
+    while low < high:
+        val = a[mid]
+        if val < key:
+            low = mid + 1
+        else:
+            high = mid - 1
+        mid = low + math.floor((high - low) / 2)
+
+    if low < len(a) and a[low] == key:
+        return low
+
+    return -1
+
+def find_high(a, key):
+    low = 0
+    high = len(a) - 1
+    mid = math.floor(high / 2)
+
+    while (low <= high):
+        val = a[mid]
+        if val <= key:
+            low = mid + 1
+        else:
+            high = mid - 1
+        mid = low + math.floor((high - low) / 2)
+
+    if high >= 0 and high < len(a) and a[high] == key:
+        return high
+
+    return -1
+
+def high_low_index(a, key):
+    return [ find_low(a, key), find_high(a, key) ]
+```"	"array(int)[a];int[key];array(int)
+[1, 2, 5, 5, 5, 5, 5, 5, 5, 20];1;[0, 0]
+[1, 2, 5, 5, 5, 5, 5, 5, 5, 20];5;[2, 8]
+"
+"Find K-th largest element in int array"	"Find Kth largest element in array"	"kth_largest"	"### Kth largest element in array
+[Wiki: QuickSelect](https://en.wikipedia.org/wiki/Quickselect)
+
+- Worst-case performance: O(n^2).
+- Best-case performance: O(n).
+- Best-case performance: O(n).
+
+### Java
+```java
+public class Solution {
+    private int select(int[] a, int left, int right, int k) {
+        if (left == right) {
+            return a[left];
+        }
+        int pivot = left + (int)(Math.random() * (right - left + 1));
+        pivot = partition(a, left, right, pivot);
+        if (k == pivot) {
+            return a[k];
+        } else if (k < pivot) {
+            return select(a, left, pivot - 1, k);
+        } else {
+            return select(a, pivot + 1, right, k);
+        }
+    }
+
+    private int partition(int[] a, int left, int right, int pivot) {
+        int val = a[pivot];
+        swap(a, pivot, right);
+        int stored = left;
+        for (int i = left; i < right; i++) {
+            if (a[i] > val) {
+                swap(a, i, stored);
+                stored++;
+            }
+        }
+        swap(a, right, stored);
+        return stored;
+    }
+
+    private void swap(int[] a, int i, int j) {
+        int tmp = a[i];
+        a[i] = a[j];
+        a[j] = tmp;
+    }
+
+    public int kthLargest(int[] a, int k) {
+        return select(a, 0, a.length - 1, k - 1);
+    }
+}
+```
+### C++
+```cpp
+#include <cmath>
+
+class Solution {
+private:
+    int select(vector<int>& a, int left, int right, int k) {
+        if (left == right) {
+            return a[left];
+        }
+        int pivot = left + floor(rand() % (right - left + 1));
+        pivot = partition(a, left, right, pivot);
+        if (k == pivot) {
+            return a[k];
+        } else if (k < pivot) {
+            return select(a, left, pivot - 1, k);
+        } else {
+            return select(a, pivot + 1, right, k);
+        }
+    }
+
+    int partition(vector<int>& a, int left, int right, int pivot) {
+        int val = a[pivot];
+        swap(a, pivot, right);
+        int stored = left;
+        for (int i = left; i < right; i++) {
+            if (a[i] > val) {
+                swap(a, i, stored);
+                stored++;
+            }
+        }
+        swap(a, right, stored);
+        return stored;
+    }
+
+    void swap(vector<int>& a, int i, int j) {
+        int tmp = a[i];
+        a[i] = a[j];
+        a[j] = tmp;
+    }
+
+public:
+    int kth_largest(vector<int> a, int k) {
+        return select(a, 0, a.size() - 1, k - 1);
+    }
+};
+```
+### JavaScript
+```js
+function select(a, left, right, k) {
+    if (left === right) {
+        return a[left]
+    }
+    let pivot = left + Math.floor(Math.random() % (right - left + 1))
+    pivot = partition(a, left, right, pivot)
+    if (k === pivot) {
+        return a[k]
+    } else if (k < pivot) {
+        return select(a, left, pivot - 1, k)
+    } else {
+        return select(a, pivot + 1, right, k)
+    }
+}
+
+function partition(a, left, right, pivot) {
+    const val = a[pivot]
+    swap(a, pivot, right)
+    let stored = left
+    for (let i = left; i < right; i++) {
+        if (a[i] > val) {
+            swap(a, i, stored)
+            stored++
+        }
+    }
+    swap(a, right, stored)
+    return stored
+}
+
+function swap(a, i, j) {
+    const tmp = a[i]
+    a[i] = a[j]
+    a[j] = tmp
+}
+
+function kth_largest(a, k) {
+    return select(a, 0, a.length - 1, k - 1)
+}
+```
+### Python
+```python
+import math
+import random
+
+def select(a, left, right, k):
+    if (left == right):
+        return a[left]
+    pivot = left + math.floor(random.random() % (right - left + 1))
+    pivot = partition(a, left, right, pivot)
+    if k == pivot:
+        return a[k]
+    elif k < pivot:
+        return select(a, left, pivot - 1, k)
+    else:
+        return select(a, pivot + 1, right, k)
+
+def partition(a, left, right, pivot):
+    val = a[pivot]
+    swap(a, pivot, right)
+    stored = left
+    for i in range(left, right):
+        if a[i] > val:
+            swap(a, i, stored)
+            stored += 1
+    swap(a, right, stored)
+    return stored
+
+def swap(a, i, j):
+    tmp = a[i]
+    a[i] = a[j]
+    a[j] = tmp
+
+def kth_largest(a, k):
+    return select(a, 0, len(a) - 1, k - 1)
+```"	"array(int)[src];int[k];int
+[1,2,3,4,5,6];1;6
+[1,2,3,4,5,6];6;1
+"

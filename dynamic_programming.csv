@@ -1,0 +1,701 @@
+"Checkerboard problem"	"Consider a checkerboard with NxN squares and a cost function c(i, j), which returns a cost associates with
+square (i, j). Let us say there was a checker that could start at any square on the first row and you wanted
+to know the shortest path (the sum of minimum costs at each visited row) to get to the last row.
+The checker could move only diagonally left forward, diagonally right forward, or straight forward.
+
+    3|
+    2|  x x x
+    1|    0
+      _________
+      1 2 3 4 5
+
+Design an algorithm which calculates the shortest path with minimum cost to reach the top row starting from any
+point at the first row
+
+Parameters:
+    - cost - 2d array NxN which contains costs for every square
+
+Example:
+3| 0 1 2        3| 0
+2| 2 1 2    =>  2|   1        Output: [3,2,1], total cost = 2
+1| 3 3 1        1|     1
+   -----           -----
+   1 2 3           1 2 3"	"checker_board_min_path"	"### Checkerboard problem
+[Wiki](https://en.wikipedia.org/wiki/Dynamic_programming#Checkerboard)
+### Java
+```java
+public class Solution {
+    int[][] q;
+    int[][] p;
+    int n;
+
+    private void computeShortestPathArrays(int[][] costs) {
+        n = costs[0].length;
+        q = new int[n + 2][n + 2];
+        p = new int[n + 2][n + 2];
+
+        for (int x = 1; x <= n; x++) {
+            q[1][x] = costs[0][x - 1];
+        }
+
+        for (int y = 1; y <= n; y++) {
+            q[y][0] = Integer.MAX_VALUE;
+            q[y][n + 1] = Integer.MAX_VALUE;
+        }
+        for (int y = 2; y <= n; y++) {
+            for (int x = 1; x <= n; x++) {
+                int m = Math.min(Math.min(q[y - 1][x - 1], q[y - 1][x]), q[y - 1][x + 1]);
+                q[y][x] = m + costs[y - 1][x - 1];
+                if (m == q[y - 1][x - 1]) {
+                    p[y][x] = -1;
+                } else if (m == q[y - 1][x]) {
+                    p[y][x] = 0;
+                } else {
+                    p[y][x] = 1;
+                }
+            }
+        }
+    }
+
+    private void getPath(int y, int x, List<Integer> path) {
+        path.add(x);
+        if (y == 2) {
+            path.add(x + p[y][x]);
+        } else {
+            getPath(y - 1, x + p[y][x], path);
+        }
+    }
+
+    public List<Integer> checkerBoardMinPath(int[][] costs) {
+        computeShortestPathArrays(costs);
+        int minIndex = 1;
+        int min = q[n][1];
+        for (int i = 2; i <= n; i++) {
+            if (q[n][i] < min) {
+                minIndex = i;
+                min = q[n][i];
+            }
+        }
+        List<Integer> path = new ArrayList<>();
+        getPath(n, minIndex, path);
+
+        return path;
+    }
+}
+```
+### C++
+```cpp
+#include <algorithm>
+#include <climits>
+
+class Solution {
+private:
+    int** q;
+    int** p;
+    int n;
+
+    void compute_shortest_path_arrays(vector<vector<int>>& costs) {
+        n = costs[0].size();
+        q = new int*[n + 2];
+        p = new int*[n + 2];
+        for (int i = 0; i < n + 2; i++) {
+            q[i] = new int[n + 2];
+            p[i] = new int[n + 2];
+        }
+
+        for (int x = 1; x <= n; x++) {
+            q[1][x] = costs[0][x - 1];
+        }
+
+        for (int y = 1; y <= n; y++) {
+            q[y][0] = INT_MAX;
+            q[y][n + 1] = INT_MAX;
+        }
+        for (int y = 2; y <= n; y++) {
+            for (int x = 1; x <= n; x++) {
+                int m = min(min(q[y - 1][x - 1], q[y - 1][x]), q[y - 1][x + 1]);
+                q[y][x] = m + costs[y - 1][x - 1];
+                if (m == q[y - 1][x - 1]) {
+                    p[y][x] = -1;
+                } else if (m == q[y - 1][x]) {
+                    p[y][x] = 0;
+                } else {
+                    p[y][x] = 1;
+                }
+            }
+        }
+    }
+
+    void get_path(int y, int x, vector<int>& path) {
+        path.push_back(x);
+        if (y == 2) {
+            path.push_back(x + p[y][x]);
+        } else {
+            get_path(y - 1, x + p[y][x], path);
+        }
+    }
+
+public:
+    vector<int> checker_board_min_path(vector<vector<int>> costs) {
+        compute_shortest_path_arrays(costs);
+        int minIndex = 1;
+        int min = q[n][1];
+        for (int i = 2; i <= n; i++) {
+            if (q[n][i] < min) {
+                minIndex = i;
+                min = q[n][i];
+            }
+        }
+        vector<int> path;
+        get_path(n, minIndex, path);
+
+        return path;
+    }
+};
+```
+### JavaScript
+```js
+let q
+let p
+let n
+
+function compute_shortest_path_arrays(costs) {
+    n = costs[0].length
+    q = []
+    p = []
+    for (let i = 0; i < n + 2; i++) {
+        q[i] = []
+        p[i] = []
+    }
+
+    for (let x = 1; x <= n; x++) {
+        q[1][x] = costs[1 - 1][x - 1]
+    }
+
+    for (let y = 1; y <= n; y++) {
+        q[y][0] = Number.MAX_VALUE
+        q[y][n + 1] = Number.MAX_VALUE
+    }
+
+    for (let y = 2; y <= n; y++) {
+        for (let x = 1; x <= n; x++) {
+            const m = Math.min(q[y - 1][x - 1], q[y - 1][x], q[y - 1][x + 1])
+            q[y][x] = m + costs[y - 1][x - 1]
+            if (m === q[y - 1][x - 1]) {
+                p[y][x] = -1
+            } else if (m === q[y - 1][x]) {
+                p[y][x] = 0
+            } else {
+                p[y][x] = 1
+            }
+        }
+    }
+}
+
+function get_path(y, x, paths) {
+    paths.push(x);
+    if (y === 2) {
+        paths.push(x + p[y][x]);
+    } else {
+        get_path(y - 1, x + p[y][x], paths);
+    }
+}
+
+function checker_board_min_path(costs) {
+    compute_shortest_path_arrays(costs)
+    let minIndex = 1
+    let min = q[n][1]
+    for (let i = 2; i <= n; i++) {
+        if (q[n][i] < min) {
+            minIndex = i;
+            min = q[n][i];
+        }
+    }
+    path = []
+    get_path(n, minIndex, path)
+
+    return path
+}
+```
+### Python
+```python
+import sys
+
+q = []
+p = []
+n = 0
+
+def compute_shortest_path_arrays(costs):
+    global q
+    global p
+    global n
+
+    n = len(costs[0])
+    p = [[0 for x in range(n + 2)] for y in range(n + 2)]
+    q = [[0 for x in range(n + 2)] for y in range(n + 2)]
+
+    for x in range(1, n + 1):
+        q[1][x] = costs[1 - 1][x - 1]
+
+    for y in range(1, n + 1):
+        q[y][0] = sys.maxsize
+        q[y][n + 1] = sys.maxsize
+
+    for y in range(2, n + 1):
+        for x in range(1, n + 1):
+            m = min(q[y - 1][x - 1], q[y - 1][x], q[y - 1][x + 1])
+            q[y][x] = m + costs[y - 1][x - 1]
+            if m == q[y - 1][x - 1]:
+                p[y][x] = -1
+            elif m == q[y - 1][x]:
+                p[y][x] = 0
+            else:
+                p[y][x] = 1
+
+def get_path(y, x, paths):
+    paths.append(x);
+    if y == 2:
+        paths.append(x + p[y][x]);
+    else:
+        get_path(y - 1, x + p[y][x], paths);
+
+def checker_board_min_path(costs):
+    global q
+    global p
+    global n
+    compute_shortest_path_arrays(costs)
+    minIndex = 1
+    mn = q[n][1]
+    for i in range(2, n + 1):
+        if q[n][i] < mn:
+            minIndex = i
+            mn = q[n][i]
+    path = []
+    get_path(n, minIndex, path)
+
+    return path
+```"	"array(array(int))[costs];list(int)[ignore_order=False]
+[[0,1],[0,1]];[1,1]
+[[0,1,2],[2,1,2],[3,3,1]];[3,2,1]
+[[1,4,2,8,6],[0,2,3,1,6],[6,5,1,2,0],[8,3,2,4,1],[2,5,3,1,8]];[4,5,5,4,3]"
+"Matrix Chain Multiplication"	"Given a matrices find the most efficient way to multiply them.
+For example, let us multiply matrices A, B and C. Let us assume that their dimensions are m×n, n×p, and p×s,
+respectively. Matrix A×B×C will be of size m×s and can be calculated in two ways shown below:
+    1. Ax(B×C) This order of matrix multiplication will require nps + mns scalar multiplications.
+    2. (A×B)×C This order of matrix multiplication will require mnp + mps scalar calculations.
+Let us assume that m = 10, n = 100, p = 10 and s = 1000. So, the first way to multiply the chain will require
+1,000,000 + 1,000,000 calculations. The second way will require only 10,000+100,000 calculations.
+Obviously, the second way is faster, and we should multiply the matrices using that arrangement of parenthesis.
+
+Example:
+Input: m = [10, 50, 100]
+Output: 50000
+There are only two matrices of dimensions 10x50 and 50x100. So there is only one way to multiply them: 10*50*100"	"matrix_multiplication_min_cost"	"### Matrix Chain Multiplication
+[Wiki](https://en.wikipedia.org/wiki/Dynamic_programming#Matrix_chain_multiplication)<br>
+[Geek4Geeks](https://www.geeksforgeeks.org/matrix-chain-multiplication-a-on2-solution)
+
+- Time Complexity : O(n ^ 2)
+- Auxiliary Space : O(n ^ 2)
+
+### Java
+```java
+public class Solution {
+    public int matrixMultiplicationMinCost(int[] p) {
+        int n = p.length;
+        int dp[][] = new int[n][n];
+
+        for (int i = 1; i < n - 1; i++) {
+            for (int j = 1; j < n - i; j++) {
+                dp[j][j + i] = Math.min(dp[j + 1][j + i] + p[j - 1] * p[j] * p[j + i],
+                    dp[j][j + i - 1] + p[j - 1] * p[j + i - 1] * p[j + i]);
+            }
+        }
+
+        return dp[1][n - 1];
+    }
+}
+```
+### C++
+```cpp
+#include <algorithm>
+
+class Solution {
+public:
+    int matrix_multiplication_min_cost(vector<int> p) {
+        int n = p.size();
+        int dp[n][n];
+        for (int i = 0; i < n; i++) {
+            if (i > 0) {
+                dp[i][i] = 0;
+            }
+        }
+
+        for (int i = 1; i < n - 1; i++) {
+            for (int j = 1; j < n - i; j++) {
+                dp[j][j + i] = min(dp[j + 1][j + i] + p[j - 1] * p[j] * p[j + i],
+                    dp[j][j + i - 1] + p[j - 1] * p[j + i - 1] * p[j + i]);
+            }
+        }
+
+        return dp[1][n - 1];
+    }
+};
+```
+### JavaScript
+```js
+function matrix_multiplication_min_cost(p) {
+    n = p.length
+    dp = []
+    for (let i = 0; i < n; i++) {
+        dp[i] = []
+        if (i > 0) {
+            dp[i][i] = 0
+        }
+    }
+
+    for (let i = 1; i < n - 1; i++) {
+        for (let j = 1; j < n - i; j++) {
+            dp[j][j + i] = Math.min(dp[j + 1][j + i] + p[j - 1] * p[j] * p[j + i],
+                dp[j][j + i - 1] + p[j - 1] * p[j + i - 1] * p[j + i])
+        }
+    }
+
+    return dp[1][n - 1]
+}
+```
+### Python
+```python
+def matrix_multiplication_min_cost(p):
+    n = len(p)
+    dp = [[0 for i in range(n)] for j in range(n)]
+
+    for i in range(1, n - 1):
+        for j in range(1, n - i):
+            dp[j][j + i] = min(dp[j + 1][j + i] + p[j - 1] * p[j] * p[j + i],
+                dp[j][j + i - 1] + p[j - 1] * p[j + i - 1] * p[j + i])
+
+    return dp[1][n - 1]
+```"	"array(int)[p];int
+[40, 20, 30, 10, 30];26000
+[10, 20, 30, 40, 30];30000
+[10, 20, 30];6000
+"
+"Count of balanced 0–1 matrices"	"Consider the problem of assigning values, either zero or one, to the positions of an n × n matrix,
+with n even, so that each row and each column contains exactly n / 2 zeros and n / 2 ones.
+We ask how many different assignments there are for a given n.
+
+For example, when n = 4, four possible solutions are
+
+ 0 1 0 1    0 0 1 1    1 1 0 0    1 0 0 1
+ 1 0 1 0    0 0 1 1    0 0 1 1    0 1 1 0
+ 0 1 0 1    1 1 0 0    1 1 0 0    0 1 1 0
+ 1 0 1 0    1 1 0 0    0 0 1 1    1 0 0 1
+
+
+Determine count of possible solutions for n given."	"count_0_1_matrices"	"### A type of balanced 0–1 matrix
+- [Wiki](https://en.wikipedia.org/wiki/Dynamic_programming#A_type_of_balanced_0–1_matrix)
+- [Stackoverflow](https://stackoverflow.com/questions/37253275/need-help-in-understanding-dynamic-programming-approach-for-balanced-0-1-matrix)
+### Java
+```java
+public class Solution {
+    Map<Integer, Map<String, Long>> cache = new HashMap<>();
+
+    public long count01Matrices(int n) {
+        if (n % 2 != 0) {
+            throw new IllegalArgumentException(""invalid n!"");
+        }
+        return count01Matrices(n, null);
+    }
+
+    private long count01MatricesCached(int n, List<Integer> restAmount) {
+        String key = restAmount.stream().map(String::valueOf).collect(Collectors.joining());
+        if (cache.containsKey(n) && cache.get(n).containsKey(key)) {
+            return cache.get(n).get(key);
+        }
+        long result = count01Matrices(n, restAmount);
+        if (!cache.containsKey(n)) {
+            cache.put(n, new HashMap<>());
+        }
+        cache.get(n).put(key, result);
+        return result;
+    }
+
+    private long count01Matrices(int n, List<Integer> rest) {
+        if (rest == null) {
+            rest = new ArrayList<>(Collections.nCopies(n, n / 2));
+        }
+        if (rest.get(0) < 0) {
+            return 0;
+        }
+        int total = rest.stream().mapToInt(i -> i).sum();
+        if (total == 0) {
+            return 1;
+        } else if (total * 2 / n < rest.get(0)) {
+            return 0;
+        }
+        long answer = 0;
+        for (List<Integer> row : getPossibleRows(n, n/2)) {
+            List<Integer> next = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                next.add(rest.get(i) - row.get(i));
+            }
+            Collections.sort(next);
+            answer += count01MatricesCached(n, next);
+        }
+        return answer;
+    }
+
+    private List<List<Integer>> getPossibleRows(int n, int k) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (n == 0) {
+            result.add(new ArrayList<>());
+        } else {
+            if (n > k) {
+                for (List<Integer> row : getPossibleRows(n - 1, k)) {
+                    row.add(0);
+                    result.add(row);
+                }
+            }
+            if (k > 0) {
+                for (List<Integer> row : getPossibleRows(n - 1, k - 1)) {
+                    row.add(1);
+                    result.add(row);
+                }
+            }
+        }
+        return result;
+    }
+}
+```
+### C++
+```cpp
+#include <algorithm>
+
+class Solution {
+private:
+    map<int, map<string, long int>> cache;
+
+    long int count_0_1_matrices_cached(int n, vector<int>& rest_amount) {
+        string key = """";
+        for (auto const& i: rest_amount) {
+            key += to_string(i);
+        }
+        if (cache.find(n) != cache.end() &&
+            cache[n].find(key) != cache[n].end()) {
+            return cache[n][key];
+        }
+        long int result = count_0_1_matrices(n, rest_amount);
+        if (cache.find(n) == cache.end()) {
+            map<string, long int> m;
+            cache[n] = m;
+        }
+        cache[n][key] = result;
+        return result;
+    }
+
+    long count_0_1_matrices(int n, vector<int>& rest) {
+        if (rest.size() == 0) {
+            for (int i = 0; i < n; i++) {
+                rest.push_back(n / 2);
+            }
+        }
+        if (rest[0] < 0) {
+            return 0;
+        }
+        int total = 0;
+        for (auto const& i: rest) {
+            total += i;
+        }
+        if (total == 0) {
+            return 1;
+        } else if (total * 2 / n < rest[0]) {
+            return 0;
+        }
+        long int answer = 0;
+        for (vector<int> row : get_possible_rows(n, n/2)) {
+            vector<int> next;
+            for (int i = 0; i < n; i++) {
+                next.push_back(rest[i] - row[i]);
+            }
+            sort(next.begin(), next.end());
+            answer += count_0_1_matrices_cached(n, next);
+        }
+        return answer;
+    }
+
+    vector<vector<int>> get_possible_rows(int n, int k) {
+        vector<vector<int>> result;
+        if (n == 0) {
+            vector<int> v;
+            result.push_back(v);
+        } else {
+            if (n > k) {
+                for (vector<int> row : get_possible_rows(n - 1, k)) {
+                    row.push_back(0);
+                    result.push_back(row);
+                }
+            }
+            if (k > 0) {
+                for (vector<int> row : get_possible_rows(n - 1, k - 1)) {
+                    row.push_back(1);
+                    result.push_back(row);
+                }
+            }
+        }
+        return result;
+    }
+
+public:
+    long int count_0_1_matrices(int n) {
+        if (n % 2 != 0) {
+            return -1;
+        }
+        vector<int> rest;
+        cache.clear();
+        return count_0_1_matrices(n, rest);
+    }
+};
+```
+
+### JavaScript
+```js
+let cache = null
+
+function count_0_1_matrices(n) {
+    if (n % 2 != 0) {
+        return -1
+    }
+    cache = {}
+    return do_count_0_1_matrices(n)
+}
+
+function count_0_1_matrices_cached(n, rest) {
+    const key = rest.map(String)
+    if (cache[n] && cache[n][key]) {
+        return cache[n][key]
+    }
+    const result = do_count_0_1_matrices(n, rest)
+    if (!cache[n]) {
+        cache[n] = {}
+    }
+    cache[n][key] = result
+    return result
+}
+
+function do_count_0_1_matrices(n, rest) {
+    if (!rest) {
+        rest = []
+        for (let i = 0; i < n; i++) {
+            rest.push(n / 2)
+        }
+    }
+    if (rest[0] < 0) {
+        return 0
+    }
+    total = rest.reduce((pv, cv) => pv + cv, 0)
+    if (total == 0) {
+        return 1
+    } else if (total * 2 / n < rest[0]) {
+        return 0
+    }
+    let answer = 0;
+    for (row of get_possible_rows(n, n/2)) {
+        const next = []
+        for (let i = 0; i < n; i++) {
+            next.push(rest[i] - row[i])
+        }
+        next.sort()
+        answer += count_0_1_matrices_cached(n, next)
+    }
+    return answer
+}
+
+function get_possible_rows(n, k) {
+    const result = []
+    if (n == 0) {
+        result.push([])
+    } else {
+        if (n > k) {
+            for (const row of get_possible_rows(n - 1, k)) {
+                row.push(0)
+                result.push(row)
+            }
+        }
+        if (k > 0) {
+            for (const row of get_possible_rows(n - 1, k - 1)) {
+                row.push(1)
+                result.push(row)
+            }
+        }
+    }
+    return result
+}
+```
+
+### Python
+```python
+cache = None
+
+def count_0_1_matrices(n):
+    global cache
+    cache = {}
+    if n % 2 != 0:
+        return -1
+    return do_count_0_1_matrices(n)
+
+def count_0_1_matrices_cached(n, rest):
+    key = ''.join([str(i) for i in rest])
+    if n in cache and key in cache[n]:
+        return cache[n][key]
+
+    result = do_count_0_1_matrices(n, rest)
+    if n not in cache:
+        cache[n] = {}
+
+    cache[n][key] = result
+    return result
+
+def do_count_0_1_matrices(n, rest=None):
+    if not rest:
+        rest = []
+        for i in range(n):
+            rest.append(n / 2)
+
+    if rest[0] < 0:
+        return 0
+
+    total = sum(rest)
+    if total == 0:
+        return 1
+    elif total * 2 / n < rest[0]:
+        return 0
+
+    answer = 0
+    for row in get_possible_rows(n, n/2):
+        next = []
+
+        for i in range(n):
+            next.append(rest[i] - row[i])
+
+        answer += count_0_1_matrices_cached(n, sorted(next))
+    return answer
+
+def get_possible_rows(n, k):
+    result = []
+    if n == 0:
+        result.append([])
+    else:
+        if n > k:
+            for row in get_possible_rows(n - 1, k):
+                row.append(0)
+                result.append(row)
+        if k > 0:
+            for row in get_possible_rows(n - 1, k - 1):
+                row.append(1)
+                result.append(row)
+    return result
+```"	"int[n];long
+2;2
+4;90
+6;297200
+"

@@ -1,0 +1,558 @@
+"Find all paths in a graph using Breath First Search"	"Find all paths from source to destination in a Graph using Breadth First Search.
+Graph is represented by adjacency matrix. The elements of the matrix indicate whether pairs of vertices are adjacent or not in the graph.
+
+For example:
+[0: [1, 2],            (A) - (B) - (D)
+ 1: [0, 3],       =>       \     /
+ 2: [1, 3],                  (C)
+ 3: [2, 3]]"	"find_paths"	"### Breadth First Search
+[Wiki](https://en.wikipedia.org/wiki/Breadth-first_search)
+
+- Worst-case performance: O(|V|+|E|)=O(b^d).
+- Worst-case space complexity: O(|V|)=O(b^d).
+### Java
+```java
+public class Solution {
+    public List<List<Integer>> findPaths(Map<Integer, List<Integer>> adjacency_matrix, int src, int dest) {
+        LinkedList<LinkedList<Integer>> queue = new LinkedList<>();
+        LinkedList<Integer> path = new LinkedList<>();
+        path.add(src);
+        queue.add(path);
+
+        List<List<Integer>> result = new ArrayList<>();
+
+        while (!queue.isEmpty()) {
+            path = queue.poll();
+            int last = path.getLast();
+            if (last == dest) {
+                result.add(path);
+            }
+            for (int i : adjacency_matrix.get(last)) {
+                if (!path.contains(i)) {
+                    LinkedList<Integer> newPath = new LinkedList(path);
+                    newPath.add(i);
+                    queue.push(newPath);
+                }
+            }
+        }
+
+        return result;
+    }
+}
+```
+### C++
+```cpp
+#include <queue>
+
+class Solution {
+private:
+    int not_visited(int x, vector<int>& path) {
+        int size = path.size();
+        for (int i = 0; i < size; i++)
+            if (path[i] == x)
+                return 0;
+        return 1;
+    }
+public:
+    vector<vector<int>> find_paths(map<int, vector<int>> adjacency_matrix, int src, int dest) {
+        queue<vector<int>> q;
+
+        vector<int> path;
+        path.push_back(src);
+        q.push(path);
+
+        vector<vector<int>> result;
+        while (!q.empty()) {
+            path = q.front();
+            q.pop();
+            int last = path[path.size() - 1];
+
+            if (last == dest)
+                result.push_back(path);
+
+            for (int i = 0; i < adjacency_matrix[last].size(); i++) {
+                if (not_visited(adjacency_matrix[last][i], path)) {
+                    vector<int> newpath(path);
+                    newpath.push_back(adjacency_matrix[last][i]);
+                    q.push(newpath);
+                }
+            }
+        }
+        return result;
+    }
+};
+```
+### JavaScript
+```js
+function find_paths(adjacency_matrix, src, dest) {
+    const queue = []
+    let path = []
+    path.push(src);
+    queue.push(path);
+
+    const result = []
+
+    while (queue.length > 0) {
+        path = queue.shift();
+        const last = path[path.length - 1];
+        if (last == dest) {
+            result.push(path);
+        }
+        for (let i of adjacency_matrix.get(last)) {
+            if (path.indexOf(i) < 0) {
+                const newpath = [...path];
+                newpath.push(i);
+                queue.push(newpath);
+            }
+        }
+    }
+
+    return result;
+}
+```
+### Python
+```python
+from collections import deque
+
+def not_visited(x: int, path: List[int]) -> int:
+
+    size = len(path)
+    for i in range(size):
+        if (path[i] == x):
+            return 0
+
+    return 1
+
+def find_paths(adjacency_matrix: Dict[int, List[int]], src: int, dest: int)->List[List[int]]:
+    q = deque()
+
+    path = []
+    path.append(src)
+    q.append(path.copy())
+
+    result = []
+
+    while q:
+        path = q.popleft()
+        last = path[len(path) - 1]
+
+        if (last == dest):
+            result.append(path)
+
+        for i in range(len(adjacency_matrix[last])):
+            if (not_visited(adjacency_matrix[last][i], path)):
+                newpath = path.copy()
+                newpath.append(adjacency_matrix[last][i])
+                q.append(newpath)
+    return result
+```"	"map(int, list(int))[adjacency_matrix];int[src];int[dest];list(list(int))
+[0,[3,1,2],1,[3],2,[0,1],3,[0,1]];2;3;[[2,0,3],[2,1,3],[2,0,1,3]]
+"
+"Kosaraju's algorithm"	"A directed graph is called strongly connected if there is a path in each direction between each pair of vertices of
+the graph. That is, a path exists from the first vertex in the pair to the second, and another path exists from the
+second vertex to the first. In a directed graph G that may not itself be strongly connected, a pair of vertices u
+and v are said to be strongly connected to each other if there is a path in each direction between them.
+
+For example:
+[0: [2, 3],            (1) -> (0) -> (3)
+ 1: [0],       =>       ^      |      |
+ 2: [1],                |      |      v
+ 3: [4],               (2) <----     (4)
+ 4: []]
+
+This graph has the following strongly connected components:
+[0, 1, 2]
+[3]
+[4]
+
+Hint: Use Kosaraju's algorithm (https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)"	"strongly_connected_components"	"### Kasaraju Algorithm
+[Wiki](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
+
+- If the graph is represented as an adjacency list, performance is linear: O(|V|+|E|).
+- If the graph is represented as an adjacency matrix, the algorithm requires Ο(V^2) time.
+### Java
+```java
+public class Solution {
+    private void visit(int vertex, boolean[] visited, Stack<Integer> stack, Map<Integer, List<Integer>> adjacency_matrix) {
+        visited[vertex] = true;
+        for (int adjacent_vertex : adjacency_matrix.get(vertex)) {
+            if (!visited[adjacent_vertex]) {
+                visit(adjacent_vertex, visited, stack, adjacency_matrix);
+            }
+        }
+        stack.push(vertex);
+    }
+
+    private Map<Integer, List<Integer>> reverse(Map<Integer, List<Integer>> adjacency_matrix) {
+        Map<Integer, List<Integer>> reversed = new HashMap<>();
+        for (Map.Entry<Integer, List<Integer>> entry : adjacency_matrix.entrySet()) {
+            int root = entry.getKey();
+            for (int vertex : entry.getValue()) {
+                List<Integer> reversed_vertices = reversed.getOrDefault(vertex, new ArrayList<>());
+                reversed_vertices.add(root);
+                reversed.put(vertex, reversed_vertices);
+            }
+        }
+        return reversed;
+    }
+
+    // using Kasaraju algorithm
+    public List<List<Integer>> stronglyConnectedComponents(Map<Integer, List<Integer>> adjacency_matrix) {
+        int vertex_count = adjacency_matrix.keySet().size();
+        Stack<Integer> stack = new Stack<>();
+        boolean[] visited = new boolean[vertex_count];
+
+        for (int vertex = 0; vertex < vertex_count; vertex++) {
+            if (!visited[vertex]) {
+                visit(vertex, visited, stack, adjacency_matrix);
+            }
+        }
+
+        Arrays.fill(visited, false);
+        Map<Integer, List<Integer>> reversed_matrix = reverse(adjacency_matrix);
+
+        List<List<Integer>> result = new ArrayList<>();
+
+        while (!stack.isEmpty()) {
+            int vertex = stack.pop();
+            if (!visited[vertex]) {
+                Stack<Integer> scc = new Stack<>();
+                visit(vertex, visited, scc, reversed_matrix);
+                result.add(new ArrayList<>(scc));
+            }
+        }
+
+        return result;
+    }
+}
+```
+### C++
+```cpp
+#include <stack>
+
+class Solution {
+private:
+    void visit(int vertex, vector<bool>& visited, stack<int>& s, map<int, vector<int>>& adjacency_matrix) {
+        visited[vertex] = true;
+
+        for (const auto& adjacent_vertex: adjacency_matrix[vertex]) {
+            if (!visited[adjacent_vertex]) {
+                visit(adjacent_vertex, visited, s, adjacency_matrix);
+            }
+        }
+
+        s.push(vertex);
+    }
+
+    map<int, vector<int>> reverse(map<int, vector<int>>& adjacency_matrix) {
+        map<int, vector<int>> reversed;
+
+        for (auto const& entry: adjacency_matrix) {
+            int root = entry.first;
+            for (auto const& vertex : entry.second) {
+                if (reversed.count(vertex) == 0) {
+                    reversed.insert(make_pair(vertex, vector<int>()));
+                }
+                reversed[vertex].push_back(root);
+            }
+        }
+
+        return reversed;
+    }
+
+public:
+    // using Kasaraju algorithm
+    vector<vector<int>> strongly_connected_components(map<int, vector<int>> adjacency_matrix) {
+        int vertex_count = adjacency_matrix.size();
+        stack<int> s;
+        vector<bool> visited;
+
+        for (int i = 0; i < vertex_count; i++) {
+            visited.push_back(false);
+        }
+
+        for (int vertex = 0; vertex < vertex_count; vertex++) {
+            if (!visited[vertex]) {
+                visit(vertex, visited, s, adjacency_matrix);
+            }
+        }
+
+        for (int i = 0; i < vertex_count; i++) {
+            visited[i] = false;
+        }
+
+        map<int, vector<int>> reversed_matrix = reverse(adjacency_matrix);
+        vector<vector<int>> result;
+
+        while (!s.empty()) {
+            int vertex = s.top();
+            s.pop();
+            if (!visited[vertex]) {
+                stack<int> scc;
+                scc.push(vertex);
+                visit(vertex, visited, scc, reversed_matrix);
+                vector<int> list;
+                while (!scc.empty()) {
+                    list.push_back(scc.top());
+                    scc.pop();
+                }
+                result.push_back(list);
+            }
+        }
+
+        return result;
+    }
+};
+```
+### JavaScript
+```js
+function visit(vertex, visited, stack, adjacency_matrix) {
+    visited[vertex] = true
+    for (let adjacent_vertex of adjacency_matrix.get(vertex)) {
+        if (!visited[adjacent_vertex]) {
+            visit(adjacent_vertex, visited, stack, adjacency_matrix)
+        }
+    }
+    stack.push(vertex)
+}
+
+function reverse(adjacency_matrix) {
+    const reversed = new Map()
+    for (let [root, edges] of adjacency_matrix) {
+        for (let vertex of edges) {
+            if (!reversed.has(vertex)) {
+                reversed.set(vertex, [])
+            }
+            const reversed_vertices = reversed.get(vertex)
+            reversed_vertices.push(root)
+        }
+    }
+    return reversed
+}
+
+// using Kasaraju algorithm
+function strongly_connected_components(adjacency_matrix) {
+    const vertex_count = adjacency_matrix.size
+    const stack = []
+    const visited = []
+
+    for (let i = 0; i < vertex_count; i++) {
+        visited.push(false);
+    }
+
+    for (let i = 0; i < vertex_count; i++) {
+        if (!visited[i]) {
+            visit(i, visited, stack, adjacency_matrix);
+        }
+    }
+
+    for (let i = 0; i < vertex_count; i++) {
+        visited[i] = false;
+    }
+
+    const reversed_matrix = reverse(adjacency_matrix);
+    const result = []
+
+    while (stack.length > 0) {
+        const vertex = stack.pop()
+        if (!visited[vertex]) {
+            const scc = []
+            visit(vertex, visited, scc, reversed_matrix)
+            result.push(scc)
+        }
+    }
+
+    return result
+}
+```
+### Python
+```python
+def visit(vertex, visited, stack, adjacency_matrix):
+    visited[vertex] = True
+    for adjacent_vertex in adjacency_matrix[vertex]:
+        if not visited[adjacent_vertex]:
+            visit(adjacent_vertex, visited, stack, adjacency_matrix)
+    stack.append(vertex)
+
+def reverse(adjacency_matrix):
+    reversed = {}
+    for root, edges in adjacency_matrix.items():
+        for vertex in edges:
+            if vertex not in reversed:
+                reversed[vertex] = []
+            reversed_vertices = reversed[vertex]
+            reversed_vertices.append(root)
+    return reversed
+
+# using Kasaraju algorithm
+def strongly_connected_components(adjacency_matrix):
+    vertex_count = len(adjacency_matrix)
+    stack = []
+    visited = []
+
+    for i in range(0, vertex_count):
+        visited.append(False)
+
+    for i in range(0, vertex_count):
+        if not visited[i]:
+            visit(i, visited, stack, adjacency_matrix)
+
+    for i in range(0, vertex_count):
+        visited[i] = False;
+
+    reversed_matrix = reverse(adjacency_matrix);
+    result = []
+
+    while len(stack) > 0:
+        vertex = stack.pop()
+        if not visited[vertex]:
+            scc = []
+            visit(vertex, visited, scc, reversed_matrix)
+            result.append(scc)
+
+    return result
+```"	"map(int, list(int))[adjacency_matrix];list(list(int))
+[0,[2,3],1,[0],2,[1],3,[4],4,[]];[[0,1,2],[3],[4]]"
+"Topological Sorting"	"Perform topological sort of Directed Acyclic Graph (DAG).
+A topological sort of a DAG G is a linear ordering of all its vertices such that if G contains an edge (u, v), then u appears before v in the ordering.
+
+For example:
+[0:[],
+ 1:[],                 (5)  (4)
+ 2:[3],                /  \ /  \
+ 3:[1],              (2)  (0)  (1)
+ 4:[0,1],              \       /
+ 5:[0,2]]                 (3)
+
+Result can be the following:
+5 2 3 1 0 4"	"topological_sort"	"### Breadth First Search
+[Wiki](https://en.wikipedia.org/wiki/Topological_sorting)
+
+Average performance: O(|V|+|E|).
+### Java
+```java
+public class Solution {
+    public List<Integer> topologicalSort(Map<Integer, List<Integer>> adjacency_matrix) {
+        Stack<Integer> stack = new Stack<>();
+        int v = adjacency_matrix.keySet().size();
+        boolean visited[] = new boolean[v];
+
+        for (int i = 0; i < v; i++) {
+            if (!visited[i]) {
+                sort(i, visited, stack, adjacency_matrix);
+            }
+        }
+
+        return new ArrayList<>(stack);
+    }
+
+    private void sort(int v, boolean visited[], Stack<Integer> stack, Map<Integer, List<Integer>> adjacency_matrix) {
+        visited[v] = true;
+
+        for (int i : adjacency_matrix.get(v)) {
+            if (!visited[i]) {
+                sort(i, visited, stack, adjacency_matrix);
+            }
+        }
+
+        stack.push(v);
+    }
+}
+```
+### C++
+```cpp
+#include <stack>
+
+class Solution {
+private:
+    void sort(int v, bool visited[], stack<int>& s, map<int, vector<int>>& adj) {
+        visited[v] = true;
+
+        for (const auto& i: adj[v])
+            if (!visited[i])
+                sort(i, visited, s, adj);
+
+        s.push(v);
+    }
+
+public:
+    vector<int> topological_sort(map<int, vector<int>> adjacency_matrix) {
+        stack<int> s;
+        vector<int> result;
+
+        int V = adjacency_matrix.size();
+        bool* visited = new bool[V];
+
+        for (int i = 0; i < V; i++)
+            visited[i] = false;
+
+        for (int i = 0; i < V; i++)
+            if (visited[i] == false)
+                sort(i, visited, s, adjacency_matrix);
+
+        while (s.empty() == false) {
+            result.push_back(s.top());
+            s.pop();
+        }
+
+        return result;
+    }
+};
+```
+### JavaScript
+```js
+function sort(v, visited, stack, adjacency_matrix) {
+    visited[v] = true
+
+    for (let i = 0; i < v; i++) {
+        if (!visited[i]) {
+            sort(i, visited, stack, adjacency_matrix)
+        }
+    }
+
+    stack.push(v)
+}
+
+function topological_sort(adjacency_matrix) {
+    const stack = []
+    const visited = []
+
+    for (let i = 0; i < adjacency_matrix.size; i++) {
+        visited.push(false)
+    }
+
+    for (let i = 0; i < adjacency_matrix.size; i++) {
+        if (!visited[i]) {
+            sort(i, visited, stack, adjacency_matrix)
+        }
+    }
+
+    return stack
+}
+```
+### Python
+```python
+def sort(v, visited, stack, adjacency_matrix):
+    visited[v] = True
+
+    for i in adjacency_matrix[v]:
+        if not visited[i]:
+            sort(i, visited, stack, adjacency_matrix)
+
+    stack.append(v)
+
+def topological_sort(adjacency_matrix):
+    stack = []
+    visited = []
+    v = len(adjacency_matrix)
+
+    for i in range(0, v):
+        visited.append(False);
+
+    for i in range(0, v):
+        if not visited[i]:
+            sort(i, visited, stack, adjacency_matrix)
+
+    return stack
+```"	"map(int, list(int))[adjacency_matrix];list(int)
+[0,[],1,[],2,[3],3,[1],4,[0,1],5,[0,2]];[5,2,3,1,0,4]"

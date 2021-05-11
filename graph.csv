@@ -1,4 +1,4 @@
-"Find all paths in a graph using Breath First Search"	"Find all paths from source to destination in a Graph using Breadth First Search.
+"Find all paths in a graph using Breadth First Search"	"Find all paths from source to destination in a Graph using Breadth First Search.
 Graph is represented by adjacency matrix. The elements of the matrix indicate whether pairs of vertices are adjacent or not in the graph.
 
 For example:

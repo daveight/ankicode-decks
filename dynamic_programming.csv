@@ -280,7 +280,7 @@ def checker_board_min_path(costs):
 [[1,4,2,8,6],[0,2,3,1,6],[6,5,1,2,0],[8,3,2,4,1],[2,5,3,1,8]];[4,5,5,4,3]"
 "Matrix Chain Multiplication"	"Given a matrices find the most efficient way to multiply them.
 For example, let us multiply matrices A, B and C. Let us assume that their dimensions are m x n, n x p, and p x s,
-respectively. Matrix A x B x C will be of size m×s and can be calculated in two ways shown below:
+respectively. Matrix A x B x C will be of size m x s and can be calculated in two ways shown below:
     1. Ax(BxC) This order of matrix multiplication will require nps + mns scalar multiplications.
     2. (AxB)xC This order of matrix multiplication will require mnp + mps scalar calculations.
 Let us assume that m = 10, n = 100, p = 10 and s = 1000. So, the first way to multiply the chain will require

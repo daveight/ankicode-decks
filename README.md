@@ -3,10 +3,10 @@
 ## Decks
 
   - `dynamic_programming.csv`
-    Collection of dynamic programming problems.
+    Collection of dynamic programming problems
     
   - `google_interview.csv`
-    Contains a collection of google interview coding problems.
+    Contains a collection of google interview coding problems
     
   - `graph.csv`
     Graph problems

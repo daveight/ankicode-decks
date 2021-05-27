@@ -1,0 +1,29 @@
+```java
+public class Solution {
+    public List<Integer> topologicalSort(Map<Integer, List<Integer>> adjacency_matrix) {
+        Stack<Integer> stack = new Stack<>();
+        int v = adjacency_matrix.keySet().size();
+        boolean visited[] = new boolean[v];
+
+        for (int i = 0; i < v; i++) {
+            if (!visited[i]) {
+                sort(i, visited, stack, adjacency_matrix);
+            }
+        }
+
+        return new ArrayList<>(stack);
+    }
+
+    private void sort(int v, boolean visited[], Stack<Integer> stack, Map<Integer, List<Integer>> adjacency_matrix) {
+        visited[v] = true;
+
+        for (int i : adjacency_matrix.get(v)) {
+            if (!visited[i]) {
+                sort(i, visited, stack, adjacency_matrix);
+            }
+        }
+
+        stack.push(v);
+    }
+}
+```

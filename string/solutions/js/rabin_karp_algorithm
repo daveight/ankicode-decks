@@ -1,0 +1,46 @@
+```js
+function search_pattern(s, p) {
+    const prime = 2051758399
+    const radix = 256
+    let h = 1
+    const n = s.length
+    const m = p.length
+    if (n < m) {
+        return -1
+    }
+
+    let pHash = 0
+    let sHash = 0
+
+    for (let i = 0; i < m - 1; i++) {
+        h = (h * radix) % prime
+    }
+
+    for (let i = 0; i < m; i++) {
+        pHash = (pHash * radix + p.charCodeAt(i)) % prime
+        sHash = (sHash * radix + s.charCodeAt(i)) % prime
+    }
+
+    for (let i = 0; i <= n - m; i++) {
+        if (pHash == sHash) {
+            let j
+            for (j = 0; j < m; j++) {
+                if (s.charAt(i + j) != p.charAt(j)) {
+                    break
+                }
+            }
+            if (j == m) {
+                return i
+            }
+        }
+        if (i < n - m) {
+            sHash = (radix * (sHash - s.charCodeAt(i) * h) + s.charCodeAt(i + m)) % prime
+            if (sHash < 0) {
+                sHash += prime
+            }
+        }
+    }
+
+    return -1
+}
+```

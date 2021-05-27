@@ -1,0 +1,8 @@
+Find all paths from source to destination in a Graph using Breadth First Search.
+Graph is represented by adjacency matrix. The elements of the matrix indicate whether pairs of vertices are adjacent or not in the graph.
+
+For example:
+[0: [1, 2],            (A) - (B) - (D)
+ 1: [0, 3],       =>       \     /
+ 2: [1, 3],                  (C)
+ 3: [2, 3]]

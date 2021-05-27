@@ -1,0 +1,35 @@
+```js
+function least_rotation(s) {
+    const o = s
+    s += s
+
+    const n = s.length
+    const f = []
+    for (let i = 0; i < n; i++) {
+        f[i] = -1
+    }
+
+    let k = 0
+
+    for (let j = 1; j < s.length; j++) {
+        const sj = s.charAt(j)
+        let i = f[j - k - 1]
+        while (i != -1 && sj != s.charAt(k + i + 1)) {
+            if (sj < s.charAt(k + i + 1)) {
+                k = j - i - 1
+            }
+            i = f[i]
+        }
+        if (sj != s.charAt(k + i + 1)) {
+            if (sj < s.charAt(k)) {
+                k = j
+            }
+            f[j - k] = -1
+        } else {
+            f[j - k] = i + 1
+        }
+    }
+
+    return o.substring(k) + o.substring(0, k)
+}
+```

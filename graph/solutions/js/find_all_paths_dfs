@@ -1,0 +1,27 @@
+```js
+function find_paths(adjacency_matrix, src, dest) {
+    const queue = []
+    let path = []
+    path.push(src);
+    queue.push(path);
+
+    const result = []
+
+    while (queue.length > 0) {
+        path = queue.shift();
+        const last = path[path.length - 1];
+        if (last == dest) {
+            result.push(path);
+        }
+        for (let i of adjacency_matrix.get(last)) {
+            if (path.indexOf(i) < 0) {
+                const newpath = [...path];
+                newpath.push(i);
+                queue.push(newpath);
+            }
+        }
+    }
+
+    return result;
+}
+```

@@ -1,0 +1,63 @@
+```js
+let q
+let p
+let n
+
+function compute_shortest_path_arrays(costs) {
+    n = costs[0].length
+    q = []
+    p = []
+    for (let i = 0; i < n + 2; i++) {
+        q[i] = []
+        p[i] = []
+    }
+
+    for (let x = 1; x <= n; x++) {
+        q[1][x] = costs[1 - 1][x - 1]
+    }
+
+    for (let y = 1; y <= n; y++) {
+        q[y][0] = Number.MAX_VALUE
+        q[y][n + 1] = Number.MAX_VALUE
+    }
+
+    for (let y = 2; y <= n; y++) {
+        for (let x = 1; x <= n; x++) {
+            const m = Math.min(q[y - 1][x - 1], q[y - 1][x], q[y - 1][x + 1])
+            q[y][x] = m + costs[y - 1][x - 1]
+            if (m === q[y - 1][x - 1]) {
+                p[y][x] = -1
+            } else if (m === q[y - 1][x]) {
+                p[y][x] = 0
+            } else {
+                p[y][x] = 1
+            }
+        }
+    }
+}
+
+function get_path(y, x, paths) {
+    paths.push(x);
+    if (y === 2) {
+        paths.push(x + p[y][x]);
+    } else {
+        get_path(y - 1, x + p[y][x], paths);
+    }
+}
+
+function checker_board_min_path(costs) {
+    compute_shortest_path_arrays(costs)
+    let minIndex = 1
+    let min = q[n][1]
+    for (let i = 2; i <= n; i++) {
+        if (q[n][i] < min) {
+            minIndex = i;
+            min = q[n][i];
+        }
+    }
+    path = []
+    get_path(n, minIndex, path)
+
+    return path
+}
+```

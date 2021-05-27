@@ -1,0 +1,6 @@
+### Least String Rotation
+[Wiki: Booth's Algorithm](https://en.wikipedia.org/wiki/Lexicographically_minimal_string_rotation#Booth's_Algorithm)
+
+- Time Complexity: O(n).
+- Worst Case Time Complexity: O(3 * n).
+- Auxiliary Space: O(n).

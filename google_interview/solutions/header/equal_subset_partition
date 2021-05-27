@@ -1,0 +1,5 @@
+### Equal subset sum partition
+[Geek for geeks](https://www.geeksforgeeks.org/partition-problem-dp-18/)
+
+- Time Complexity: O(sum * n).
+- Auxiliary Space: O(sum * n).

@@ -1,0 +1,29 @@
+```java
+public class Solution {
+    public List<List<Integer>> findPaths(Map<Integer, List<Integer>> adjacency_matrix, int src, int dest) {
+        LinkedList<LinkedList<Integer>> queue = new LinkedList<>();
+        LinkedList<Integer> path = new LinkedList<>();
+        path.add(src);
+        queue.add(path);
+
+        List<List<Integer>> result = new ArrayList<>();
+
+        while (!queue.isEmpty()) {
+            path = queue.poll();
+            int last = path.getLast();
+            if (last == dest) {
+                result.add(path);
+            }
+            for (int i : adjacency_matrix.get(last)) {
+                if (!path.contains(i)) {
+                    LinkedList<Integer> newPath = new LinkedList(path);
+                    newPath.add(i);
+                    queue.push(newPath);
+                }
+            }
+        }
+
+        return result;
+    }
+}
+```

@@ -1,0 +1,35 @@
+```python
+def search_pattern(s, p):
+    prime = 2051758399
+    radix = 256
+    h = 1
+    n = len(s)
+    m = len(p)
+    if n < m:
+        return -1
+
+    pHash = 0
+    sHash = 0
+
+    for i in range(0, m - 1):
+        h = (h * radix) % prime
+
+    for i in range(0, m):
+        pHash = (pHash * radix + ord(p[i])) % prime
+        sHash = (sHash * radix + ord(s[i])) % prime
+
+    for i in range(0, n - m + 1):
+        if pHash == sHash:
+            j = 0
+            for j in range(0, m):
+                if s[i + j] != p[j]:
+                    break
+            if j == m - 1:
+                return i
+        if i < n - m:
+            sHash = (radix * (sHash - ord(s[i]) * h) + ord(s[i + m])) % prime
+            if sHash < 0:
+                sHash += prime
+
+    return -1
+```

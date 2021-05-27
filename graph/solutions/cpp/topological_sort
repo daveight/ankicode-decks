@@ -1,0 +1,39 @@
+```cpp
+#include <stack>
+
+class Solution {
+private:
+    void sort(int v, bool visited[], stack<int>& s, map<int, vector<int>>& adj) {
+        visited[v] = true;
+
+        for (const auto& i: adj[v])
+            if (!visited[i])
+                sort(i, visited, s, adj);
+
+        s.push(v);
+    }
+
+public:
+    vector<int> topological_sort(map<int, vector<int>> adjacency_matrix) {
+        stack<int> s;
+        vector<int> result;
+
+        int V = adjacency_matrix.size();
+        bool* visited = new bool[V];
+
+        for (int i = 0; i < V; i++)
+            visited[i] = false;
+
+        for (int i = 0; i < V; i++)
+            if (visited[i] == false)
+                sort(i, visited, s, adjacency_matrix);
+
+        while (s.empty() == false) {
+            result.push_back(s.top());
+            s.pop();
+        }
+
+        return result;
+    }
+};
+```

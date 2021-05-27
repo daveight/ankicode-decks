@@ -1,0 +1,6 @@
+### Rabin-Karp Algorithm
+[Wiki](https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm)
+
+- Agerage Time Complexity: O(|s| + |p|).
+- Worst Case Time Complexity: O(|p| * |s|).
+- Auxiliary Space: O(1).

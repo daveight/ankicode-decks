@@ -1,0 +1,77 @@
+```cpp
+#include <stack>
+
+class Solution {
+private:
+    void visit(int vertex, vector<bool>& visited, stack<int>& s, map<int, vector<int>>& adjacency_matrix) {
+        visited[vertex] = true;
+
+        for (const auto& adjacent_vertex: adjacency_matrix[vertex]) {
+            if (!visited[adjacent_vertex]) {
+                visit(adjacent_vertex, visited, s, adjacency_matrix);
+            }
+        }
+
+        s.push(vertex);
+    }
+
+    map<int, vector<int>> reverse(map<int, vector<int>>& adjacency_matrix) {
+        map<int, vector<int>> reversed;
+
+        for (auto const& entry: adjacency_matrix) {
+            int root = entry.first;
+            for (auto const& vertex : entry.second) {
+                if (reversed.count(vertex) == 0) {
+                    reversed.insert(make_pair(vertex, vector<int>()));
+                }
+                reversed[vertex].push_back(root);
+            }
+        }
+
+        return reversed;
+    }
+
+public:
+    // using Kasaraju algorithm
+    vector<vector<int>> strongly_connected_components(map<int, vector<int>> adjacency_matrix) {
+        int vertex_count = adjacency_matrix.size();
+        stack<int> s;
+        vector<bool> visited;
+
+        for (int i = 0; i < vertex_count; i++) {
+            visited.push_back(false);
+        }
+
+        for (int vertex = 0; vertex < vertex_count; vertex++) {
+            if (!visited[vertex]) {
+                visit(vertex, visited, s, adjacency_matrix);
+            }
+        }
+
+        for (int i = 0; i < vertex_count; i++) {
+            visited[i] = false;
+        }
+
+        map<int, vector<int>> reversed_matrix = reverse(adjacency_matrix);
+        vector<vector<int>> result;
+
+        while (!s.empty()) {
+            int vertex = s.top();
+            s.pop();
+            if (!visited[vertex]) {
+                stack<int> scc;
+                scc.push(vertex);
+                visit(vertex, visited, scc, reversed_matrix);
+                vector<int> list;
+                while (!scc.empty()) {
+                    list.push_back(scc.top());
+                    scc.pop();
+                }
+                result.push_back(list);
+            }
+        }
+
+        return result;
+    }
+};
+```

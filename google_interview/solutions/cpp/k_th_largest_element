@@ -1,0 +1,46 @@
+```cpp
+#include <cmath>
+
+class Solution {
+private:
+    int select(vector<int>& a, int left, int right, int k) {
+        if (left == right) {
+            return a[left];
+        }
+        int pivot = left + floor(rand() % (right - left + 1));
+        pivot = partition(a, left, right, pivot);
+        if (k == pivot) {
+            return a[k];
+        } else if (k < pivot) {
+            return select(a, left, pivot - 1, k);
+        } else {
+            return select(a, pivot + 1, right, k);
+        }
+    }
+
+    int partition(vector<int>& a, int left, int right, int pivot) {
+        int val = a[pivot];
+        swap(a, pivot, right);
+        int stored = left;
+        for (int i = left; i < right; i++) {
+            if (a[i] > val) {
+                swap(a, i, stored);
+                stored++;
+            }
+        }
+        swap(a, right, stored);
+        return stored;
+    }
+
+    void swap(vector<int>& a, int i, int j) {
+        int tmp = a[i];
+        a[i] = a[j];
+        a[j] = tmp;
+    }
+
+public:
+    int kth_largest(vector<int> a, int k) {
+        return select(a, 0, a.size() - 1, k - 1);
+    }
+};
+```

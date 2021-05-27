@@ -1,0 +1,88 @@
+```cpp
+#include <algorithm>
+
+class Solution {
+private:
+    map<int, map<string, long int>> cache;
+
+    long int count_0_1_matrices_cached(int n, vector<int>& rest_amount) {
+        string key = "";
+        for (auto const& i: rest_amount) {
+            key += to_string(i);
+        }
+        if (cache.find(n) != cache.end() &&
+            cache[n].find(key) != cache[n].end()) {
+            return cache[n][key];
+        }
+        long int result = count_0_1_matrices(n, rest_amount);
+        if (cache.find(n) == cache.end()) {
+            map<string, long int> m;
+            cache[n] = m;
+        }
+        cache[n][key] = result;
+        return result;
+    }
+
+    long count_0_1_matrices(int n, vector<int>& rest) {
+        if (rest.size() == 0) {
+            for (int i = 0; i < n; i++) {
+                rest.push_back(n / 2);
+            }
+        }
+        if (rest[0] < 0) {
+            return 0;
+        }
+        int total = 0;
+        for (auto const& i: rest) {
+            total += i;
+        }
+        if (total == 0) {
+            return 1;
+        } else if (total * 2 / n < rest[0]) {
+            return 0;
+        }
+        long int answer = 0;
+        for (vector<int> row : get_possible_rows(n, n/2)) {
+            vector<int> next;
+            for (int i = 0; i < n; i++) {
+                next.push_back(rest[i] - row[i]);
+            }
+            sort(next.begin(), next.end());
+            answer += count_0_1_matrices_cached(n, next);
+        }
+        return answer;
+    }
+
+    vector<vector<int>> get_possible_rows(int n, int k) {
+        vector<vector<int>> result;
+        if (n == 0) {
+            vector<int> v;
+            result.push_back(v);
+        } else {
+            if (n > k) {
+                for (vector<int> row : get_possible_rows(n - 1, k)) {
+                    row.push_back(0);
+                    result.push_back(row);
+                }
+            }
+            if (k > 0) {
+                for (vector<int> row : get_possible_rows(n - 1, k - 1)) {
+                    row.push_back(1);
+                    result.push_back(row);
+                }
+            }
+        }
+        return result;
+    }
+
+public:
+    long int count_0_1_matrices(int n) {
+        if (n % 2 != 0) {
+            return -1;
+        }
+        vector<int> rest;
+        cache.clear();
+        return count_0_1_matrices(n, rest);
+    }
+};
+```

@@ -1,0 +1,42 @@
+```python
+import math
+
+def find_low(a, key):
+    low = 0
+    high = len(a) - 1
+    mid = math.floor(high / 2)
+
+    while low < high:
+        val = a[mid]
+        if val < key:
+            low = mid + 1
+        else:
+            high = mid - 1
+        mid = low + math.floor((high - low) / 2)
+
+    if low < len(a) and a[low] == key:
+        return low
+
+    return -1
+
+def find_high(a, key):
+    low = 0
+    high = len(a) - 1
+    mid = math.floor(high / 2)
+
+    while (low <= high):
+        val = a[mid]
+        if val <= key:
+            low = mid + 1
+        else:
+            high = mid - 1
+        mid = low + math.floor((high - low) / 2)
+
+    if high >= 0 and high < len(a) and a[high] == key:
+        return high
+
+    return -1
+
+def high_low_index(a, key):
+    return [ find_low(a, key), find_high(a, key) ]
+```

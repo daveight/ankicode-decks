@@ -1,0 +1,48 @@
+```java
+public class Solution {
+    public int searchPattern(String s, String p) {
+        long prime = 2051758399L;
+        int radix = 256;
+        long h = 1L;
+        int n = s.length();
+        int m = p.length();
+        if (n < m) {
+            return -1;
+        }
+
+        long pHash = 0L;
+        long sHash = 0L;
+
+        for (int i = 0; i < m - 1; i++) {
+            h = (h * radix) % prime;
+        }
+
+        for (int i = 0; i < m; i++) {
+            pHash = (pHash * radix + p.charAt(i)) % prime;
+            sHash = (sHash * radix + s.charAt(i)) % prime;
+        }
+
+        for (int i = 0; i <= n - m; i++) {
+            if (pHash == sHash) {
+                int j;
+                for (j = 0; j < m; j++) {
+                    if (s.charAt(i + j) != p.charAt(j)) {
+                        break;
+                    }
+                }
+                if (j == m) {
+                    return i;
+                }
+            }
+            if (i < n - m) {
+                sHash = (radix * (sHash - s.charAt(i) * h) + s.charAt(i + m)) % prime;
+                if (sHash < 0) {
+                    sHash += prime;
+                }
+            }
+        }
+
+        return -1;
+    }
+}
+```

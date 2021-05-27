@@ -1,0 +1,60 @@
+```java
+public class Solution {
+    int[][] q;
+    int[][] p;
+    int n;
+
+    private void computeShortestPathArrays(int[][] costs) {
+        n = costs[0].length;
+        q = new int[n + 2][n + 2];
+        p = new int[n + 2][n + 2];
+
+        for (int x = 1; x <= n; x++) {
+            q[1][x] = costs[0][x - 1];
+        }
+
+        for (int y = 1; y <= n; y++) {
+            q[y][0] = Integer.MAX_VALUE;
+            q[y][n + 1] = Integer.MAX_VALUE;
+        }
+        for (int y = 2; y <= n; y++) {
+            for (int x = 1; x <= n; x++) {
+                int m = Math.min(Math.min(q[y - 1][x - 1], q[y - 1][x]), q[y - 1][x + 1]);
+                q[y][x] = m + costs[y - 1][x - 1];
+                if (m == q[y - 1][x - 1]) {
+                    p[y][x] = -1;
+                } else if (m == q[y - 1][x]) {
+                    p[y][x] = 0;
+                } else {
+                    p[y][x] = 1;
+                }
+            }
+        }
+    }
+
+    private void getPath(int y, int x, List<Integer> path) {
+        path.add(x);
+        if (y == 2) {
+            path.add(x + p[y][x]);
+        } else {
+            getPath(y - 1, x + p[y][x], path);
+        }
+    }
+
+    public List<Integer> checkerBoardMinPath(int[][] costs) {
+        computeShortestPathArrays(costs);
+        int minIndex = 1;
+        int min = q[n][1];
+        for (int i = 2; i <= n; i++) {
+            if (q[n][i] < min) {
+                minIndex = i;
+                min = q[n][i];
+            }
+        }
+        List<Integer> path = new ArrayList<>();
+        getPath(n, minIndex, path);
+
+        return path;
+    }
+}
+```

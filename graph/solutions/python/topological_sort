@@ -1,0 +1,24 @@
+```python
+def sort(v, visited, stack, adjacency_matrix):
+    visited[v] = True
+
+    for i in adjacency_matrix[v]:
+        if not visited[i]:
+            sort(i, visited, stack, adjacency_matrix)
+
+    stack.append(v)
+
+def topological_sort(adjacency_matrix):
+    stack = []
+    visited = []
+    v = len(adjacency_matrix)
+
+    for i in range(0, v):
+        visited.append(False);
+
+    for i in range(0, v):
+        if not visited[i]:
+            sort(i, visited, stack, adjacency_matrix)
+
+    return stack
+```

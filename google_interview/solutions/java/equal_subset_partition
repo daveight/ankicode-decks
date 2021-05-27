@@ -1,0 +1,34 @@
+```java
+public class Solution {
+    private boolean hasPartitionWithSum(int[] src, int n, int sum) {
+        if (sum == 0) {
+            return true;
+        }
+
+        if (n == 0 && sum != 0) {
+            return false;
+        }
+
+        if (src[n - 1] > sum) {
+            return hasPartitionWithSum(src, n - 1, sum);
+        }
+
+        return hasPartitionWithSum(src, n - 1, sum) ||
+            hasPartitionWithSum(src, n - 1, sum - src[n - 1]);
+    }
+
+    public boolean canBePartitioned(int[] src) {
+        int sum = 0;
+        for (int i = 0; i < src.length; i++) {
+            sum += src[i];
+        }
+
+        // no partitioning exists if sum is odd
+        if (sum % 2 != 0) {
+            return false;
+        }
+
+        return hasPartitionWithSum(src, src.length, sum / 2);
+    }
+}
+```

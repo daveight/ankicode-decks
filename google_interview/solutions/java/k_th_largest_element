@@ -1,0 +1,42 @@
+```java
+public class Solution {
+    private int select(int[] a, int left, int right, int k) {
+        if (left == right) {
+            return a[left];
+        }
+        int pivot = left + (int)(Math.random() * (right - left + 1));
+        pivot = partition(a, left, right, pivot);
+        if (k == pivot) {
+            return a[k];
+        } else if (k < pivot) {
+            return select(a, left, pivot - 1, k);
+        } else {
+            return select(a, pivot + 1, right, k);
+        }
+    }
+
+    private int partition(int[] a, int left, int right, int pivot) {
+        int val = a[pivot];
+        swap(a, pivot, right);
+        int stored = left;
+        for (int i = left; i < right; i++) {
+            if (a[i] > val) {
+                swap(a, i, stored);
+                stored++;
+            }
+        }
+        swap(a, right, stored);
+        return stored;
+    }
+
+    private void swap(int[] a, int i, int j) {
+        int tmp = a[i];
+        a[i] = a[j];
+        a[j] = tmp;
+    }
+
+    public int kthLargest(int[] a, int k) {
+        return select(a, 0, a.length - 1, k - 1);
+    }
+}
+```

@@ -1,0 +1,35 @@
+```js
+function heapify(a, n, i) {
+    let largest = i;
+    const l = 2 * i + 1;
+    const r = 2 * i + 2;
+
+    if (l < n && a[l] > a[largest])
+        largest = l;
+
+    if (r < n && a[r] > a[largest])
+        largest = r;
+
+    if (largest !== i) {
+        const swap = a[i];
+        a[i] = a[largest];
+        a[largest] = swap;
+
+        heapify(a, n, largest);
+    }
+}
+
+function sort(a) {
+    const n = a.length;
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--)
+        heapify(a, n, i);
+
+    for (let i = n - 1; i > 0; i--) {
+        const temp = a[0];
+        a[0] = a[i];
+        a[i] = temp;
+        heapify(a, i, 0);
+    }
+    return a;
+}
+```

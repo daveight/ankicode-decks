@@ -1,0 +1,1 @@
+Given two strings a pattern s and a text t, determine if the pattern appears in the text in O(|r| + |n|) time.

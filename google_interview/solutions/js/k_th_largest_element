@@ -1,0 +1,40 @@
+```js
+function select(a, left, right, k) {
+    if (left === right) {
+        return a[left]
+    }
+    let pivot = left + Math.floor(Math.random() % (right - left + 1))
+    pivot = partition(a, left, right, pivot)
+    if (k === pivot) {
+        return a[k]
+    } else if (k < pivot) {
+        return select(a, left, pivot - 1, k)
+    } else {
+        return select(a, pivot + 1, right, k)
+    }
+}
+
+function partition(a, left, right, pivot) {
+    const val = a[pivot]
+    swap(a, pivot, right)
+    let stored = left
+    for (let i = left; i < right; i++) {
+        if (a[i] > val) {
+            swap(a, i, stored)
+            stored++
+        }
+    }
+    swap(a, right, stored)
+    return stored
+}
+
+function swap(a, i, j) {
+    const tmp = a[i]
+    a[i] = a[j]
+    a[j] = tmp
+}
+
+function kth_largest(a, k) {
+    return select(a, 0, a.length - 1, k - 1)
+}
+```

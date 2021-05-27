@@ -1,0 +1,6 @@
+### Matrix Chain Multiplication
+[Wiki](https://en.wikipedia.org/wiki/Dynamic_programming#Matrix_chain_multiplication)<br>
+[Geek4Geeks](https://www.geeksforgeeks.org/matrix-chain-multiplication-a-on2-solution)
+
+- Time Complexity : O(n ^ 2)
+- Auxiliary Space : O(n ^ 2)

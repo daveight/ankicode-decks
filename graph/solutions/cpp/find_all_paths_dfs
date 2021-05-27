@@ -1,0 +1,41 @@
+```cpp
+#include <queue>
+
+class Solution {
+private:
+    int not_visited(int x, vector<int>& path) {
+        int size = path.size();
+        for (int i = 0; i < size; i++)
+            if (path[i] == x)
+                return 0;
+        return 1;
+    }
+public:
+    vector<vector<int>> find_paths(map<int, vector<int>> adjacency_matrix, int src, int dest) {
+        queue<vector<int>> q;
+
+        vector<int> path;
+        path.push_back(src);
+        q.push(path);
+
+        vector<vector<int>> result;
+        while (!q.empty()) {
+            path = q.front();
+            q.pop();
+            int last = path[path.size() - 1];
+
+            if (last == dest)
+                result.push_back(path);
+
+            for (int i = 0; i < adjacency_matrix[last].size(); i++) {
+                if (not_visited(adjacency_matrix[last][i], path)) {
+                    vector<int> newpath(path);
+                    newpath.push_back(adjacency_matrix[last][i]);
+                    q.push(newpath);
+                }
+            }
+        }
+        return result;
+    }
+};
+```

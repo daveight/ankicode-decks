@@ -1,0 +1,37 @@
+```cpp
+class Solution {
+public:
+    string lc_substr(string s, string t) {
+        int r = s.size();
+        int n = t.size();
+
+        int z = 0;
+        int w = -1;
+        int l[r][n];
+
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < n; j++) {
+                l[i][j] = 0;
+            }
+        }
+
+        for (int i = 0; i < r; i++) {
+            for (int j = 0; j < n; j++) {
+                if (s.at(i) == t.at(j)) {
+                    if (i == 0 || j == 0) {
+                        l[i][j] = 1;
+                    } else {
+                        l[i][j] = l[i - 1][j - 1] + 1;
+                    }
+                    if (l[i][j] > z) {
+                        z = l[i][j];
+                        w = i;
+                    }
+                }
+            }
+        }
+
+        return s.substr(w - z + 1, z);
+    }
+};
+```

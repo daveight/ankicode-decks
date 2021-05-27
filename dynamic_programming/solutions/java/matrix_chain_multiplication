@@ -1,0 +1,17 @@
+```java
+public class Solution {
+    public int matrixMultiplicationMinCost(int[] p) {
+        int n = p.length;
+        int dp[][] = new int[n][n];
+
+        for (int i = 1; i < n - 1; i++) {
+            for (int j = 1; j < n - i; j++) {
+                dp[j][j + i] = Math.min(dp[j + 1][j + i] + p[j - 1] * p[j] * p[j + i],
+                    dp[j][j + i - 1] + p[j - 1] * p[j + i - 1] * p[j + i]);
+            }
+        }
+
+        return dp[1][n - 1];
+    }
+}
+```

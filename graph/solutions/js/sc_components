@@ -1,0 +1,60 @@
+```js
+function visit(vertex, visited, stack, adjacency_matrix) {
+    visited[vertex] = true
+    for (let adjacent_vertex of adjacency_matrix.get(vertex)) {
+        if (!visited[adjacent_vertex]) {
+            visit(adjacent_vertex, visited, stack, adjacency_matrix)
+        }
+    }
+    stack.push(vertex)
+}
+
+function reverse(adjacency_matrix) {
+    const reversed = new Map()
+    for (let [root, edges] of adjacency_matrix) {
+        for (let vertex of edges) {
+            if (!reversed.has(vertex)) {
+                reversed.set(vertex, [])
+            }
+            const reversed_vertices = reversed.get(vertex)
+            reversed_vertices.push(root)
+        }
+    }
+    return reversed
+}
+
+// using Kasaraju algorithm
+function strongly_connected_components(adjacency_matrix) {
+    const vertex_count = adjacency_matrix.size
+    const stack = []
+    const visited = []
+
+    for (let i = 0; i < vertex_count; i++) {
+        visited.push(false);
+    }
+
+    for (let i = 0; i < vertex_count; i++) {
+        if (!visited[i]) {
+            visit(i, visited, stack, adjacency_matrix);
+        }
+    }
+
+    for (let i = 0; i < vertex_count; i++) {
+        visited[i] = false;
+    }
+
+    const reversed_matrix = reverse(adjacency_matrix);
+    const result = []
+
+    while (stack.length > 0) {
+        const vertex = stack.pop()
+        if (!visited[vertex]) {
+            const scc = []
+            visit(vertex, visited, scc, reversed_matrix)
+            result.push(scc)
+        }
+    }
+
+    return result
+}
+```

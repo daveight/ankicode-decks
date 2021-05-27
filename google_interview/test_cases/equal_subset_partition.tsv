@@ -1,0 +1,5 @@
+array(int)[src];bool
+[1,10,2,13];true
+[1,1,2,2,3,3];true
+[1,0];false
+[10,0,2,5];false

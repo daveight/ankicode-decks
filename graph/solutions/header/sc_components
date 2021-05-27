@@ -1,0 +1,5 @@
+### Kasaraju Algorithm
+[Wiki](https://en.wikipedia.org/wiki/Kosaraju%27s_algorithm)
+
+- If the graph is represented as an adjacency list, performance is linear: O(|V|+|E|).
+- If the graph is represented as an adjacency matrix, the algorithm requires Ο(V^2) time.

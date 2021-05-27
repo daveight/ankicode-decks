@@ -1,0 +1,49 @@
+```js
+function find_low(a, key) {
+    let low = 0
+    let high = a.length - 1
+    let mid = Math.floor(high / 2)
+
+    while (low < high) {
+        const val = a[mid]
+        if (val < key) {
+            low = mid + 1
+        } else {
+            high = mid - 1
+        }
+        mid = low + Math.floor((high - low) / 2)
+    }
+
+    if (low < a.length && a[low] === key) {
+        return low
+    }
+
+    return -1
+}
+
+function find_high(a, key) {
+    let low = 0
+    let high = a.length - 1
+    let mid = Math.floor(high / 2)
+
+    while (low <= high) {
+        const val = a[mid]
+        if (val <= key) {
+            low = mid + 1
+        } else {
+            high = mid - 1
+        }
+        mid = low + Math.floor((high - low) / 2)
+    }
+
+    if (high >= 0 && high < a.length && a[high] === key) {
+        return high
+    }
+
+    return -1
+}
+
+function high_low_index(a, key) {
+    return [ find_low(a, key), find_high(a, key) ]
+}
+```

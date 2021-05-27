@@ -1,0 +1,55 @@
+```cpp
+class Solution {
+private:
+    int find_high(vector<int> a, int key) {
+        int low = 0;
+        int high = a.size() - 1;
+        int mid = high / 2;
+
+        while (low < high) {
+            int val = a[mid];
+            if (val < key) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+            mid = low + (high - low) / 2;
+        }
+
+        if (low < a.size() && a[low] == key) {
+            return low;
+        }
+
+        return -1;
+    }
+
+    int find_low(vector<int> a, int key) {
+        int low = 0;
+        int high = a.size() - 1;
+        int mid = high / 2;
+
+        while (low <= high) {
+            int val = a[mid];
+            if (val <= key) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+            mid = low + (high - low) / 2;
+        }
+
+        if (high >= 0 && high < a.size() && a[high] == key) {
+            return high;
+        }
+
+        return -1;
+    }
+public:
+    vector<int> high_low_index(vector<int> a, int key) {
+        vector<int> result;
+        result.push_back(find_high(a, key));
+        result.push_back(find_low(a, key));
+        return result;
+    }
+};
+```

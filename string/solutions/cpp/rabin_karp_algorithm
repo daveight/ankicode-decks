@@ -1,0 +1,49 @@
+```cpp
+class Solution {
+public:
+    int search_pattern(string s, string p) {
+        long int prime = 2051758399;
+        int radix = 256;
+        long int h = 1;
+        int n = s.size();
+        int m = p.size();
+        if (n < m) {
+            return -1;
+        }
+
+        long int pHash = 0;
+        long int sHash = 0;
+
+        for (int i = 0; i < m - 1; i++) {
+            h = (h * radix) % prime;
+        }
+
+        for (int i = 0; i < m; i++) {
+            pHash = (pHash * radix + p.at(i)) % prime;
+            sHash = (sHash * radix + s.at(i)) % prime;
+        }
+
+        for (int i = 0; i <= n - m; i++) {
+            if (pHash == sHash) {
+                int j;
+                for (j = 0; j < m; j++) {
+                    if (s.at(i + j) != p.at(j)) {
+                        break;
+                    }
+                }
+                if (j == m) {
+                    return i;
+                }
+            }
+            if (i < n - m) {
+                sHash = (radix * (sHash - s.at(i) * h) + s.at(i + m)) % prime;
+                if (sHash < 0) {
+                    sHash += prime;
+                }
+            }
+        }
+
+        return -1;
+    }
+};
+```

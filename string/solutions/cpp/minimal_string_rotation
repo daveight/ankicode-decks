@@ -1,0 +1,38 @@
+```cpp
+class Solution {
+public:
+    string least_rotation(string s) {
+        string o = s;
+        s += s;
+
+        int n = s.size();
+        int f[n];
+        for (int i = 0; i < n; i++) {
+            f[i] = -1;
+        }
+
+        int k = 0;
+
+        for (int j = 1; j < s.size(); j++) {
+            char sj = s.at(j);
+            int i = f[j - k - 1];
+            while (i != -1 && sj != s.at(k + i + 1)) {
+                if (sj < s.at(k + i + 1)) {
+                    k = j - i - 1;
+                }
+                i = f[i];
+            }
+            if (sj != s.at(k + i + 1)) {
+                if (sj < s.at(k)) {
+                    k = j;
+                }
+                f[j - k] = -1;
+            } else {
+                f[j - k] = i + 1;
+            }
+        }
+
+        return o.substr(k, o.size() - k) + o.substr(0, k);
+    }
+};
+```

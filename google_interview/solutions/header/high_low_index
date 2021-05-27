@@ -1,0 +1,5 @@
+### Find first and last positions in array
+[Geek for geeks](https://www.geeksforgeeks.org/find-first-and-last-positions-of-an-element-in-a-sorted-array/)
+
+- Time Complexity : O(log n).
+- Auxiliary Space : O(1).

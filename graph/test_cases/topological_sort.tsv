@@ -1,0 +1,2 @@
+map(int, list(int))[adjacency_matrix];list(int)
+[0,[],1,[],2,[3],3,[1],4,[0,1],5,[0,2]];[5,2,3,1,0,4]

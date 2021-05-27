@@ -1,0 +1,32 @@
+```js
+function has_partition_with_sum(src, n, sum) {
+    if (sum === 0) {
+        return true;
+    }
+
+    if (n === 0 && sum !== 0) {
+        return false;
+    }
+
+    if (src[n - 1] > sum) {
+        return hasPartitionWithSum(src, n - 1, sum);
+    }
+
+    return has_partition_with_sum(src, n - 1, sum) ||
+        has_partition_with_sum(src, n - 1, sum - src[n - 1]);
+}
+
+function can_be_partitioned(src) {
+    let sum = 0;
+    for (let i = 0; i < src.length; i++) {
+        sum += src[i];
+    }
+
+    // no partitioning exists if sum is odd
+    if (sum % 2 != 0) {
+        return false;
+    }
+
+    return has_partition_with_sum(src, src.length, sum / 2);
+}
+```

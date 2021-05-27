@@ -1,0 +1,5 @@
+### Longest common substring
+[Wiki](https://en.wikipedia.org/wiki/Longest_common_substring_problem#Dynamic_programming)
+
+- Time Complexity: O(n * r).
+- Auxiliary Space: O(n * r).

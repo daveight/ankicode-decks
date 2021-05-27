@@ -1,0 +1,25 @@
+```python
+def lc_substr(s, t):
+    r = len(s)
+    n = len(t)
+
+    z = 0
+    w = -1
+    l = []
+
+    l = [[0 for i in range(n)] for j in range(r)]
+
+    for i in range(0, r):
+        for j in range(0, n):
+            if s[i] == t[j]:
+                if i == 0 or j == 0:
+                    l[i][j] = 1
+                else:
+                    l[i][j] = l[i - 1][j - 1] + 1
+
+                if l[i][j] > z:
+                    z = l[i][j]
+                    w = i
+
+    return s[w - z + 1:w + 1]
+```

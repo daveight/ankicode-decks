@@ -1,0 +1,55 @@
+```java
+public class Solution {
+    private void visit(int vertex, boolean[] visited, Stack<Integer> stack, Map<Integer, List<Integer>> adjacency_matrix) {
+        visited[vertex] = true;
+        for (int adjacent_vertex : adjacency_matrix.get(vertex)) {
+            if (!visited[adjacent_vertex]) {
+                visit(adjacent_vertex, visited, stack, adjacency_matrix);
+            }
+        }
+        stack.push(vertex);
+    }
+
+    private Map<Integer, List<Integer>> reverse(Map<Integer, List<Integer>> adjacency_matrix) {
+        Map<Integer, List<Integer>> reversed = new HashMap<>();
+        for (Map.Entry<Integer, List<Integer>> entry : adjacency_matrix.entrySet()) {
+            int root = entry.getKey();
+            for (int vertex : entry.getValue()) {
+                List<Integer> reversed_vertices = reversed.getOrDefault(vertex, new ArrayList<>());
+                reversed_vertices.add(root);
+                reversed.put(vertex, reversed_vertices);
+            }
+        }
+        return reversed;
+    }
+
+    // using Kasaraju algorithm
+    public List<List<Integer>> stronglyConnectedComponents(Map<Integer, List<Integer>> adjacency_matrix) {
+        int vertex_count = adjacency_matrix.keySet().size();
+        Stack<Integer> stack = new Stack<>();
+        boolean[] visited = new boolean[vertex_count];
+
+        for (int vertex = 0; vertex < vertex_count; vertex++) {
+            if (!visited[vertex]) {
+                visit(vertex, visited, stack, adjacency_matrix);
+            }
+        }
+
+        Arrays.fill(visited, false);
+        Map<Integer, List<Integer>> reversed_matrix = reverse(adjacency_matrix);
+
+        List<List<Integer>> result = new ArrayList<>();
+
+        while (!stack.isEmpty()) {
+            int vertex = stack.pop();
+            if (!visited[vertex]) {
+                Stack<Integer> scc = new Stack<>();
+                visit(vertex, visited, scc, reversed_matrix);
+                result.add(new ArrayList<>(scc));
+            }
+        }
+
+        return result;
+    }
+}
+```

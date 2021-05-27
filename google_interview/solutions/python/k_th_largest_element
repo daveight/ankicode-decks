@@ -1,0 +1,35 @@
+```python
+import math
+import random
+
+def select(a, left, right, k):
+    if (left == right):
+        return a[left]
+    pivot = left + math.floor(random.random() % (right - left + 1))
+    pivot = partition(a, left, right, pivot)
+    if k == pivot:
+        return a[k]
+    elif k < pivot:
+        return select(a, left, pivot - 1, k)
+    else:
+        return select(a, pivot + 1, right, k)
+
+def partition(a, left, right, pivot):
+    val = a[pivot]
+    swap(a, pivot, right)
+    stored = left
+    for i in range(left, right):
+        if a[i] > val:
+            swap(a, i, stored)
+            stored += 1
+    swap(a, right, stored)
+    return stored
+
+def swap(a, i, j):
+    tmp = a[i]
+    a[i] = a[j]
+    a[j] = tmp
+
+def kth_largest(a, k):
+    return select(a, 0, len(a) - 1, k - 1)
+```

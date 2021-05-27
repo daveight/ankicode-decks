@@ -1,0 +1,35 @@
+```python
+from collections import deque
+
+def not_visited(x: int, path: List[int]) -> int:
+
+    size = len(path)
+    for i in range(size):
+        if (path[i] == x):
+            return 0
+
+    return 1
+
+def find_paths(adjacency_matrix: Dict[int, List[int]], src: int, dest: int)->List[List[int]]:
+    q = deque()
+
+    path = []
+    path.append(src)
+    q.append(path.copy())
+
+    result = []
+
+    while q:
+        path = q.popleft()
+        last = path[len(path) - 1]
+
+        if (last == dest):
+            result.append(path)
+
+        for i in range(len(adjacency_matrix[last])):
+            if (not_visited(adjacency_matrix[last][i], path)):
+                newpath = path.copy()
+                newpath.append(adjacency_matrix[last][i])
+                q.append(newpath)
+    return result
+```

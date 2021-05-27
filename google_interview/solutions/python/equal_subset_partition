@@ -1,0 +1,24 @@
+```python
+def has_partition_with_sum(src, n, sum):
+    if sum == 0:
+        return True
+
+    if n == 0 and sum != 0:
+        return False
+
+    if src[n - 1] > sum:
+        return has_partition_with_sum(src, n - 1, sum)
+
+    return has_partition_with_sum(src, n - 1, sum) or has_partition_with_sum(src, n - 1, sum - src[n - 1])
+
+def can_be_partitioned(src):
+    sum = 0
+    for i in range(0, len(src)):
+        sum += src[i]
+
+    # no partitioning exists if sum is odd
+    if sum % 2 != 0:
+        return False
+
+    return has_partition_with_sum(src, len(src), sum / 2)
+```

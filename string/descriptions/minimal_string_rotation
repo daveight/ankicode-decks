@@ -1,0 +1,4 @@
+Given a string find a rotation of such string with the lowest lexicographical order.
+
+Example:
+Minimal rotation of "bbaaccaadd" will be "aaccaaddbb"

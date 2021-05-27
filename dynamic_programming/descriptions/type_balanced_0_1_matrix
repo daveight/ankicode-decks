@@ -1,0 +1,13 @@
+Consider the problem of assigning values, either zero or one, to the positions of an n x n matrix,
+with n even, so that each row and each column contains exactly n / 2 zeros and n / 2 ones.
+We ask how many different assignments there are for a given n.
+
+For example, when n = 4, four possible solutions are
+
+ 0 1 0 1    0 0 1 1    1 1 0 0    1 0 0 1
+ 1 0 1 0    0 0 1 1    0 0 1 1    0 1 1 0
+ 0 1 0 1    1 1 0 0    1 1 0 0    0 1 1 0
+ 1 0 1 0    1 1 0 0    0 0 1 1    1 0 0 1
+
+
+Determine count of possible solutions for n given.

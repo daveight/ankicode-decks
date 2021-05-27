@@ -1,0 +1,62 @@
+```python
+cache = None
+
+def count_0_1_matrices(n):
+    global cache
+    cache = {}
+    if n % 2 != 0:
+        return -1
+    return do_count_0_1_matrices(n)
+
+def count_0_1_matrices_cached(n, rest):
+    key = ''.join([str(i) for i in rest])
+    if n in cache and key in cache[n]:
+        return cache[n][key]
+
+    result = do_count_0_1_matrices(n, rest)
+    if n not in cache:
+        cache[n] = {}
+
+    cache[n][key] = result
+    return result
+
+def do_count_0_1_matrices(n, rest=None):
+    if not rest:
+        rest = []
+        for i in range(n):
+            rest.append(n / 2)
+
+    if rest[0] < 0:
+        return 0
+
+    total = sum(rest)
+    if total == 0:
+        return 1
+    elif total * 2 / n < rest[0]:
+        return 0
+
+    answer = 0
+    for row in get_possible_rows(n, n/2):
+        next = []
+
+        for i in range(n):
+            next.append(rest[i] - row[i])
+
+        answer += count_0_1_matrices_cached(n, sorted(next))
+    return answer
+
+def get_possible_rows(n, k):
+    result = []
+    if n == 0:
+        result.append([])
+    else:
+        if n > k:
+            for row in get_possible_rows(n - 1, k):
+                row.append(0)
+                result.append(row)
+        if k > 0:
+            for row in get_possible_rows(n - 1, k - 1):
+                row.append(1)
+                result.append(row)
+    return result
+```

@@ -1,0 +1,21 @@
+```js
+function matrix_multiplication_min_cost(p) {
+    n = p.length
+    dp = []
+    for (let i = 0; i < n; i++) {
+        dp[i] = []
+        if (i > 0) {
+            dp[i][i] = 0
+        }
+    }
+
+    for (let i = 1; i < n - 1; i++) {
+        for (let j = 1; j < n - i; j++) {
+            dp[j][j + i] = Math.min(dp[j + 1][j + i] + p[j - 1] * p[j] * p[j + i],
+                dp[j][j + i - 1] + p[j - 1] * p[j + i - 1] * p[j + i])
+        }
+    }
+
+    return dp[1][n - 1]
+}
+```

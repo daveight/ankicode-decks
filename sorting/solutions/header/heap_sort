@@ -1,0 +1,7 @@
+### Heap Sort
+[Wiki](https://en.wikipedia.org/wiki/Heapsort)
+
+- Worst-case performance O(n log n).
+- Best-case performance O(n log n) or O(n) (equal keys).
+- Average performance O(n log n).
+- Worst-case space complexity O(1) auxiliary.

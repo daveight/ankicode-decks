@@ -1,0 +1,46 @@
+```python
+def visit(vertex, visited, stack, adjacency_matrix):
+    visited[vertex] = True
+    for adjacent_vertex in adjacency_matrix[vertex]:
+        if not visited[adjacent_vertex]:
+            visit(adjacent_vertex, visited, stack, adjacency_matrix)
+    stack.append(vertex)
+
+def reverse(adjacency_matrix):
+    reversed = {}
+    for root, edges in adjacency_matrix.items():
+        for vertex in edges:
+            if vertex not in reversed:
+                reversed[vertex] = []
+            reversed_vertices = reversed[vertex]
+            reversed_vertices.append(root)
+    return reversed
+
+# using Kasaraju algorithm
+def strongly_connected_components(adjacency_matrix):
+    vertex_count = len(adjacency_matrix)
+    stack = []
+    visited = []
+
+    for i in range(0, vertex_count):
+        visited.append(False)
+
+    for i in range(0, vertex_count):
+        if not visited[i]:
+            visit(i, visited, stack, adjacency_matrix)
+
+    for i in range(0, vertex_count):
+        visited[i] = False;
+
+    reversed_matrix = reverse(adjacency_matrix);
+    result = []
+
+    while len(stack) > 0:
+        vertex = stack.pop()
+        if not visited[vertex]:
+            scc = []
+            visit(vertex, visited, scc, reversed_matrix)
+            result.append(scc)
+
+    return result
+```

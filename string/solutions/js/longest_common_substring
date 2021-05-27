@@ -1,0 +1,35 @@
+```js
+function lc_substr(s, t) {
+    const r = s.length
+    const n = t.length
+
+    let z = 0
+    let w = -1
+    const l = []
+
+    for (let i = 0; i < r; i++) {
+        l[i] = []
+        for (let j = 0; j < n; j++) {
+            l[i][j] = 0
+        }
+    }
+
+    for (let i = 0; i < r; i++) {
+        for (let j = 0; j < n; j++) {
+            if (s[i] === t[j]) {
+                if (i === 0 || j === 0) {
+                    l[i][j] = 1
+                } else {
+                    l[i][j] = l[i - 1][j - 1] + 1
+                }
+                if (l[i][j] > z) {
+                    z = l[i][j]
+                    w = i
+                }
+            }
+        }
+    }
+
+    return s.substring(w - z + 1, w + 1)
+}
+```

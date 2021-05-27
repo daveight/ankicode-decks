@@ -1,0 +1,13 @@
+Given a matrices find the most efficient way to multiply them.
+For example, let us multiply matrices A, B and C. Let us assume that their dimensions are m x n, n x p, and p x s,
+respectively. Matrix AxBxC will be of size m x s and can be calculated in two ways shown below:
+    1. Ax(BxC) This order of matrix multiplication will require nps + mns scalar multiplications.
+    2. (AxB)xC This order of matrix multiplication will require mnp + mps scalar calculations.
+Let us assume that m = 10, n = 100, p = 10 and s = 1000. So, the first way to multiply the chain will require
+1,000,000 + 1,000,000 calculations. The second way will require only 10,000+100,000 calculations.
+Obviously, the second way is faster, and we should multiply the matrices using that arrangement of parenthesis.
+
+Example:
+Input: m = [10, 50, 100]
+Output: 50000
+There are only two matrices of dimensions 10x50 and 50x100. So there is only one way to multiply them: 10*50*100

@@ -1,0 +1,6 @@
+### Kth largest element in array
+[Wiki: QuickSelect](https://en.wikipedia.org/wiki/Quickselect)
+
+- Worst-case performance: O(n^2).
+- Best-case performance: O(n).
+- Best-case performance: O(n).

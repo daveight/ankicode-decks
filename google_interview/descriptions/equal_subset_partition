@@ -1,0 +1,14 @@
+Given a subset of integers, determine whether a given set can be partitioned into 2 subset, such that
+sum of elements in both subsets is the same.
+
+Example #1:
+[1, 10, 2, 11, 2]
+
+Output: true
+This array can be partitioned as [1, 10, 2] and [11, 2]
+
+Example #2:
+[1, 100, 200]
+
+Output: false
+There is no partitioning which will satisfy the condition

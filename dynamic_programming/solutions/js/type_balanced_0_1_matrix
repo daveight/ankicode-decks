@@ -1,0 +1,73 @@
+```js
+let cache = null
+
+function count_0_1_matrices(n) {
+    if (n % 2 != 0) {
+        return -1
+    }
+    cache = {}
+    return do_count_0_1_matrices(n)
+}
+
+function count_0_1_matrices_cached(n, rest) {
+    const key = rest.map(String)
+    if (cache[n] && cache[n][key]) {
+        return cache[n][key]
+    }
+    const result = do_count_0_1_matrices(n, rest)
+    if (!cache[n]) {
+        cache[n] = {}
+    }
+    cache[n][key] = result
+    return result
+}
+
+function do_count_0_1_matrices(n, rest) {
+    if (!rest) {
+        rest = []
+        for (let i = 0; i < n; i++) {
+            rest.push(n / 2)
+        }
+    }
+    if (rest[0] < 0) {
+        return 0
+    }
+    total = rest.reduce((pv, cv) => pv + cv, 0)
+    if (total == 0) {
+        return 1
+    } else if (total * 2 / n < rest[0]) {
+        return 0
+    }
+    let answer = 0;
+    for (row of get_possible_rows(n, n/2)) {
+        const next = []
+        for (let i = 0; i < n; i++) {
+            next.push(rest[i] - row[i])
+        }
+        next.sort()
+        answer += count_0_1_matrices_cached(n, next)
+    }
+    return answer
+}
+
+function get_possible_rows(n, k) {
+    const result = []
+    if (n == 0) {
+        result.push([])
+    } else {
+        if (n > k) {
+            for (const row of get_possible_rows(n - 1, k)) {
+                row.push(0)
+                result.push(row)
+            }
+        }
+        if (k > 0) {
+            for (const row of get_possible_rows(n - 1, k - 1)) {
+                row.push(1)
+                result.push(row)
+            }
+        }
+    }
+    return result
+}
+```

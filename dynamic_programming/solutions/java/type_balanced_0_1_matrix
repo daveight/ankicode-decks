@@ -1,0 +1,71 @@
+```java
+public class Solution {
+    Map<Integer, Map<String, Long>> cache = new HashMap<>();
+
+    public long count01Matrices(int n) {
+        if (n % 2 != 0) {
+            throw new IllegalArgumentException("invalid n!");
+        }
+        return count01Matrices(n, null);
+    }
+
+    private long count01MatricesCached(int n, List<Integer> restAmount) {
+        String key = restAmount.stream().map(String::valueOf).collect(Collectors.joining());
+        if (cache.containsKey(n) && cache.get(n).containsKey(key)) {
+            return cache.get(n).get(key);
+        }
+        long result = count01Matrices(n, restAmount);
+        if (!cache.containsKey(n)) {
+            cache.put(n, new HashMap<>());
+        }
+        cache.get(n).put(key, result);
+        return result;
+    }
+
+    private long count01Matrices(int n, List<Integer> rest) {
+        if (rest == null) {
+            rest = new ArrayList<>(Collections.nCopies(n, n / 2));
+        }
+        if (rest.get(0) < 0) {
+            return 0;
+        }
+        int total = rest.stream().mapToInt(i -> i).sum();
+        if (total == 0) {
+            return 1;
+        } else if (total * 2 / n < rest.get(0)) {
+            return 0;
+        }
+        long answer = 0;
+        for (List<Integer> row : getPossibleRows(n, n/2)) {
+            List<Integer> next = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                next.add(rest.get(i) - row.get(i));
+            }
+            Collections.sort(next);
+            answer += count01MatricesCached(n, next);
+        }
+        return answer;
+    }
+
+    private List<List<Integer>> getPossibleRows(int n, int k) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (n == 0) {
+            result.add(new ArrayList<>());
+        } else {
+            if (n > k) {
+                for (List<Integer> row : getPossibleRows(n - 1, k)) {
+                    row.add(0);
+                    result.add(row);
+                }
+            }
+            if (k > 0) {
+                for (List<Integer> row : getPossibleRows(n - 1, k - 1)) {
+                    row.add(1);
+                    result.add(row);
+                }
+            }
+        }
+        return result;
+    }
+}
+```

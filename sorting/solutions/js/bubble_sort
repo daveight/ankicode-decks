@@ -1,0 +1,12 @@
+```js
+function sort(a) {
+    for (let i = 1; i < a.length; i++) {
+        for (let j = 0; j < a.length - i; j++) {
+            if (a[j] > a[j + 1]) {
+                [a[j], a[j + 1]] = [a[j + 1], a[j]];
+            }
+        }
+    }
+    return a;
+};
+```

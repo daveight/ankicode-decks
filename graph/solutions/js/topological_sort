@@ -1,0 +1,30 @@
+```js
+function sort(v, visited, stack, adjacency_matrix) {
+    visited[v] = true
+
+    for (let i = 0; i < v; i++) {
+        if (!visited[i]) {
+            sort(i, visited, stack, adjacency_matrix)
+        }
+    }
+
+    stack.push(v)
+}
+
+function topological_sort(adjacency_matrix) {
+    const stack = []
+    const visited = []
+
+    for (let i = 0; i < adjacency_matrix.size; i++) {
+        visited.push(false)
+    }
+
+    for (let i = 0; i < adjacency_matrix.size; i++) {
+        if (!visited[i]) {
+            sort(i, visited, stack, adjacency_matrix)
+        }
+    }
+
+    return stack
+}
+```

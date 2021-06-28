@@ -1,0 +1,5 @@
+One deadlock detection algorithm makes use of a "wait-for" graph to track which other processes a process is currently
+blocking on. In a wait-for graph, processes are represented as nodes, and an edge from process P to Q impliesQ
+is holding a resource that P needs and thus P is waiting for Q to release its lock on that resource.
+A cycle in this graph implies the possibility of a deadlock. This motivates the following problem.
+Write a program that takes as input a directed graph and checks if the graph contains a cycle.

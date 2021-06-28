@@ -1,0 +1,65 @@
+```cxx
+class Edge {
+public:
+    int fr;
+    int to;
+};
+
+enum Color { WHITE, GRAY, BLACK };
+
+class GraphVertex {
+public:
+    Color color;
+    vector<shared_ptr<GraphVertex>> edges;
+
+    GraphVertex() {
+        color = WHITE;
+    }
+};
+
+class Solution {
+public:
+    bool isDeadlocked(int numNodes, vector<Edge> edges) {
+        if (numNodes <= 0) {
+            throw "Invalid numNodes value";
+        }
+        vector<shared_ptr<GraphVertex>> graph;
+        for (int i = 0; i < numNodes; i++) {
+            graph.push_back(make_shared<GraphVertex>());
+        }
+        for (Edge e : edges) {
+            if (e.fr < 0 || e.fr >= numNodes || e.to < 0 || e.to >= numNodes) {
+                throw "Invalid vertex index";
+            }
+            graph[e.fr]->edges.push_back(graph[e.to]);
+        }
+        for (shared_ptr<GraphVertex> vertex : graph) {
+            if (vertex->color == WHITE && hasCycle(vertex)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+private:
+    bool hasCycle(shared_ptr<GraphVertex> cur) {
+        // Visiting a gray vertex means a cycle.
+        if (cur->color == GRAY) {
+            return true;
+        }
+
+        cur->color = GRAY; // Marks current vertex as a gray one.
+
+        // Traverse the neighbor vertices.
+        for (shared_ptr<GraphVertex> next : cur->edges) {
+            if (next->color != BLACK && hasCycle(next)) {
+                return true;
+            }
+        }
+
+        cur->color = BLACK; // Marks current vertex as black.
+
+        return false;
+    }
+};
+```

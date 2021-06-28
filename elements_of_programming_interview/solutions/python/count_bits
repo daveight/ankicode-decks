@@ -1,0 +1,8 @@
+```python
+def count_bits_set(n):
+    bits_set = 0
+    while n:
+        bits_set += n & 1
+        n >>= 1
+    return bits_set
+```

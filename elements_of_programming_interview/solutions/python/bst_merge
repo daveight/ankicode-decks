@@ -1,0 +1,113 @@
+```python
+T = TypeVar('T')
+
+class BinaryTreeNode(Generic[T]):
+    def __init__(self, data: Optional[Type[T]]=None, left=None, right=None):
+        self.data = data
+        self.left = left
+        self.right = right
+
+head = None
+
+def merge_two_sorted_linked_lists(A, B) :
+    dummyHead = BinaryTreeNode()
+    current = dummyHead
+    p1 = A
+    p2 = B
+
+    while p1 != None and p2 != None:
+        if p1.data < p2.data:
+            current.right = p1
+            p1 = p1.right
+        else:
+            current.right = p2
+            p2 = p2.right
+        current = current.right
+
+    if p1 != None:
+        current.right = p1
+    if p2 != None:
+        current.right = p2
+    return dummyHead.right
+
+
+# Count the list length till end.
+def count_length(L) :
+    length = 0
+    while (L != None) :
+        length += 1
+        L = L.right
+
+    return length
+
+
+def bst_to_doubly_linked_list(n):
+    # Empty subtree.
+    if (n == None) :
+        return None
+
+    # Recursively build the list from left and right subtrees.
+    lHead = bst_to_doubly_linked_list(n.left)
+    rHead = bst_to_doubly_linked_list(n.right)
+
+    # Append n to the list from left subtree.
+    lTail = None
+    if lHead is not None:
+        lTail = lHead.left
+        lTail.right = n
+        n.left = lTail
+        lTail = n
+    else:
+        lHead = lTail = n
+
+
+    # Append the list from right subtree to n.
+    rTail = None
+    if rHead is not None:
+        rTail = rHead.left
+        lTail.right = rHead
+        rHead.left = lTail
+    else:
+        rTail = lTail
+
+    rTail.right = lHead
+    lHead.left = rTail
+
+    return lHead
+
+
+def build_sorted_doubly_linked_list(L, n):
+    global head
+    head = L
+    return build_sorted_doubly_linked_list_helper(0, n)
+
+
+def build_sorted_doubly_linked_list_helper(s, e):
+    global head
+    if s >= e:
+        return None
+
+    m = s + int((e - s) / 2)
+    left = build_sorted_doubly_linked_list_helper(s, m)
+    curr = BinaryTreeNode()
+    curr.data = head.data
+    head = head.right
+    curr.left = left
+    curr.right = build_sorted_doubly_linked_list_helper(m + 1, e)
+    return curr
+
+
+def merge_two_b_s_ts(A, B):
+    A = bst_to_doubly_linked_list(A)
+    B = bst_to_doubly_linked_list(B)
+    A.left.right = None
+    B.left.right = None
+    A.left = None
+    B.left = None
+
+    ALength = count_length(A)
+    BLength = count_length(B)
+
+    return build_sorted_doubly_linked_list(merge_two_sorted_linked_lists(A, B),
+            ALength + BLength)
+```

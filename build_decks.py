@@ -1,6 +1,9 @@
 # Copyright: Daveight and contributors
 # License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
+import argparse
+import errno
 import os
+from argparse import ArgumentParser
 
 
 def encode_csv(text: str):
@@ -31,39 +34,43 @@ def get_file_content(path: str):
 
 
 SOLUTION_SECTIONS = [['header', ''], ['java', 'Java'], ['cpp', 'C++'], ['js', 'JavaScript'], ['python', 'Python']]
+parser = ArgumentParser()
+parser.add_argument('--debug', dest='debug', action='store_true')
+args = parser.parse_args()
 
 for deck_name in [item for item in os.listdir('.') if os.path.isdir(os.path.join('.', item))]:
     out = ''
-    deck_name = './' + deck_name
-    try:
-        for name in sorted(os.listdir(f'{deck_name}/test_cases')):
+    if deck_name.startswith('.') or deck_name in ['debug', 'template']:
+        continue
+    for name in sorted(os.listdir(f'./{deck_name}/test_cases')):
+        try:
             if not name.endswith('.tsv'):
                 continue
-            file = open(f'{deck_name}/test_cases/' + name, 'r')
+            file = open(f'./{deck_name}/test_cases/' + name, 'r')
             lines = file.readlines()
 
             name = name.replace('.tsv', '')
-            description = get_file_content(f'{deck_name}/descriptions/' + name)
+            description = get_file_content(f'./{deck_name}/descriptions/' + name)
             if description is None:
                 print('can\'t find description for ' + name)
-                break
+                continue
 
-            title = get_file_content(f'{deck_name}/titles/' + name)
+            title = get_file_content(f'./{deck_name}/titles/' + name)
             if title is None:
                 print('can\'t find title for ' + name)
-                break
+                continue
 
-            func_name = get_file_content(f'{deck_name}/fn_names/' + name)
+            func_name = get_file_content(f'./{deck_name}/fn_names/' + name)
             if not func_name:
                 print('can\'t find func name for ' + name)
-                break
+                continue
 
             solution = ''
             for section in SOLUTION_SECTIONS:
-                txt = get_file_content(f'{deck_name}/solutions/{section[0]}/{name}')
-                if not txt:
+                txt = get_file_content(f'./{deck_name}/solutions/{section[0]}/{name}')
+                if txt is None:
                     print(f'can\'t find {section[0]} solution for {name}')
-                    break
+                    continue
                 if section[1]:
                     solution += '### ' + section[1] + '\n'
                 solution += txt + '\n'
@@ -75,12 +82,27 @@ for deck_name in [item for item in os.listdir('.') if os.path.isdir(os.path.join
             out += '"'
 
             for i, line in enumerate(lines):
-                out += encode_csv(line)
+                items = line.strip().split('\t')
+                out += encode_csv(';'.join(items))
+                out += '\n'
             out += '"'
             out += '\n'
+            if args.debug:
+                debug_csv_name = f'debug/{deck_name}/{name}.csv'
+                if not os.path.exists(os.path.dirname(debug_csv_name)):
+                    try:
+                        os.makedirs(os.path.dirname(debug_csv_name))
+                    except OSError as exc:  # Guard against race condition
+                        if exc.errno != errno.EEXIST:
+                            raise
+                result = open(debug_csv_name, "w+")
+                result.write(out)
+                result.close()
+                out = ''
 
-            result = open(f'{deck_name}.csv', 'w+')
-            result.write(out)
-            result.close()
-    except FileNotFoundError:
-        pass
+            if not args.debug:
+                result = open(f'{deck_name}.csv', 'w+')
+                result.write(out)
+                result.close()
+        except FileNotFoundError:
+            pass

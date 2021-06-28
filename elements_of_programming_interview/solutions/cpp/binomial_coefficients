@@ -1,0 +1,31 @@
+```cxx
+#include <memory>
+#include <vector>
+
+using std::make_unique;
+using std::min;
+using std::vector;
+
+class Solution {
+public:
+    int computeBinomialCoefficient(int n, int k) {
+        return computeXChooseY(
+                n, k,
+                make_unique<vector<vector<int>>>(n + 1, vector<int>(k + 1, 0)).get());
+    }
+
+    int computeXChooseY(int x, int y, vector<vector<int>>* x_choose_y_ptr) {
+        if (y == 0 || x == y) {
+            return 1;
+        }
+
+        vector<vector<int>>& x_choose_y = *x_choose_y_ptr;
+        if (x_choose_y[x][y] == 0) {
+            int without_y = computeXChooseY(x - 1, y, x_choose_y_ptr);
+            int with_y = computeXChooseY(x - 1, y - 1, x_choose_y_ptr);
+            x_choose_y[x][y] = without_y + with_y;
+        }
+        return x_choose_y[x][y];
+    }
+};
+```

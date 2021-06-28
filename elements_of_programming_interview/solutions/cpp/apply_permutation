@@ -1,0 +1,35 @@
+```cxx
+#include <algorithm>
+#include <vector>
+
+using std::swap;
+using std::vector;
+
+class Solution {
+private:
+    void doApplyPermutation(vector<int>* perm_ptr, vector<int>* A_ptr) {
+        vector<int>&perm = *perm_ptr, &A = *A_ptr;
+        for (int i = 0; i < A.size(); ++i) {
+            // Check if the element at index i has not been moved by checking if
+            // perm[i] is nonnegative.
+            int next = i;
+            while (perm[next] >= 0) {
+                swap(A[i], A[perm[next]]);
+                int temp = perm[next];
+                // Subtracts size(perm) from an entry in perm to make it negative,
+                // which indicates the corresponding move has been performed.
+                perm[next] -= perm.size();
+                next = temp;
+            }
+        }
+
+        // Restore perm.
+        for_each(begin(perm), end(perm), [&perm](int& x) { x += perm.size(); });
+    }
+public:
+    vector<int> applyPermutation(vector<int> perm, vector<int> A) {
+        doApplyPermutation(&perm, &A);
+        return A;
+    }
+};
+```

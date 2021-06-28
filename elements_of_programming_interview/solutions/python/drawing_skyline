@@ -1,0 +1,28 @@
+```python
+import collections
+import functools
+
+class Rectangle:
+    def __init__(self, left, right, height):
+        self.left = left
+        self.right = right
+        self.height = height
+
+def drawing_skylines(buildings):
+    min_left = min(buildings, key=lambda b: b.left).left
+    max_right = max(buildings, key=lambda b: b.right).right
+
+    heights = [0] * (max_right - min_left + 1)
+    for building in buildings:
+        for i in range(building.left, building.right + 1):
+            heights[i - min_left] = max(heights[i - min_left], building.height)
+
+    result = []
+    left = 0
+    for i in range(1, len(heights)):
+        if heights[i] != heights[i - 1]:
+            result.append(
+                Rectangle(left + min_left, i - 1 + min_left, heights[i - 1]))
+            left = i
+    return result + [Rectangle(left + min_left, max_right, heights[-1])]
+```

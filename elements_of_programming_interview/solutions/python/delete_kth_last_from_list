@@ -1,0 +1,15 @@
+```python
+def remove_kth_last(L, k):
+    dummy_head = ListNode()
+    dummy_head.next = L
+    first = dummy_head.next
+    for _ in range(k):
+        first = first.next
+
+    second = dummy_head
+    while first:
+        first, second = first.next, second.next
+    # second points to the (k + 1)-th last node, deletes its successor.
+    second.next = second.next.next
+    return dummy_head.next
+```

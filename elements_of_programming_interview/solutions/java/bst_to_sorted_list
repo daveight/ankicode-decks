@@ -1,0 +1,57 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    private static class HeadAndTail {
+        public BinaryTreeNode<Integer> head;
+        public BinaryTreeNode<Integer> tail;
+
+        public HeadAndTail(BinaryTreeNode<Integer> head, BinaryTreeNode<Integer> tail) {
+            this.head = head;
+            this.tail = tail;
+        }
+    }
+
+     public BinaryTreeNode<Integer> bstToDoublyLinkedList(BinaryTreeNode<Integer> tree) {
+        return bstToDoublyLinkedListHelper(tree).head;
+     }
+
+     private HeadAndTail bstToDoublyLinkedListHelper(BinaryTreeNode<Integer> tree) {
+        // Empty subtree.
+        if (tree == null) {
+            return new HeadAndTail(null, null);
+        }
+
+        // Recursively build the list from left and right subtrees.
+        HeadAndTail left = bstToDoublyLinkedListHelper(tree.left);
+        HeadAndTail right = bstToDoublyLinkedListHelper(tree.right);
+
+        // Append tree to the list from left subtree.
+        if (left.tail != null) {
+            left.tail.right = tree;
+        }
+        tree.left = left.tail;
+
+        // Append the list from right subtree to tree.
+        tree.right = right.head;
+        if (right.head != null) {
+            right.head.left = tree;
+        }
+
+        return new HeadAndTail(left.head != null ? left.head : tree,
+                right.tail != null ? right.tail : tree);
+    }
+}
+```

@@ -1,0 +1,27 @@
+```java
+class ListNode<T> {
+    public T data;
+    public ListNode<T> next;
+}
+
+class Solution {
+    public static ListNode<Integer> removeKthLast(ListNode<Integer> L, int k) {
+        ListNode<Integer> dummyHead = new ListNode<>();
+        dummyHead.next = L;
+        ListNode<Integer> first = dummyHead.next;
+        while (k-- > 0) {
+          first = first.next;
+        }
+
+        ListNode<Integer> second = dummyHead;
+        while (first != null) {
+          second = second.next;
+          first = first.next;
+        }
+
+        // second points to the (k + 1)-th last node, deletes its successor.
+        second.next = second.next.next;
+        return dummyHead.next;
+    }
+}
+```

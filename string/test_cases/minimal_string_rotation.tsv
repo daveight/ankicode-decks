@@ -1,5 +1,5 @@
-string[s];string
-"GEEKSFORGEEKS";"EEKSFORGEEKSG"
-"GEEKSQUIZ";"EEKSQUIZG"
-"BCABDADAB";"ABBCABDAD"
-"bbaaccaadd";"aaccaaddbb"
+string[s]	string
+"GEEKSFORGEEKS"	"EEKSFORGEEKSG"
+"GEEKSQUIZ"	"EEKSQUIZG"
+"BCABDADAB"	"ABBCABDAD"
+"bbaaccaadd"	"aaccaaddbb"

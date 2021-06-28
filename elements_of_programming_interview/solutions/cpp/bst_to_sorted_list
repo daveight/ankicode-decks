@@ -1,0 +1,61 @@
+```cxx
+template <typename T>
+
+class BinaryTreeNode {
+public:
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+
+    BinaryTreeNode() { }
+
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class HeadAndTail {
+public:
+    shared_ptr<BinaryTreeNode<int>> head;
+    shared_ptr<BinaryTreeNode<int>> tail;
+    HeadAndTail(shared_ptr<BinaryTreeNode<int>> head, shared_ptr<BinaryTreeNode<int>> tail) {
+        this->head = head;
+        this->tail = tail;
+    }
+};
+
+class Solution {
+public:
+    shared_ptr<BinaryTreeNode<int>> bstToDoublyLinkedList(shared_ptr<BinaryTreeNode<int>> tree) {
+        return bstToDoublyLinkedListHelper(tree)->head;
+    }
+
+    shared_ptr<HeadAndTail> bstToDoublyLinkedListHelper(shared_ptr<BinaryTreeNode<int>> tree) {
+        // Empty subtree.
+        if (tree == nullptr) {
+            return make_shared<HeadAndTail>(nullptr, nullptr);
+        }
+
+        // Recursively build the list from left and right subtrees.
+        shared_ptr<HeadAndTail> left = bstToDoublyLinkedListHelper(tree->left);
+        shared_ptr<HeadAndTail> right = bstToDoublyLinkedListHelper(tree->right);
+
+        // Append tree to the list from left subtree.
+        if (left->tail != nullptr) {
+            left->tail->right = tree;
+        }
+        tree->left = left->tail;
+
+        // Append the list from right subtree to tree.
+        tree->right = right->head;
+        if (right->head != nullptr) {
+            right->head->left = tree;
+        }
+
+        return make_shared<HeadAndTail>(left->head != nullptr ? left->head : tree,
+                right->tail != nullptr ? right->tail : tree);
+    }
+};
+```

@@ -1,0 +1,26 @@
+```js
+class ListNode {
+    constructor(data = null, next = null) {
+        this.data = data
+        this.next = next
+    }
+}
+
+
+function evenOddMerge(L) {
+    if (L == null) {
+        return L
+    }
+    const evenDummyHead = new ListNode(0, null), oddDummyHead = new ListNode(0, null)
+    const tails = [evenDummyHead, oddDummyHead]
+    let turn = 0
+    for (let iter = L; iter != null; iter = iter.next) {
+        tails[turn].next = iter
+        tails[turn] = tails[turn].next
+        turn ^= 1
+    }
+    tails[1].next = null
+    tails[0].next = oddDummyHead.next
+    return evenDummyHead.next
+}
+```

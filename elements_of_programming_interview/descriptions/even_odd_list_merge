@@ -1,0 +1,2 @@
+Consider a singly linked list whose nodes are numbered starting at 0. Define the even- odd merge of the list to be
+the list consisting of the even-numbered nodes followed by the odd-numbered nodes.

@@ -1,0 +1,48 @@
+```java
+class DuplicateMissing {
+    int duplicate;
+    int missing;
+
+    public DuplicateMissing() { }
+
+    public DuplicateMissing(int duplicate, int missing) {
+        this.duplicate = duplicate;
+        this.missing = missing;
+    }
+}
+
+public class Solution {
+    public static DuplicateMissing findDuplicateMissing(List<Integer> A) {
+        // Compute the XOR of all numbers from 0 to |A| - 1 and all entries in A.
+        int missXORDup = 0;
+        for (int i = 0; i < A.size(); ++i) {
+            missXORDup ^= i ^ A.get(i);
+        }
+
+        // We need to find a bit that's set to 1 in missXORDup. Such a bit
+        // must exist if there is a single missing number and a single duplicated
+        // number in A.
+        //
+        // The bit-fiddling assignment below sets all of bits in differBit to 0
+        // except for the least significant bit in missXORDup that's 1.
+        int differBit = missXORDup & (~(missXORDup - 1));
+        int missOrDup = 0;
+        for (int i = 0; i < A.size(); ++i) {
+            // Focus on entries and numbers in which the differBit-th bit is 1.
+            if ((i & differBit) != 0) {
+                missOrDup ^= i;
+            }
+            if ((A.get(i) & differBit) != 0) {
+                missOrDup ^= A.get(i);
+            }
+        }
+
+        // missOrDup is either the missing value or the duplicated entry. If
+        // missOrDup is in A, missOrDup is the duplicate; otherwise, missOrDup is
+        // the missing value.
+        return A.contains(missOrDup)
+            ? new DuplicateMissing(missOrDup, missOrDup ^ missXORDup)
+            : new DuplicateMissing(missOrDup ^ missXORDup, missOrDup);
+      }
+}
+```

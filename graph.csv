@@ -412,7 +412,8 @@ def strongly_connected_components(adjacency_matrix):
 
     return result
 ```"	"map(int, list(int))[adjacency_matrix];list(list(int))
-[0,[2,3],1,[0],2,[1],3,[4],4,[]];[[0,1,2],[3],[4]]"
+[0,[2,3],1,[0],2,[1],3,[4],4,[]];[[0,1,2],[3],[4]]
+"
 "Topological Sorting"	"Perform topological sort of Directed Acyclic Graph (DAG).
 A topological sort of a DAG G is a linear ordering of all its vertices such that if G contains an edge (u, v), then u appears before v in the ordering.
 
@@ -555,4 +556,5 @@ def topological_sort(adjacency_matrix):
 
     return stack
 ```"	"map(int, list(int))[adjacency_matrix];list(int)
-[0,[],1,[],2,[3],3,[1],4,[0,1],5,[0,2]];[5,2,3,1,0,4]"
+[0,[],1,[],2,[3],3,[1],4,[0,1],5,[0,2]];[5,2,3,1,0,4]
+"

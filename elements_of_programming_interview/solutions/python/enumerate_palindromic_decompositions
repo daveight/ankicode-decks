@@ -1,0 +1,31 @@
+```python
+def palindrome_partitioning(input):
+    result = []
+    directed_palindrome_decompositions(input, 0, [], result)
+    return result
+
+
+def directed_palindrome_decompositions(input, offset, partialPartition, result):
+    if offset == len(input):
+        result.append(partialPartition.copy())
+        return
+
+
+    for i in range(offset + 1, len(input) + 1):
+        prefix = input[offset:i]
+        if isPalindrome(prefix):
+            partialPartition.append(prefix)
+            directed_palindrome_decompositions(input, i, partialPartition, result)
+            partialPartition.pop()
+
+def isPalindrome(prefix):
+    i = 0
+    j = len(prefix) - 1
+    while i < j:
+        if prefix[i] != prefix[j]:
+            return False
+        i += 1
+        j -= 1
+
+    return True
+```

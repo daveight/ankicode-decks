@@ -1,0 +1,38 @@
+```cxx
+class Solution {
+public:
+    vector<vector<string>> palindromePartitioning(string input) {
+        shared_ptr<vector<vector<string>>> result = make_shared<vector<vector<string>>>();
+        directedPalindromeDecompositions(input, 0, make_shared<vector<string>>(), result);
+        return *result;
+    }
+
+private:
+    void directedPalindromeDecompositions(string input, int offset,
+                                          shared_ptr<vector<string>> partialPartition,
+                                          shared_ptr<vector<vector<string>>> result) {
+        if (offset == input.size()) {
+            result->push_back(vector<string>(*partialPartition));
+            return;
+        }
+
+        for (int i = offset + 1; i <= input.length(); ++i) {
+            string prefix = input.substr(offset, i - offset);
+            if (isPalindrome(prefix)) {
+                partialPartition->push_back(prefix);
+                directedPalindromeDecompositions(input, i, partialPartition, result);
+                partialPartition->pop_back();
+            }
+        }
+    }
+
+    bool isPalindrome(string prefix) {
+        for (int i = 0, j = prefix.length() - 1; i < j; ++i, --j) {
+            if (prefix.at(i) != prefix.at(j)) {
+                return false;
+            }
+        }
+        return true;
+    }
+};
+```

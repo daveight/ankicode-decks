@@ -1,0 +1,17 @@
+```cxx
+class Solution {
+public:
+    vector<int> evenOdd(vector<int> A) {
+        //Add code here
+        int next_even = 0, next_odd = A.size() - 1;
+        while (next_even < next_odd) {
+            if (A[next_even] % 2 == 0) {
+                ++next_even;
+            } else {
+                swap(A[next_even], A[next_odd--]);
+            }
+        }
+        return A;
+    }
+};
+```

@@ -1,0 +1,15 @@
+```java
+public class Solution {
+    public List<Integer> evenOdd(List<Integer> A) {
+        int nextEven = 0, nextOdd = A.size() - 1;
+        while (nextEven < nextOdd) {
+            if (A.get(nextEven) % 2 == 0) {
+                nextEven++;
+            } else {
+                Collections.swap(A, nextEven, nextOdd--);
+            }
+        }
+        return A;
+    }
+}
+```

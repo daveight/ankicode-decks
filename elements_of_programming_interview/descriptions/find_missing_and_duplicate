@@ -1,0 +1,2 @@
+If an array contains n —1 integers, each between 0 and n 1, inclusive, and all numbers
+in the array are distinct, then it must be the case that exactly one number between 0 and n-1 is absent.

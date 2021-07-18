@@ -1,0 +1,2 @@
+Write a program that takes the head of a singly linked list and returns -1 if there does not exist a cycle,
+and the node at the start of the cycle, if a cycle is present. (You do not know the length of the list in advance.)

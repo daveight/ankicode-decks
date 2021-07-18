@@ -141,7 +141,8 @@ def lc_substr(s, t):
 ""ABCAB"";""BABCB"";""ABC""
 ""123124123r423rHelloworld24352343412"";""asd1234d141243Helloworld1413rsfvsdfdsf"";""Helloworld""
 ""evheklghh;hj;123456kdsfvjndfkvnjkfnv3423"";""dgbkdjbgne.kgerwkg.ejr123456"";""123456""
-""123456;hj;123456kdsfvjndfkvnjkfnv3423"";""dgbkdjbgne.kgerwkg.ejr123456"";""123456"""
+""123456;hj;123456kdsfvjndfkvnjkfnv3423"";""dgbkdjbgne.kgerwkg.ejr123456"";""123456""
+"
 "Least String Rotation"	"Given a string find a rotation of such string with the lowest lexicographical order.
 
 Example:
@@ -293,7 +294,8 @@ def least_rotation(s):
 ""GEEKSFORGEEKS"";""EEKSFORGEEKSG""
 ""GEEKSQUIZ"";""EEKSQUIZG""
 ""BCABDADAB"";""ABBCABDAD""
-""bbaaccaadd"";""aaccaaddbb"""
+""bbaaccaadd"";""aaccaaddbb""
+"
 "Search pattern in a string"	"Given two strings a pattern s and a text t, determine if the pattern appears in the text in O(|r| + |n|) time."	"search_pattern"	"### Rabin-Karp Algorithm
 [Wiki](https://en.wikipedia.org/wiki/Rabin%E2%80%93Karp_algorithm)
 

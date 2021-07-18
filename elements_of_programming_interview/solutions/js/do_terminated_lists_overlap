@@ -1,0 +1,43 @@
+```js
+class ListNode {
+    constructor(data = null, next = null) {
+        this.data = data
+        this.next = next
+    }
+}
+
+function overlappingNoCycleLists(l0, l1) {
+    const l0Length = length(l0)
+    const l1Length = length(l1)
+
+    // Advances the longer list to get equal length lists.
+    if (l0Length > l1Length) {
+        l0 = advanceListByK(l0Length - l1Length, l0)
+    } else {
+        l1 = advanceListByK(l1Length - l0Length, l1)
+    }
+
+    while (l0 != null && l1 != null && l0.data != l1.data) {
+        l0 = l0.next
+        l1 = l1.next
+    }
+
+    return l0 // nullptr implies there is no overlap between l0 and l1.
+}
+
+function advanceListByK(k, l) {
+    while (k-- > 0) {
+        l = l.next
+    }
+    return l
+}
+
+function length(l) {
+    let length = 0
+    while (l != null) {
+        ++length
+        l = l.next
+    }
+    return length
+}
+```

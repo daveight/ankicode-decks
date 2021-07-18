@@ -1,0 +1,13 @@
+```java
+public class Solution {
+    private static Map<Integer, Integer> cache = new HashMap<>();
+
+    public int fibonacci(int n) {
+        if (n <= 1) {
+            return n;
+        }
+        cache.putIfAbsent(n, fibonacci(n - 2) + fibonacci(n - 1));
+        return cache.get(n);
+    }
+}
+```

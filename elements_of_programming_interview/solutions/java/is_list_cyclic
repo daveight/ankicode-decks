@@ -1,0 +1,47 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+    public static int hasCycle(ListNode<Integer> head) {
+        ListNode<Integer> fast = head, slow = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                // There is a cycle, so now let's calculate the cycle length.
+                int cycleLen = 0;
+                do {
+                    ++cycleLen;
+                    fast = fast.next;
+                } while (slow != fast);
+
+                // Finds the start of the cycle.
+                ListNode<Integer> cycleLenAdvancedIter = head;
+                // cycleLenAdvancedIter pointer advances cycleLen first.
+                while (cycleLen-- > 0) {
+                    cycleLenAdvancedIter = cycleLenAdvancedIter.next;
+                }
+
+                ListNode<Integer> iter = head;
+                // Both iterators advance in tandem.
+                while (iter != cycleLenAdvancedIter) {
+                    iter = iter.next;
+                    cycleLenAdvancedIter = cycleLenAdvancedIter.next;
+                }
+                return iter.data; // iter is the start of cycle.
+            }
+        }
+        return -1; // no cycle.
+    }
+}
+```

@@ -1,0 +1,76 @@
+```cxx
+#include <unordered_map>
+
+using std::make_unique;
+using std::priority_queue;
+using std::shared_ptr;
+using std::string;
+using std::unique_ptr;
+using std::unordered_map;
+using std::vector;
+
+struct CharWithFrequency {
+  string chr;
+  double freq;
+};
+
+struct BinaryTree {
+  double aggregate_freq;
+  CharWithFrequency* s;
+  shared_ptr<BinaryTree> left, right;
+};
+
+struct FrequencyComparator {
+  bool operator()(const shared_ptr<BinaryTree>& lhs,
+                  const shared_ptr<BinaryTree>& rhs) const {
+    return lhs->aggregate_freq > rhs->aggregate_freq;
+  }
+};
+
+class Solution {
+public:
+    double huffmanEncoding(vector<CharWithFrequency> symbols) {
+        // Initially assigns each symbol into candidates.
+        priority_queue<shared_ptr<BinaryTree>, vector<shared_ptr<BinaryTree>>, FrequencyComparator> candidates;
+        for (CharWithFrequency& s : symbols) {
+            candidates.emplace(new BinaryTree{s.freq, &s, nullptr, nullptr});
+        }
+
+        // Keeps combining two nodes until there is one node left.
+        while (candidates.size() > 1) {
+        shared_ptr<BinaryTree> left = candidates.top();
+        candidates.pop();
+        shared_ptr<BinaryTree> right = candidates.top();
+        candidates.pop();
+        candidates.emplace(new BinaryTree{
+            left->aggregate_freq + right->aggregate_freq, nullptr, left, right});
+        }
+
+        unordered_map<char, string> huffman_encoding;
+        // Traverses the binary tree, assigning codes to nodes.
+        assignHuffmanCode(candidates.top(), make_unique<string>(), &huffman_encoding);
+        double avg = 0.0;
+        for (const CharWithFrequency s : symbols) {
+            avg += huffman_encoding[s.chr.at(0)].size() * s.freq / 100.0;
+        }
+        return avg;
+    }
+private:
+    void assignHuffmanCode(const shared_ptr<BinaryTree>& tree,
+                           const unique_ptr<string>& code,
+                           unordered_map<char, string>* huffman_encoding) {
+        if (tree) {
+            if (tree->s) {
+                // This node is a leaf.
+                (*huffman_encoding)[tree->s->chr.at(0)] = *code;
+            } else {  // Non-leaf node.
+                code->push_back('0');
+                assignHuffmanCode(tree->left, code, huffman_encoding);
+                code->back() = '1';
+                assignHuffmanCode(tree->right, code, huffman_encoding);
+                code->pop_back();
+            }
+        }
+    }
+};
+```

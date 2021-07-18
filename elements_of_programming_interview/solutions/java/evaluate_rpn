@@ -1,0 +1,25 @@
+```java
+import java.util.function.*;
+
+public class Solution {
+    public int eval(String RPNExpression) {
+        Deque<Integer> intermediateResults = new ArrayDeque<>();
+        final String DELIMITER = ",";
+        final Map<String, ToIntBiFunction<Integer, Integer>> OPERATORS = Map.of(
+                "+", (y, x) -> x + y,
+                "-", (y, x) -> x - y,
+                "*", (y, x) -> x * y,
+                "/", (y, x) -> x / y);
+        for (String token : RPNExpression.split(DELIMITER)) {
+            if (OPERATORS.get(token) != null) {
+                intermediateResults.addFirst(
+                    OPERATORS.get(token).applyAsInt(intermediateResults.removeFirst(),
+                        intermediateResults.removeFirst()));
+            } else { // token is a number.
+                intermediateResults.addFirst(Integer.parseInt(token));
+            }
+        }
+        return intermediateResults.removeFirst();
+    }
+}
+```

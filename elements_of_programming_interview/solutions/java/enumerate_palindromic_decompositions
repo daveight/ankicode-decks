@@ -1,0 +1,36 @@
+```java
+public class Solution {
+    public List<List<String>> palindromePartitioning(String input) {
+        List<List<String>> result = new ArrayList<>();
+        directedPalindromeDecompositions(input, 0, new ArrayList<String>(), result);
+        return result;
+    }
+
+    private void directedPalindromeDecompositions(String input, int offset,
+                                                  List<String> partialPartition,
+                                                  List<List<String>> result) {
+        if (offset == input.length()) {
+            result.add(new ArrayList<>(partialPartition));
+            return;
+        }
+
+        for (int i = offset + 1; i <= input.length(); ++i) {
+            String prefix = input.substring(offset, i);
+            if (isPalindrome(prefix)) {
+                partialPartition.add(prefix);
+                directedPalindromeDecompositions(input, i, partialPartition, result);
+                partialPartition.remove(partialPartition.size() - 1);
+            }
+        }
+    }
+
+    private boolean isPalindrome(String prefix) {
+        for (int i = 0, j = prefix.length() - 1; i < j; ++i, --j) {
+            if (prefix.charAt(i) != prefix.charAt(j)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+```

@@ -1,0 +1,88 @@
+```cxx
+#include <memory>
+#include <stdexcept>
+#include <unordered_set>
+
+using std::invalid_argument;
+using std::unique_ptr;
+using std::unordered_set;
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Status {
+public:
+    int numTargetNodes;
+    shared_ptr<BinaryTreeNode<int>> ancestor;
+
+    Status(int numTargetNodes, shared_ptr<BinaryTreeNode<int>> node) {
+        this->numTargetNodes = numTargetNodes;
+        this->ancestor = node;
+    }
+};
+
+class Solution {
+public:
+    Status lcaHelper(shared_ptr<BinaryTreeNode<int>> tree,
+                     shared_ptr<BinaryTreeNode<int>> node0,
+                     shared_ptr<BinaryTreeNode<int>> node1) {
+        if (tree == nullptr) {
+            return Status(0, nullptr);
+        }
+
+        Status leftResult = lcaHelper(tree->left, node0, node1);
+        if (leftResult.numTargetNodes == 2) {
+            // Found both nodes in the left subtree.
+            return leftResult;
+        }
+        Status rightResult = lcaHelper(tree->right, node0, node1);
+        if (rightResult.numTargetNodes == 2) {
+            // Found both nodes in the right subtree.
+            return rightResult;
+        }
+        int numTargetNodes = leftResult.numTargetNodes +
+            rightResult.numTargetNodes + (tree == node0 ? 1 : 0) +
+            (tree == node1 ? 1 : 0);
+        return Status(numTargetNodes, numTargetNodes == 2 ? tree : nullptr);
+    }
+
+    shared_ptr<BinaryTreeNode<int>> findNode(shared_ptr<BinaryTreeNode<int>> node, int val) {
+        if (node != nullptr) {
+            if (val == node->data) {
+                return node;
+            }
+
+            shared_ptr<BinaryTreeNode<int>> leftResult = findNode(node->left, val);
+            if (leftResult != nullptr) {
+                return leftResult;
+            }
+
+            shared_ptr<BinaryTreeNode<int>> rightResult = findNode(node->right, val);
+            if (rightResult != nullptr) {
+                return rightResult;
+            }
+        }
+
+        return nullptr;
+    }
+
+    int lca(shared_ptr<BinaryTreeNode<int>> tree, int key0, int key1) {
+        shared_ptr<BinaryTreeNode<int>> node0 = findNode(tree, key0);
+        shared_ptr<BinaryTreeNode<int>> node1 = findNode(tree, key1);
+
+        shared_ptr<BinaryTreeNode<int>> result = lcaHelper(tree, node0, node1).ancestor;
+        return result->data;
+    }
+};
+```

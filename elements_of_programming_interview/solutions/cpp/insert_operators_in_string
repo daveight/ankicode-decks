@@ -1,0 +1,85 @@
+```cxx
+#include <memory>
+#include <numeric>
+#include <stack>
+#include <vector>
+
+using std::accumulate;
+using std::make_unique;
+using std::stack;
+using std::vector;
+
+class Solution {
+public:
+    bool expressionSynthesis(const vector<int>& digits, int target) {
+          return directedExpressionSynthesis(digits, target, 0, 0,
+                                             make_unique<vector<int>>().get(),
+                                             make_unique<vector<char>>().get());
+    }
+
+private:
+    bool directedExpressionSynthesis(const vector<int>& digits, int target,
+                                     int current_term, int offset,
+                                     vector<int>* operands,
+                                     vector<char>* operators) {
+        current_term = current_term * 10 + digits[offset];
+        if (offset == digits.size() - 1) {
+            operands->emplace_back(current_term);
+            if (evaluate(*operands, *operators) == target) {  // Found a match.
+                return true;
+            }
+            operands->pop_back();
+            return false;
+        }
+
+        // No operator.
+        if (directedExpressionSynthesis(digits, target, current_term, offset + 1, operands, operators)) {
+            return true;
+        }
+        // Tries multiplication operator '*'.
+        operands->emplace_back(current_term), operators->emplace_back('*');
+        if (directedExpressionSynthesis(digits, target, 0, offset + 1, operands, operators)) {
+            return true;
+        }
+        operands->pop_back(), operators->pop_back();
+        // Tries addition operator '+'.
+        operands->emplace_back(current_term);
+        // First check feasibility of plus operator.
+        if (target - evaluate(*operands, *operators) <= accumulate(begin(digits) + offset + 1, end(digits), 0, [](int val, int d) {
+            return val * 10 + d;
+        })) {
+            operators->emplace_back('+');
+            if (directedExpressionSynthesis(digits, target, 0, offset + 1, operands, operators)) {
+                return true;
+            }
+            operators->pop_back();
+        }
+        operands->pop_back();
+        return false;
+    }
+
+    int evaluate(const vector<int>& operands, const vector<char>& operators) {
+        stack<int> intermediate_operands;
+        int operand_idx = 0;
+        intermediate_operands.push(operands[operand_idx++]);
+        // Evaluates '*' first.
+        for (char oper : operators) {
+            if (oper == '*') {
+                int product = intermediate_operands.top() * operands[operand_idx++];
+                intermediate_operands.pop();
+                intermediate_operands.push(product);
+            } else {  // oper == '+'.
+                intermediate_operands.push(operands[operand_idx++]);
+            }
+        }
+
+        // Evaluates '+' second.
+        int sum = 0;
+        while (!intermediate_operands.empty()) {
+            sum += intermediate_operands.top();
+            intermediate_operands.pop();
+        }
+        return sum;
+    }
+};
+```

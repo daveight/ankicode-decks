@@ -1,0 +1,64 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    // Input nodes are nonempty and the key at s is less than or equal to that at
+    // b.
+    public BinaryTreeNode<Integer> findLCA(BinaryTreeNode<Integer> tree, BinaryTreeNode<Integer> s, BinaryTreeNode<Integer> b) {
+
+        BinaryTreeNode<Integer> p = tree;
+        while (p.data < s.data || p.data > b.data) {
+            // Keep searching since p is outside of [s, b].
+            while (p.data < s.data) {
+                p = p.right; // LCA must be in p's right child.
+            }
+            while (p.data > b.data) {
+                p = p.left; // LCA must be in p's left child.
+            }
+        }
+        // Now, s.data >= p.data && p.data <= b.data.
+        return p;
+    }
+
+    private BinaryTreeNode<Integer> findNode(BinaryTreeNode<Integer> node, Integer val) {
+        if (node != null) {
+            if (val.equals(node.data)) {
+                return node;
+            }
+
+            BinaryTreeNode<Integer> leftResult = findNode(node.left, val);
+            if (leftResult != null) {
+                return leftResult;
+            }
+
+            BinaryTreeNode<Integer> rightResult = findNode(node.right, val);
+            if (rightResult != null) {
+                return rightResult;
+            }
+        }
+
+        return null;
+    }
+
+    public int lca(BinaryTreeNode<Integer> tree, int key0, int key1) throws Exception {
+        BinaryTreeNode<Integer> node0 = findNode(tree, key0);
+        BinaryTreeNode<Integer> node1 = findNode(tree, key1);
+
+        BinaryTreeNode<Integer> result = findLCA(tree, node0, node1);
+
+        return result.data;
+    }
+}
+```

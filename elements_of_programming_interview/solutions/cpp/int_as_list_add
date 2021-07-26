@@ -1,0 +1,36 @@
+```cxx
+template<typename T>
+
+struct ListNode {
+public:
+    T data;
+    shared_ptr<ListNode<T>> next;
+
+    ListNode(T data) : data{data}, next{nullptr} { }
+    ListNode(T data, shared_ptr<ListNode<T>> next) : data{data}, next{next} { }
+    ~ListNode() { while (next) next = std::move(next->next); }
+};
+
+class Solution {
+public:
+    shared_ptr<ListNode<int>> addTwoNumbers(shared_ptr<ListNode<int>> L1, shared_ptr<ListNode<int>> L2) {
+        auto a = L1;
+        auto b = L2;
+        shared_ptr<ListNode<int>> dummy_head = make_shared<ListNode<int>>(-1);
+        auto place_iter = dummy_head;
+        auto prev_iter = dummy_head;
+        int carry = 0;
+        while (a || b || carry) {
+            int val = carry + (a ? a->data : 0) + (b ? b->data : 0);
+            a = a ? a->next : nullptr;
+            b = b ? b->next : nullptr;
+            place_iter->data = val % 10;
+            place_iter->next = make_shared<ListNode<int>>(0);
+            carry = val / 10, prev_iter = place_iter, place_iter = place_iter->next;
+        }
+        place_iter = prev_iter;
+        place_iter->next = nullptr;
+        return dummy_head;
+    }
+};
+```

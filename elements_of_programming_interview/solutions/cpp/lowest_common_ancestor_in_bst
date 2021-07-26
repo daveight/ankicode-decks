@@ -1,0 +1,70 @@
+```cxx
+#include <memory>
+
+using std::unique_ptr;
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Solution {
+public:
+    // Input nodes are nonempty and the key at s is less than or equal to that at
+    // b.
+    shared_ptr<BinaryTreeNode<int>> FindLCA(shared_ptr<BinaryTreeNode<int>> tree,
+                                            shared_ptr<BinaryTreeNode<int>> s,
+                                            shared_ptr<BinaryTreeNode<int>> b) {
+        auto p = tree;
+        while (p->data < s->data || p->data > b->data) {
+            // Keep searching since p is outside of [s, b].
+            while (p->data < s->data) {
+                p = p->right;  // LCA must be in p's right child.
+            }
+            while (p->data > b->data) {
+                p = p->left;  // LCA must be in p's left child.
+            }
+        }
+        // Now, s->data <= p->data && p->data <= b->data.
+        return p;
+    }
+
+    shared_ptr<BinaryTreeNode<int>> findNode(shared_ptr<BinaryTreeNode<int>> node, int val) {
+        if (node != nullptr) {
+            if (val == node->data) {
+                return node;
+            }
+
+            shared_ptr<BinaryTreeNode<int>> leftResult = findNode(node->left, val);
+            if (leftResult != nullptr) {
+                return leftResult;
+            }
+
+            shared_ptr<BinaryTreeNode<int>> rightResult = findNode(node->right, val);
+            if (rightResult != nullptr) {
+                return rightResult;
+            }
+        }
+
+        return nullptr;
+    }
+
+    int lca(shared_ptr<BinaryTreeNode<int>> tree, int key0, int key1) {
+        shared_ptr<BinaryTreeNode<int>> node0 = findNode(tree, key0);
+        shared_ptr<BinaryTreeNode<int>> node1 = findNode(tree, key1);
+
+        auto result = FindLCA(tree, node0, node1);
+
+        return result->data;
+    }
+};
+```

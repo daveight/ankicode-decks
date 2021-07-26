@@ -1,0 +1,39 @@
+```cxx
+#include <algorithm>
+#include <stack>
+#include <vector>
+
+using std::max;
+using std::stack;
+using std::vector;
+
+class Solution {
+public:
+    int calculateLargestRectangle(const vector<int> &heights) {
+        stack<int> pillar_indices;
+        int max_rectangle_area = 0;
+        // By iterating to heights.size() instead of heights.size() - 1, we can
+        // uniformly handle the computation for rectangle area here.
+        for (int i = 0; i <= heights.size(); ++i) {
+            while (!pillar_indices.empty() &&
+                   IsNewPillarOrReachEnd(heights, i, pillar_indices.top())) {
+                int height = heights[pillar_indices.top()];
+                pillar_indices.pop();
+                int width = pillar_indices.empty() ? i : i - pillar_indices.top() - 1;
+                max_rectangle_area = max(max_rectangle_area, height * width);
+            }
+            pillar_indices.emplace(i);
+        }
+        return max_rectangle_area;
+    }
+    
+    bool IsNewPillarOrReachEnd(const vector<int> &heights, int curr_idx,
+                               int last_pillar_idx) {
+        return curr_idx < heights.size()
+               ? heights[curr_idx] <= heights[last_pillar_idx]
+               : true;
+    }
+    
+    // clang-format off
+};
+```

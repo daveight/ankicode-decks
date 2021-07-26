@@ -1,0 +1,43 @@
+```python
+import functools
+
+T = TypeVar('T')
+
+class BinaryTreeNode(Generic[T]):
+    def __init__(self, data: Optional[Type[T]]=None, left=None, right=None):
+        self.data = data
+        self.left = left
+        self.right = right
+
+def find_node(tree, val):
+    if tree:
+        if tree.data == val:
+            return tree
+
+        left_result = find_node(tree.left, val)
+        if left_result:
+            return left_result
+
+        right_result = find_node(tree.right, val)
+        if right_result:
+            return right_result
+    return None
+
+# Input nodes are nonempty and the key at s is less than or equal to that at b.
+def find_LCA(tree, s, b):
+
+    while tree.data < s.data or tree.data > b.data:
+        # Keep searching since tree is outside of [s, b].
+        while tree.data < s.data:
+            tree = tree.right  # LCA must be in tree's right child.
+        while tree.data > b.data:
+            tree = tree.left  # LCA must be in tree's left child.
+    # Now, s.data <= tree.data && tree.data <= b.data.
+    return tree
+
+def lca(executor, tree, s):
+    node0 = find_node(executor, tree)
+    node1 = find_node(executor, s)
+    result = find_LCA(executor, node0, node1)
+    return result.data
+```

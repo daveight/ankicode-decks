@@ -1,0 +1,48 @@
+```cxx
+#include <memory>
+
+using std::shared_ptr;
+
+template<typename T>
+
+struct ListNode {
+public:
+    T data;
+    shared_ptr<ListNode<T>> next;
+    ListNode() { }
+    ListNode(T data) : data{data}, next{nullptr} { }
+    ListNode(T data, shared_ptr<ListNode<T>> next) : data{data}, next{next} { }
+    ~ListNode() { while (next) next = std::move(next->next); }
+};
+
+class Solution {
+public:
+    shared_ptr<ListNode<int>> cyclicallyRightShiftList(shared_ptr<ListNode<int>> L,
+                                                       int k) {
+        if (L == nullptr) {
+            return L;
+        }
+    
+        // Computes the length of L and the tail.
+        auto tail = L;
+        int n = 1;
+        while (tail->next) {
+            ++n, tail = tail->next;
+        }
+        k %= n;
+        if (k == 0) {
+            return L;
+        }
+    
+        tail->next = L;  // Makes a cycle by connecting the tail to the head.
+        int steps_to_new_head = n - k;
+        auto new_tail = tail;
+        while (steps_to_new_head--) {
+            new_tail = new_tail->next;
+        }
+        auto new_head = new_tail->next;
+        new_tail->next = nullptr;
+        return new_head;
+    }
+};
+```

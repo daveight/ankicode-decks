@@ -1,0 +1,44 @@
+```cxx
+#include <algorithm>
+#include <iterator>
+#include <numeric>
+#include <string>
+#include <vector>
+
+using std::accumulate;
+using std::max;
+using std::string;
+using std::vector;
+
+class Solution {
+public:
+    vector<string> justifyText(const vector<string> &words, int L) {
+        int curr_line_length = 0;
+        vector<string> result, curr_line;
+        for (const string &word : words) {
+            if (curr_line_length + word.size() + curr_line.size() > L) {
+                for (int i = 0; i < L - curr_line_length; ++i) {
+                    curr_line[i % max(static_cast<int>(curr_line.size()) - 1, 1)] += ' ';
+                }
+                result.emplace_back(Join(curr_line, ""));
+                curr_line.clear();
+                curr_line_length = 0;
+            }
+            curr_line.emplace_back(word);
+            curr_line_length += word.size();
+        }
+        // Handles the last line. Last line is to be left-aligned.
+        result.emplace_back(
+                Join(curr_line, " ")
+                        .append(L - curr_line_length - (curr_line.size() - 1), ' '));
+        return result;
+    }
+    
+    string Join(const vector<string> &words, const string &delimiter) {
+        return accumulate(next(begin(words)), end(words), words.front(),
+                          [delimiter](const string &result, const string &word) {
+                              return result + delimiter + word;
+                          });
+    }
+};
+```

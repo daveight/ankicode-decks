@@ -1,0 +1,67 @@
+```cxx
+#include <algorithm>
+#include <queue>
+#include <stdexcept>
+#include <vector>
+
+using std::queue;
+using std::vector;
+
+struct Edge {
+    int fr;
+    int to;
+};
+
+class Solution {
+public:
+    struct GraphVertex {
+        int d = -1;
+        vector<GraphVertex *> edges;
+    };
+
+    bool isAnyPlacementFeasible(int k, vector<Edge> edges) {
+        vector<GraphVertex> graph;
+        if (k <= 0) {
+            throw std::runtime_error("Invalid k value");
+        }
+        graph.reserve(k);
+
+        for (int i = 0; i < k; i++) {
+            graph.push_back(GraphVertex{});
+        }
+
+        for (auto &e : edges) {
+            if (e.fr < 0 || e.fr >= k || e.to < 0 || e.to >= k) {
+                throw std::runtime_error("Invalid vertex index");
+            }
+            graph[e.fr].edges.push_back(&graph[e.to]);
+        }
+
+        for (auto vertex : graph) {
+            if (!(vertex.d != -1 || Bfs(&vertex))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool Bfs(GraphVertex *s) {
+        s->d = 0;
+        queue<GraphVertex *> q;
+        q.emplace(s);
+
+        while (!q.empty()) {
+            for (GraphVertex *&t : q.front()->edges) {
+                if (t->d == -1) {  // Unvisited vertex.
+                    t->d = q.front()->d + 1;
+                    q.emplace(t);
+                } else if (t->d == q.front()->d) {
+                    return false;
+                }
+            }
+            q.pop();
+        }
+        return true;
+    }
+};
+```

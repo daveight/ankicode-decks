@@ -1,0 +1,68 @@
+```js
+function expressionSynthesis(digits, target) {
+    return directedExpressionSynthesis(digits, target, 0, 0, [], [])
+}
+
+function directedExpressionSynthesis(digits, target, currentTerm, offset, operands, operators) {
+    currentTerm = currentTerm * 10 + digits[offset]
+    if (offset == digits.length - 1) {
+        operands.push(currentTerm)
+        if (evaluate(operands, operators) == target) { // Found a match.
+            return true
+        }
+        operands.pop()
+        return false
+    }
+
+    // No operator.
+    if (directedExpressionSynthesis(digits, target, currentTerm, offset + 1, operands, operators)) {
+        return true
+    }
+    // Tries multiplication operator '*'.
+    operands.push(currentTerm)
+    operators.push('*')
+    if (directedExpressionSynthesis(digits, target, 0, offset + 1, operands, operators)) {
+        return true
+    }
+    operators.pop()
+    operands.pop()
+    // Tries addition operator '+'.
+    operands.push(currentTerm)
+    let remainingInt = 0
+    for (let i = offset + 1; i < digits.length; i++) {
+         remainingInt = remainingInt * 10 + digits[i];
+    }
+    if (target - evaluate(operands, operators) <= remainingInt) {
+        operators.push('+')
+        if (directedExpressionSynthesis(digits, target, 0, offset + 1, operands, operators)) {
+            return true
+        }
+        operators.pop()
+    }
+    operands.pop()
+    return false
+}
+
+function evaluate(operands, operators) {
+    let intermediateOperands = []
+    let operandIdx = 0
+    intermediateOperands.unshift(operands[operandIdx++])
+    // Evaluates '*' first.
+    for (let oper of operators) {
+        if (oper == '*') {
+            let prod = intermediateOperands.shift() * operands[operandIdx++]
+            intermediateOperands.unshift(prod)
+        } else {
+            //console.log(operands[operandIdx])
+            intermediateOperands.unshift(operands[operandIdx++])
+        }
+    }
+
+    // Evaluates '+' second.
+    let sum = 0;
+    for (let op of intermediateOperands) {
+        sum += op
+    }
+    return sum
+}
+```

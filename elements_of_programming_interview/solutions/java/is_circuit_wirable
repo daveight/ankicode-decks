@@ -1,0 +1,52 @@
+```java
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+
+class Edge {
+    int fr;
+    int to;
+}
+
+public class Solution {
+    public class GraphVertex {
+        public int d = -1;
+        public List<GraphVertex> edges = new ArrayList<>();
+    }
+
+    public boolean isAnyPlacementFeasible(int k, List<Edge> edges) {
+        if (k <= 0)
+            throw new RuntimeException("Invalid k value");
+        List<GraphVertex> graph = new ArrayList<>();
+        for (int i = 0; i < k; i++)
+            graph.add(new GraphVertex());
+        for (Edge e : edges) {
+            if (e.fr < 0 || e.fr >= k || e.to < 0 || e.to >= k)
+                throw new RuntimeException("Invalid vertex index");
+            graph.get(e.fr).edges.add(graph.get(e.to));
+        }
+
+        return graph.stream().allMatch(v -> v.d != -1 || bfs(v));
+    }
+
+    private boolean bfs(GraphVertex s) {
+        s.d = 0;
+        Queue<GraphVertex> q = new ArrayDeque<>();
+        q.add(s);
+
+        while (!q.isEmpty()) {
+            for (GraphVertex t : q.peek().edges) {
+                if (t.d == -1) { // Unvisited vertex.
+                    t.d = q.peek().d + 1;
+                    q.add(t);
+                } else if (t.d == q.peek().d) {
+                    return false;
+                }
+            }
+            q.remove();
+        }
+        return true;
+    }
+}
+```

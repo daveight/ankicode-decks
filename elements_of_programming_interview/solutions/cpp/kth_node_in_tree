@@ -1,0 +1,54 @@
+```cxx
+#include <istream>
+#include <memory>
+#include <string>
+#include <vector>
+
+using std::shared_ptr;
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    int size;
+
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Solution {
+public:
+    int findKthNodeBinaryTree(shared_ptr<BinaryTreeNode<int>> tree, int k) {
+        initSize(tree);
+
+        const auto *iter = tree.get();
+        while (iter != nullptr) {
+            int left_size = iter->left ? iter->left->size : 0;
+            if (left_size + 1 < k) {  // k-th node must be in right subtree of iter.
+                k -= (left_size + 1);
+                iter = iter->right.get();
+            } else if (left_size == k - 1) {  // k-th is iter itself.
+                return iter->data;
+            } else {  // k-th node must be in left subtree of iter.
+                iter = iter->left.get();
+            }
+        }
+        // If k is between 1 and the tree size, this line is unreachable.
+
+        return -1;
+    }
+
+private:
+    static int initSize(shared_ptr<BinaryTreeNode<int>> node) {
+        if (!node) return 0;
+        node->size = 1 + initSize(node->left) + initSize(node->right);
+        return node->size;
+    }
+};
+```

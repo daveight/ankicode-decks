@@ -22,7 +22,6 @@ struct GraphVertex {
 
 class Solution {
 public:
-
     int findLargestNumberTeams(int k, vector<Edge> edges) {
         if (k <= 0) {
             throw std::runtime_error("Invalid k value");

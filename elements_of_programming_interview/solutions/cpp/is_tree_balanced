@@ -1,0 +1,54 @@
+```cxx
+#include <algorithm>
+#include <cstdlib>
+
+using std::abs;
+using std::max;
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Solution {
+public:
+    struct BalancedStatusWithHeight {
+        bool balanced;
+        int height;
+    };
+
+    bool isBalanced(const shared_ptr<BinaryTreeNode<int>> &tree) {
+        return CheckBalanced(tree).balanced;
+    }
+
+    // First value of the return value indicates if tree is balanced, and if
+    // balanced the second value of the return value is the height of tree.
+    BalancedStatusWithHeight CheckBalanced(const shared_ptr<BinaryTreeNode<int>> &tree) {
+        if (tree == nullptr) {
+            return {true, -1};  // Base case.
+        }
+    
+        auto left_result = CheckBalanced(tree->left);
+        if (!left_result.balanced) {
+            return {false, 0};  // Left subtree is not balanced.
+        }
+        auto right_result = CheckBalanced(tree->right);
+        if (!right_result.balanced) {
+            return {false, 0};  // Right subtree is not balanced.
+        }
+    
+        bool is_balanced = abs(left_result.height - right_result.height) <= 1;
+        int height = max(left_result.height, right_result.height) + 1;
+        return {is_balanced, height};
+    }
+};
+```

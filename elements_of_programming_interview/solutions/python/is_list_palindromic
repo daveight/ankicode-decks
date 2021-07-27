@@ -1,0 +1,33 @@
+```python
+T = TypeVar('T')
+
+class ListNode(Generic[T]):
+    def __init__(self, data: Optional[Type[T]]=None):
+        self.data = data
+        self.next = None
+
+def reverse_linked_list(head):
+    prev = None
+    curr = head
+    while curr:
+        nxt = curr.next
+        curr.next = prev
+        prev = curr
+        curr = nxt
+    return prev
+
+def is_linked_list_a_palindrome(L):
+    # Finds the second half of L.
+    slow = fast = L
+    while fast and fast.next:
+        fast, slow = fast.next.next, slow.next
+
+    # Compares the first half and the reversed second half lists.
+    first_half_iter, second_half_iter = L, reverse_linked_list(slow)
+    while second_half_iter and first_half_iter:
+        if second_half_iter.data != first_half_iter.data:
+            return False
+        second_half_iter, first_half_iter = (second_half_iter.next,
+                                             first_half_iter.next)
+    return True
+```

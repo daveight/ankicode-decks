@@ -1,0 +1,39 @@
+```java
+class Interval {
+    int left;
+    int right;
+
+    Interval() { }
+
+    Interval(int left, int right) {
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    public List<Interval> addInterval(List<Interval> disjointIntervals, Interval newInterval) {
+        int i = 0;
+        List<Interval> result = new ArrayList<>();
+        // Processes intervals in disjointIntervals which come before newInterval.
+        while (i < disjointIntervals.size() &&
+                     newInterval.left > disjointIntervals.get(i).right) {
+            result.add(disjointIntervals.get(i++));
+        }
+
+        // Processes intervals in disjointIntervals which overlap with newInterval.
+        while (i < disjointIntervals.size() &&
+                     newInterval.right >= disjointIntervals.get(i).left) {
+            // If [a, b] and [c, d] overlap, their union is [min(a, c),max(b, d)].
+            newInterval = new Interval(
+                    Math.min(newInterval.left, disjointIntervals.get(i).left), Math.max(newInterval.right, disjointIntervals.get(i).right));
+            ++i;
+        }
+        result.add(newInterval);
+
+        // Processes intervals in disjointIntervals which come after newInterval.
+        result.addAll(disjointIntervals.subList(i, disjointIntervals.size()));
+        return result;
+    }
+}
+```

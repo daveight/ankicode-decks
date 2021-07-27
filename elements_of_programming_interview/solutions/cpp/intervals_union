@@ -1,0 +1,47 @@
+```cxx
+struct Endpoint {
+    int val;
+    bool is_closed;
+};
+
+struct Interval {
+    Endpoint left;
+    Endpoint right;
+};
+
+class Solution {
+public:
+    vector<Interval> unionInterval(vector<Interval> intervals) {
+        // Empty input.
+        if (intervals.empty()) {
+            return {};
+        }
+
+        // Sort intervals according to left endpoints of intervals.
+        sort(begin(intervals), end(intervals),
+             [](const Interval &a, const Interval &b) {
+                 if (a.left.val != b.left.val) {
+                     return a.left.val < b.left.val;
+                 }
+                 // Left endpoints are equal, so now see if one is closed and the
+                 // other open - closed intervals should appear first.
+                 return a.left.is_closed && !b.left.is_closed;
+             });
+        vector<Interval> result;
+        for (Interval i : intervals) {
+            if (!result.empty() &&
+                (i.left.val < result.back().right.val ||
+                 (i.left.val == result.back().right.val &&
+                  (i.left.is_closed || result.back().right.is_closed)))) {
+                if (i.right.val > result.back().right.val ||
+                    (i.right.val == result.back().right.val && i.right.is_closed)) {
+                    result.back().right = i.right;
+                }
+            } else {
+                result.emplace_back(i);
+            }
+        }
+        return result;
+    }
+};
+```

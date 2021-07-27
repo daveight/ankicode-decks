@@ -1,0 +1,50 @@
+```java
+class Endpoint {
+    int val;
+    boolean is_closed;
+}
+
+class Interval {
+    Endpoint left;
+    Endpoint right;
+}
+
+public class Solution {
+    public List<Interval> unionInterval(List<Interval> intervals) {
+        // Empty input.
+        if (intervals.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Sort intervals according to left endpoints of intervals.
+        intervals.sort((a, b) -> {
+            if (Integer.compare(a.left.val, b.left.val) != 0) {
+                return a.left.val - b.left.val;
+            }
+            // Left endpoints are equal, so now see if one is closed and the
+            // other open - closed intervals should appear first.
+            if (a.left.is_closed && !b.left.is_closed) {
+                return -1;
+            }
+            return !a.left.is_closed && b.left.is_closed ? 1 : 0;
+        });
+        List<Interval> result = new ArrayList<>(List.of(intervals.get(0)));
+        for (Interval i : intervals) {
+            if (!result.isEmpty() &&
+                    (i.left.val < result.get(result.size() - 1).right.val ||
+                     (i.left.val == result.get(result.size() - 1).right.val &&
+                        (i.left.is_closed ||
+                         result.get(result.size() - 1).right.is_closed)))) {
+                if (i.right.val > result.get(result.size() - 1).right.val ||
+                        (i.right.val == result.get(result.size() - 1).right.val &&
+                         i.right.is_closed)) {
+                    result.get(result.size() - 1).right = i.right;
+                }
+            } else {
+                result.add(i);
+            }
+        }
+        return result;
+    }
+}
+```

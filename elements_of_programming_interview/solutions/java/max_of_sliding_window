@@ -1,0 +1,88 @@
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+class TrafficElement implements Comparable<TrafficElement> {
+    int time;
+    double volume;
+
+    public TrafficElement() { }
+
+    public TrafficElement(int time, double volume) {
+        this.time = time;
+        this.volume = volume;
+    }
+
+    @Override
+    public int compareTo(TrafficElement o) {
+        int volumeCmp = Double.compare(volume, o.volume);
+        return volumeCmp != 0 ? volumeCmp : time - o.time;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return compareTo((TrafficElement)o) == 0;
+    }
+}
+
+class QueueWithMaxUsingDeque {
+    public static class QueueWithMax<T extends Comparable<T>> {
+        private Queue<T> entries = new ArrayDeque<>();
+        private Deque<T> candidatesForMax = new ArrayDeque<>();
+
+        public void enqueue(T x) {
+            entries.add(x);
+            while (!candidatesForMax.isEmpty() && candidatesForMax.peekLast().compareTo(x) < 0) {
+                // Eliminate dominated elements in candidatesForMax.
+                candidatesForMax.removeLast();
+            }
+            candidatesForMax.addLast(x);
+        }
+
+        public T dequeue() {
+            if (!entries.isEmpty()) {
+                T result = entries.remove();
+                if (result.equals(candidatesForMax.peekFirst())) {
+                    candidatesForMax.removeFirst();
+                }
+                return result;
+            }
+            throw new NoSuchElementException("Called dequeue() on empty queue.");
+        }
+
+        public T max() {
+            if (!candidatesForMax.isEmpty()) {
+                return candidatesForMax.peekFirst();
+            }
+            throw new NoSuchElementException("empty queue");
+        }
+
+        public T head() { return entries.peek(); }
+    }
+}
+
+public class Solution {
+    public List<TrafficElement> computeTrafficVolumes(List<TrafficElement> A, int w) {
+
+        QueueWithMaxUsingDeque.QueueWithMax<TrafficElement> slidingWindow =
+                new QueueWithMaxUsingDeque.QueueWithMax<>();
+        List<TrafficElement> maximumVolumes = new ArrayList<>();
+        for (TrafficElement trafficInfo : A) {
+            slidingWindow.enqueue(trafficInfo);
+            while (trafficInfo.time - slidingWindow.head().time > w) {
+                slidingWindow.dequeue();
+            }
+            maximumVolumes.add(
+                    new TrafficElement(trafficInfo.time, slidingWindow.max().volume));
+        }
+        return maximumVolumes;
+    }
+}
+```

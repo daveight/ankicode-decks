@@ -1,0 +1,76 @@
+```python
+import collections
+
+class TrafficElement:
+    def __init__(self, time: int, volume: float):
+        self.time = time
+        self.volume = volume
+
+    # Following operators are needed for QueueWithMax with maximum.
+    def __lt__(self, other):
+        return self.volume < other.volume
+
+    def __eq__(self, other):
+        return self.time == other.time and self.volume == other.volume
+
+class Stack:
+    ElementWithCachedMax = collections.namedtuple('ElementWithCachedMax', ('element', 'max'))
+
+    def __init__(self):
+        self._element_with_cached_max = []
+
+    def empty(self):
+        return len(self._element_with_cached_max) == 0
+
+    def max(self):
+        if self.empty():
+            raise IndexError('max(): empty stack')
+        return self._element_with_cached_max[-1].max
+
+    def pop(self):
+
+        if self.empty():
+            raise IndexError('pop(): empty stack')
+        return self._element_with_cached_max.pop().element
+
+    def push(self, x):
+        self._element_with_cached_max.append(
+            self.ElementWithCachedMax(x, x
+                                      if self.empty() else max(x, self.max())))
+
+class QueueWithMax:
+    def __init__(self):
+        self._enqueue = Stack()
+        self._dequeue = Stack()
+
+    def enqueue(self, x):
+        self._enqueue.push(x)
+
+    def dequeue(self):
+        if self._dequeue.empty():
+            while not self._enqueue.empty():
+                self._dequeue.push(self._enqueue.pop())
+        if not self._dequeue.empty():
+            return self._dequeue.pop()
+        raise IndexError('Cannot get dequeue() on empty queue.')
+
+    def max(self):
+        if not self._enqueue.empty():
+            return self._enqueue.max() if self._dequeue.empty() else max(
+                self._enqueue.max(), self._dequeue.max())
+        elif not self._dequeue.empty():
+            return self._dequeue.max()
+        raise IndexError('Cannot get max() on empty queue.')
+
+def compute_traffic_volumes(A: List[TrafficElement], w: int)->List[TrafficElement]:
+    sliding_window = QueueWithMax()
+    maximum_volumes = []
+    for traffic_info in A:
+        sliding_window.enqueue(traffic_info)
+        while traffic_info.time - sliding_window.max().time > w:
+            sliding_window.dequeue()
+        maximum_volumes.append(
+            TrafficElement(traffic_info.time,
+                           sliding_window.max().volume))
+    return maximum_volumes
+```

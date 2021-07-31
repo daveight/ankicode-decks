@@ -1,0 +1,29 @@
+```cxx
+#include <string>
+#include <vector>
+
+using std::string;
+using std::vector;
+
+class Solution {
+public:
+    string majoritySearch(const vector<string> &stream) {
+        vector<string>::const_iterator stream_begin = cbegin(stream);
+        vector<string>::const_iterator stream_end = cend(stream);
+        string candidate;
+        int candidate_count = 0;
+        while (stream_begin != stream_end) {
+            string it = *stream_begin++;
+            if (candidate_count == 0) {
+                candidate = it;
+                candidate_count = 1;
+            } else if (candidate == it) {
+                ++candidate_count;
+            } else {
+                --candidate_count;
+            }
+        }
+        return candidate;
+    }
+};
+```

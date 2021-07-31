@@ -1,0 +1,32 @@
+```cxx
+#include <algorithm>
+#include <functional>
+#include <vector>
+
+using std::greater;
+using std::vector;
+
+class Solution {
+public:
+    int findKthLargestUnknownLength(const vector<int> &stream, int k) {
+        vector<int>::const_iterator stream_begin = stream.cbegin();
+        vector<int>::const_iterator stream_end = stream.cend();
+        vector<int> candidates;
+        while (stream_begin != stream_end) {
+            candidates.emplace_back(*stream_begin++);
+            if (candidates.size() == 2 * k - 1) {
+                // Reorders elements about median with larger elements appearing before
+                // the median.
+                nth_element(begin(candidates), begin(candidates) + k - 1, end(candidates),
+                            greater<int>());
+                // Resize to keep just the k largest elements seen so far.
+                candidates.resize(k);
+            }
+        }
+        // Finds the k-th largest element in candidates.
+        nth_element(begin(candidates), begin(candidates) + k - 1, end(candidates),
+                    greater<int>());
+        return candidates[k - 1];
+    }
+};
+```

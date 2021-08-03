@@ -1,0 +1,30 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+    public ListNode<Integer> removeDuplicates(ListNode<Integer> L) {
+
+        ListNode<Integer> iter = L;
+        while (iter != null) {
+            // Uses nextDistinct to find the next distinct value.
+            ListNode<Integer> nextDistinct = iter.next;
+            while (nextDistinct != null && nextDistinct.data == iter.data) {
+                nextDistinct = nextDistinct.next;
+            }
+            iter.next = nextDistinct;
+            iter = nextDistinct;
+        }
+        return L;
+    }
+}
+```

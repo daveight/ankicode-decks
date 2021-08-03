@@ -1,0 +1,42 @@
+```cxx
+#include <algorithm>
+#include <tuple>
+#include <utility>
+#include <vector>
+using std::max;
+using std::min;
+using std::minmax;
+using std::pair;
+using std::tie;
+using std::vector;
+
+struct MinMax {
+    int smallest;
+    int largest;
+};
+
+class Solution {
+public:
+    MinMax findMinMax(const vector<int> &A) {
+        if (A.size() <= 1) {
+            return {A.front(), A.front()};
+        }
+    
+        int global_min, global_max;
+        tie(global_min, global_max) = minmax(A[0], A[1]);
+        // Process two elements at a time.
+        for (int i = 2; i + 1 < A.size(); i += 2) {
+            const auto&[local_min, local_max] = minmax(A[i], A[i + 1]);
+            global_min = min(global_min, local_min);
+            global_max = max(global_max, local_max);
+        }
+        // If there is odd number of elements in the array, we still
+        // need to compare the last element with the existing answer.
+        if (A.size() % 2) {
+            global_min = min(global_min, A.back());
+            global_max = max(global_max, A.back());
+        }
+        return {global_min, global_max};
+    }
+};
+```

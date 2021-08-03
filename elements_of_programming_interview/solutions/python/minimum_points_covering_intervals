@@ -1,0 +1,22 @@
+```python
+import collections
+import functools
+import operator
+
+class Interval:
+    def __init__(self, left: int, right: int):
+        self.left = left
+        self.right = right
+
+def find_minimum_visits(intervals):
+    # Sort intervals based on the right endpoints.
+    intervals.sort(key=operator.attrgetter('right'))
+    last_visit_time, num_visits = float('-inf'), 0
+    for interval in intervals:
+        if interval.left > last_visit_time:
+            # The current right endpoint, last_visit_time, will not cover any
+            # more intervals.
+            last_visit_time = interval.right
+            num_visits += 1
+    return num_visits
+```

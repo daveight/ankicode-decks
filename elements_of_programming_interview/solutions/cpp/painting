@@ -1,0 +1,59 @@
+```cxx
+#include <deque>
+#include <initializer_list>
+#include <queue>
+#include <utility>
+#include <vector>
+using std::deque;
+using std::initializer_list;
+using std::make_pair;
+using std::pair;
+using std::queue;
+using std::vector;
+
+class Solution {
+public:
+    vector<vector<int>> flipColor(int x, int y, vector<vector<int>> src) {
+        vector<deque<bool>> image;
+        src.reserve(image.size());
+        for (const vector<int> &row : src) {
+            deque<bool> tmp;
+            tmp.resize(row.size());
+            for (int i = 0; i < row.size(); ++i) {
+                tmp[i] = static_cast<bool>(row[i]);
+            }
+            image.push_back(tmp);
+        }
+        const bool color = image[x][y];
+
+        queue<pair<int, int>> q;
+        image[x][y] = !color;  // Flips.
+        q.emplace(x, y);
+        while (!q.empty()) {
+            const auto[x, y] = q.front();
+            q.pop();
+            for (const auto&[next_x, next_y] : initializer_list<pair<int, int>>{
+                    {x,     y + 1},
+                    {x,     y - 1},
+                    {x + 1, y},
+                    {x - 1, y}}) {
+                if (next_x >= 0 && next_x < image.size() && next_y >= 0 &&
+                    next_y < image[next_x].size() && image[next_x][next_y] == color) {
+                    // Flips the color.
+                    image[next_x][next_y] = !color;
+                    q.emplace(next_x, next_y);
+                }
+            }
+        }
+        src.resize(image.size());
+
+        for (int i = 0; i < src.size(); ++i) {
+            src[i].resize(image.size());
+            for (int j = 0; j < src[i].size(); ++j) {
+                src[i][j] = image[i][j];
+            }
+        }
+        return src;
+    }
+};
+```

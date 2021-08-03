@@ -1,0 +1,24 @@
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class Solution {
+    public int numberOfWays(int n, int m) {
+        if (n < m) {
+            int temp = n;
+            n = m;
+            m = temp;
+        }
+        List<Integer> A = new ArrayList<>(Collections.nCopies(m, 1));
+        for (int i = 1; i < n; ++i) {
+            int prevRes = 0;
+            for (int j = 0; j < m; ++j) {
+                A.set(j, A.get(j) + prevRes);
+                prevRes = A.get(j);
+            }
+        }
+        return A.get(m - 1);
+    }
+}
+```

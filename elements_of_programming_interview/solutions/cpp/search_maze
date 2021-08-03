@@ -1,0 +1,58 @@
+```cxx
+#include <initializer_list>
+#include <istream>
+#include <string>
+#include <vector>
+using std::vector;
+
+struct Coordinate {
+    bool operator==(const Coordinate &that) const {
+        return x == that.x && y == that.y;
+    }
+
+    int x, y;
+};
+
+class Solution {
+public:
+    typedef enum {
+        kWhite, kBlack
+    } Color;
+    
+    bool searchMaze(vector<vector<int>> maze, const Coordinate &s,
+                                  const Coordinate &e) {
+        vector<Coordinate> path;
+        searchMazeHelper(s, e, &maze, &path);
+        return path.empty() ? s == e : true;
+    }
+
+    // Perform DFS to find a feasible path.
+    bool searchMazeHelper(const Coordinate &cur, const Coordinate &e,
+                          vector<vector<int>> *maze_ptr,
+                          vector<Coordinate> *path_ptr) {
+        auto &maze = *maze_ptr;
+        // Checks cur is within maze and is a white pixel.
+        if (cur.x < 0 || cur.x >= maze.size() || cur.y < 0 ||
+            cur.y >= maze[cur.x].size() || maze[cur.x][cur.y] != kWhite) {
+            return false;
+        }
+        auto &path = *path_ptr;
+        path.emplace_back(cur);
+        maze[cur.x][cur.y] = kBlack;
+        if (cur == e) {
+            return true;
+        }
+    
+        for (const Coordinate &next_move :
+                {Coordinate{cur.x, cur.y + 1}, Coordinate{cur.x, cur.y - 1},
+                 Coordinate{cur.x + 1, cur.y}, Coordinate{cur.x - 1, cur.y}}) {
+            if (searchMazeHelper(next_move, e, maze_ptr, path_ptr)) {
+                return true;
+            }
+        }
+        // Cannot find a path, remove the entry added in path.emplace_back(cur).
+        path.pop_back();
+        return false;
+    }
+};
+```

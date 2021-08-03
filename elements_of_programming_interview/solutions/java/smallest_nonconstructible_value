@@ -1,0 +1,18 @@
+```java
+import java.util.Collections;
+import java.util.List;
+
+public class Solution {
+    public int smallestNonconstructibleValue(List<Integer> A) {
+        Collections.sort(A);
+        int maxConstructibleValue = 0;
+        for (int a : A) {
+            if (a > maxConstructibleValue + 1) {
+                break;
+            }
+            maxConstructibleValue += a;
+        }
+        return maxConstructibleValue + 1;
+    }
+}
+```

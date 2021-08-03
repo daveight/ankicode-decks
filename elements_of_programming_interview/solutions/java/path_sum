@@ -1,0 +1,28 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    public boolean hasPathSum(BinaryTreeNode<Integer> tree, int remainingWeight) {
+        if (tree == null) {
+            return false;
+        } else if (tree.left == null && tree.right == null) { // Leaf.
+            return remainingWeight == tree.data;
+        }
+        // Non-leaf.
+        return hasPathSum(tree.left, remainingWeight - tree.data) ||
+                hasPathSum(tree.right, remainingWeight - tree.data);
+    }
+}
+```

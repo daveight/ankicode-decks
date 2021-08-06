@@ -1,4 +1,4 @@
-int	list(object(int[fr], int[to])<Edge>)[graph]	bool
+int[numNodes]	list(object(int[fr], int[to])<Edge>)[graph]	bool
 2	[[0, 1], [1, 0]]	true
 3	[[0, 1], [1, 2], [2, 0]]	true
 4	[[0, 1], [0, 2], [0, 3]]	false

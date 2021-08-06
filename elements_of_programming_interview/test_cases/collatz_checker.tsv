@@ -1,8 +1,8 @@
-int	bool
-1	true	TODO
-10	true	TODO
-100	true	TODO
-1000	true	TODO
-10000	true	TODO
-100000	true	TODO
-1000000	true	TODO
+int[n]	bool
+1	true
+10	true
+100	true
+1000	true
+10000	true
+100000	true
+1000000	true

@@ -1,0 +1,30 @@
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+class PairedTasks {
+    int task_1;
+    int task_2;
+
+    PairedTasks(int task_1, int task_2) {
+        this.task_1 = task_1;
+        this.task_2 = task_2;
+    }
+
+    PairedTasks() { }
+}
+
+public class Solution {
+    public List<PairedTasks> optimumTaskAssignment(List<Integer> taskDurations) {
+
+        Collections.sort(taskDurations);
+        List<PairedTasks> optimumAssignments = new ArrayList<>();
+        for (int i = 0, j = taskDurations.size() - 1; i < j; ++i, --j) {
+            optimumAssignments.add(
+                    new PairedTasks(taskDurations.get(i), taskDurations.get(j)));
+        }
+        return optimumAssignments;
+    }
+}
+```

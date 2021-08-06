@@ -1,0 +1,67 @@
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+    BinaryTreeNode<T> next;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    public List<List<Integer>> constructRightSibling(BinaryTreeNode<Integer> tree) {
+        BinaryTreeNode<Integer> cloned = cloneTree(tree);
+        BinaryTreeNode<Integer> pointer = cloned;
+        while (pointer != null) {
+            populateLowerLevelNextField(pointer);
+            pointer = pointer.left;
+        }
+        List<List<Integer>> result = new ArrayList<>();
+        BinaryTreeNode<Integer> levelStart = cloned;
+        while (levelStart != null) {
+            List<Integer> level = new ArrayList<>();
+            BinaryTreeNode<Integer> levelIt = levelStart;
+            while (levelIt != null) {
+                level.add(levelIt.data);
+                levelIt = levelIt.next;
+            }
+            result.add(level);
+            levelStart = levelStart.left;
+        }
+        return result;
+    }
+
+    private void populateLowerLevelNextField(BinaryTreeNode<Integer> startNode) {
+        while (startNode != null && startNode.left != null) {
+            // Populate left child's next field.
+            startNode.left.next = startNode.right;
+            // Populate right child's next field if startNode is not the last node
+            // of this level.
+            if (startNode.next != null) {
+                startNode.right.next = startNode.next.left;
+            }
+            startNode = startNode.next;
+        }
+    }
+
+    private BinaryTreeNode<Integer> cloneTree(BinaryTreeNode<Integer> original) {
+        if (original == null) {
+            return null;
+        }
+        BinaryTreeNode<Integer> cloned = new BinaryTreeNode<>(original.data, null, null);
+        cloned.left = cloneTree(original.left);
+        cloned.right = cloneTree(original.right);
+        return cloned;
+    }
+}
+
+```

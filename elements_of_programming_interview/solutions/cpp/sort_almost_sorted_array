@@ -1,0 +1,40 @@
+```cxx
+#include <functional>
+#include <queue>
+#include <string>
+#include <vector>
+using std::greater;
+using std::priority_queue;
+using std::string;
+using std::vector;
+
+class Solution {
+public:
+    vector<int> sortApproximatelySortedData(const vector<int> &sequence, int k) {
+        vector<int>::const_iterator sequence_begin = cbegin(sequence);
+        const vector<int>::const_iterator &sequence_end = cend(sequence);
+        priority_queue<int, vector<int>, greater<>> min_heap;
+        // Adds the first k elements into min_heap. Stop if there are fewer than k
+        // elements.
+        for (int i = 0; i < k && sequence_begin != sequence_end; ++i) {
+            min_heap.push(*sequence_begin++);
+        }
+    
+        vector<int> result;
+        // For every new element, add it to min_heap and extract the smallest.
+        while (sequence_begin != sequence_end) {
+            min_heap.push(*sequence_begin++);
+            result.push_back(min_heap.top());
+            min_heap.pop();
+        }
+    
+        // sequence is exhausted, iteratively extracts the remaining elements.
+        while (!min_heap.empty()) {
+            result.push_back(min_heap.top());
+            min_heap.pop();
+        }
+    
+        return result;
+    }
+};
+```

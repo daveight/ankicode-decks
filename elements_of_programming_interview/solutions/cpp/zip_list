@@ -1,0 +1,58 @@
+```cxx
+#include <memory>
+using std::shared_ptr;
+
+template<typename T>
+
+struct ListNode {
+public:
+    T data;
+    shared_ptr<ListNode<T>> next;
+    ListNode() { }
+    ListNode(T data) : data{data}, next{nullptr} { }
+    ListNode(T data, shared_ptr<ListNode<T>> next) : data{data}, next{next} { }
+};
+
+class Solution {
+public:
+    shared_ptr<ListNode<int>> zippingLinkedList(const shared_ptr<ListNode<int>> &L) {
+        if (!L || !L->next) {
+            return L;
+        }
+
+        // Finds the second half of L.
+        auto slow = L, fast = L;
+        while (fast && fast->next) {
+            fast = fast->next->next, slow = slow->next;
+        }
+
+        auto first_half_head = L, second_half_head = slow->next;
+        slow->next = nullptr;  // Splits the list into two lists.
+
+        second_half_head = reverseLinkedList(second_half_head);
+
+        // Interleave the first half and the reversed of the second half.
+        auto first_half_iter = first_half_head, second_half_iter = second_half_head;
+        while (second_half_iter) {
+            auto temp = second_half_iter->next;
+            second_half_iter->next = first_half_iter->next;
+            first_half_iter->next = second_half_iter;
+            first_half_iter = first_half_iter->next->next;
+            second_half_iter = temp;
+        }
+        return first_half_head;
+    }
+
+private:
+    shared_ptr<ListNode<int>> reverseLinkedList(const shared_ptr<ListNode<int>>& head) {
+        shared_ptr<ListNode<int>> prev = nullptr, curr = head;
+        while (curr) {
+            auto next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+};
+```

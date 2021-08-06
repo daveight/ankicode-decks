@@ -1,0 +1,83 @@
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    public List<Integer> exteriorBinaryTree(BinaryTreeNode<Integer> tree) {
+        if (tree == null) {
+            return Collections.emptyList();
+        }
+
+        List<BinaryTreeNode<Integer>> exterior = new ArrayList<>() {
+            { add(tree); }
+        };
+        leftBoundary(tree.left, exterior);
+        leaves(tree.left, exterior);
+        leaves(tree.right, exterior);
+        rightBoundary(tree.right, exterior);
+        return createOutputList(exterior);
+    }
+
+    // Computes the nodes from the root to the leftmost leaf.
+    private void leftBoundary(BinaryTreeNode<Integer> subtree, List<BinaryTreeNode<Integer>> exterior) {
+        if (subtree == null || (subtree.left == null && subtree.right == null)) {
+            return;
+        }
+        exterior.add(subtree);
+        if (subtree.left != null) {
+            leftBoundary(subtree.left, exterior);
+        } else {
+            leftBoundary(subtree.right, exterior);
+        }
+    }
+
+    // Computes the nodes from the rightmost leaf to the root.
+    private void rightBoundary(BinaryTreeNode<Integer> subtree, List<BinaryTreeNode<Integer>> exterior) {
+        if (subtree == null || (subtree.left == null && subtree.right == null)) {
+            return;
+        }
+        if (subtree.right != null) {
+            rightBoundary(subtree.right, exterior);
+        } else {
+            rightBoundary(subtree.left, exterior);
+        }
+        exterior.add(subtree);
+    }
+
+    // Compute the leaves in left-to-right order.
+    private void leaves(BinaryTreeNode<Integer> subtree, List<BinaryTreeNode<Integer>> exterior) {
+        if (subtree == null) {
+            return;
+        }
+        if (subtree.left == null && subtree.right == null) {
+            exterior.add(subtree);
+            return;
+        }
+        leaves(subtree.left, exterior);
+        leaves(subtree.right, exterior);
+    }
+
+    private List<Integer> createOutputList(List<BinaryTreeNode<Integer>> L) {
+        List<Integer> output = new ArrayList<>();
+        for (BinaryTreeNode<Integer> l : L) {
+            output.add(l.data);
+        }
+        return output;
+    }
+}
+```

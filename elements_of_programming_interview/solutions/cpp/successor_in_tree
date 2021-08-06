@@ -1,0 +1,71 @@
+```cxx
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    shared_ptr<BinaryTreeNode<T>> parent;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Solution {
+public:
+    int findSuccessor(shared_ptr<BinaryTreeNode<int>> node, int idx) {
+        addParentLink(node, nullptr);
+        node = findNode(node, idx);
+        auto iter = node;
+        if (iter->right != nullptr) {
+            // Successor is the leftmost element in node's right subtree.
+            iter = iter->right;
+            while (iter->left) {
+                iter = iter->left;
+            }
+            return iter ? iter->data : -1;
+        }
+
+        // Find the closest ancestor whose left subtree contains node.
+        while (iter->parent != nullptr && iter->parent->right == iter) {
+            iter = iter->parent;
+        }
+        // A return value of nullptr means node does not have successor, i.e., it is
+        // the rightmost node in the tree.
+        return iter->parent ? iter->parent->data : -1;
+    }
+private:
+    shared_ptr<BinaryTreeNode<int>> findNode(const shared_ptr<BinaryTreeNode<int>>& tree, int val) {
+        if (tree) {
+            if (tree->data == val) {
+                return tree;
+            }
+
+            const auto& left_result = findNode(tree->left, val);
+            if (left_result) {
+                return left_result;
+            }
+
+            const auto& right_result = findNode(tree->right, val);
+            if (right_result) {
+                return right_result;
+            }
+        }
+
+        return nullptr;
+    }
+
+    void addParentLink(const shared_ptr<BinaryTreeNode<int>>& node, const shared_ptr<BinaryTreeNode<int>>& parent) {
+        if (node == nullptr) {
+            return;
+        }
+        node->parent = parent;
+        addParentLink(node->left, node);
+        addParentLink(node->right, node);
+    }
+};
+```

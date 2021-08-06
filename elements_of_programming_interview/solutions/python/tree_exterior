@@ -1,0 +1,50 @@
+```python
+T = TypeVar('T')
+
+class BinaryTreeNode(Generic[T]):
+    def __init__(self, data: Optional[Type[T]]=None, left=None, right=None):
+        self.data = data
+        self.left = left
+        self.right = right
+
+def exterior_binary_tree(tree):
+    # Computes the nodes from the root to the leftmost leaf.
+    def left_boundary(subtree):
+        if not subtree or (not subtree.left and not subtree.right):
+            return
+        exterior.append(subtree)
+        if subtree.left:
+            left_boundary(subtree.left)
+        else:
+            left_boundary(subtree.right)
+
+    # Computes the nodes from the rightmost leaf to the root.
+    def right_boundary(subtree):
+        if not subtree or (not subtree.left and not subtree.right):
+            return
+        if subtree.right:
+            right_boundary(subtree.right)
+        else:
+            right_boundary(subtree.left)
+        exterior.append(subtree)
+
+    # Compute the leaves in left-to-right order.
+    def leaves(subtree):
+        if not subtree:
+            return
+        if not subtree.left and not subtree.right:
+            exterior.append(subtree)
+            return
+        leaves(subtree.left)
+        leaves(subtree.right)
+
+    if not tree:
+        return []
+
+    exterior = [tree]
+    left_boundary(tree.left)
+    leaves(tree.left)
+    leaves(tree.right)
+    right_boundary(tree.right)
+    return [l.data for l in exterior]
+```

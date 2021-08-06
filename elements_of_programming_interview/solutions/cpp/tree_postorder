@@ -1,0 +1,66 @@
+```cxx
+#include <memory>
+#include <stack>
+#include <vector>
+using std::stack;
+using std::shared_ptr;
+using std::vector;
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Solution {
+public:
+    // We use stack and previous node pointer to simulate postorder traversal.
+    vector<int> postorderTraversal(const shared_ptr<BinaryTreeNode<int>> &tree) {
+        if (tree == nullptr) {  // Empty tree.
+            return {};
+        }
+    
+        stack<BinaryTreeNode<int> *> path;
+        BinaryTreeNode<int> *prev = nullptr;
+        path.emplace(tree.get());
+        vector<int> postorder_sequence;
+        while (!path.empty()) {
+            auto curr = path.top();
+            if (prev == nullptr || prev->left.get() == curr ||
+                prev->right.get() == curr) {
+                // We came down to curr from prev.
+                if (curr->left != nullptr) {  // Traverse left.
+                    path.emplace(curr->left.get());
+                } else if (curr->right != nullptr) {  // Traverse right.
+                    path.emplace(curr->right.get());
+                } else {  // Leaf node, so visit current node.
+                    postorder_sequence.emplace_back(curr->data);
+                    path.pop();
+                }
+            } else if (curr->left.get() == prev) {
+                // Done with left, so now traverse right.
+                if (curr->right != nullptr) {
+                    path.emplace(curr->right.get());
+                } else {  // No right child, so visit curr.
+                    postorder_sequence.emplace_back(curr->data);
+                    path.pop();
+                }
+            } else {
+                // Finished traversing left and right, so visit curr.
+                postorder_sequence.emplace_back(curr->data);
+                path.pop();
+            }
+            prev = curr;
+        }
+        return postorder_sequence;
+    }
+};
+```

@@ -1,0 +1,90 @@
+```cxx
+#include <algorithm>
+#include <vector>
+using std::vector;
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Solution {
+public:
+    vector<int> exteriorBinaryTree(
+            const shared_ptr<BinaryTreeNode<int>> &tree) {
+        if (tree == nullptr) {
+            return {};
+        }
+
+        vector<const shared_ptr<BinaryTreeNode<int>> *> exterior{&tree};
+        leftBoundary(tree->left, &exterior);
+        leaves(tree->left, &exterior);
+        leaves(tree->right, &exterior);
+        rightBoundary(tree->right, &exterior);
+        return createOutputVector(exterior);
+    }
+private:
+    // Computes the nodes from the root to the leftmost leaf.
+    void leftBoundary(
+            const shared_ptr<BinaryTreeNode<int>> &subtree,
+            vector<const shared_ptr<BinaryTreeNode<int>> *> *exterior_ptr) {
+        if (subtree == nullptr ||
+            (subtree->left == nullptr && subtree->right == nullptr)) {
+            return;
+        }
+        exterior_ptr->emplace_back(&subtree);
+        if (subtree->left != nullptr) {
+            leftBoundary(subtree->left, exterior_ptr);
+        } else {
+            leftBoundary(subtree->right, exterior_ptr);
+        }
+    }
+
+    // Computes the nodes from the rightmost leaf to the root.
+    void rightBoundary(
+            const shared_ptr<BinaryTreeNode<int>> &subtree,
+            vector<const shared_ptr<BinaryTreeNode<int>> *> *exterior_ptr) {
+        if (subtree == nullptr ||
+            (subtree->left == nullptr && subtree->right == nullptr)) {
+            return;
+        }
+        if (subtree->right != nullptr) {
+            rightBoundary(subtree->right, exterior_ptr);
+        } else {
+            rightBoundary(subtree->left, exterior_ptr);
+        }
+        exterior_ptr->emplace_back(&subtree);
+    }
+
+    // Compute the leaves in left-to-right order.
+    void leaves(const shared_ptr<BinaryTreeNode<int>> &subtree,
+                vector<const shared_ptr<BinaryTreeNode<int>> *> *exterior_ptr) {
+        if (subtree == nullptr) {
+            return;
+        }
+        if (subtree->left == nullptr && subtree->right == nullptr) {
+            exterior_ptr->emplace_back(&subtree);
+            return;
+        }
+        leaves(subtree->left, exterior_ptr);
+        leaves(subtree->right, exterior_ptr);
+    }
+
+    vector<int> createOutputVector(const vector<const shared_ptr<BinaryTreeNode<int>> *> &L) {
+        std::vector<int> output;
+        for (const auto *l : L) {
+            output.push_back((*l)->data);
+        }
+        return output;
+    }
+};
+```

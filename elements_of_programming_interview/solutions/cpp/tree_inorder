@@ -1,0 +1,47 @@
+```cxx
+#include <memory>
+#include <stack>
+#include <vector>
+using std::stack;
+using std::unique_ptr;
+using std::vector;
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Solution {
+public:
+    vector<int> inorderTraversal(const shared_ptr<BinaryTreeNode<int>> &tree) {
+        stack<const BinaryTreeNode<int> *> s;
+        const auto *curr = tree.get();
+        vector<int> result;
+    
+        while (!s.empty() || curr) {
+            if (curr) {
+                s.push(curr);
+                // Going left.
+                curr = curr->left.get();
+            } else {
+                // Going up.
+                curr = s.top();
+                s.pop();
+                result.emplace_back(curr->data);
+                // Going right.
+                curr = curr->right.get();
+            }
+        }
+        return result;
+    }
+};
+```

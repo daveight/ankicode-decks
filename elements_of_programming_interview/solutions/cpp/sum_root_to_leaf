@@ -1,0 +1,37 @@
+```cxx
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Solution {
+public:
+    int sumRootToLeaf(const shared_ptr<BinaryTreeNode<int>> &tree) {
+        return sumRootToLeafHelper(tree, 0);
+    }
+
+    int sumRootToLeafHelper(const shared_ptr<BinaryTreeNode<int>> &tree,
+                            int partial_path_sum) {
+        if (tree == nullptr) {
+            return 0;
+        }
+    
+        partial_path_sum = partial_path_sum * 2 + tree->data;
+        if (tree->left == nullptr && tree->right == nullptr) {  // Leaf.
+            return partial_path_sum;
+        }
+        // Non-leaf.
+        return sumRootToLeafHelper(tree->left, partial_path_sum) +
+               sumRootToLeafHelper(tree->right, partial_path_sum);
+    }
+};
+```

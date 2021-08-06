@@ -1,0 +1,60 @@
+```cxx
+#include <memory>
+#include <queue>
+#include <vector>
+using std::queue;
+using std::shared_ptr;
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    shared_ptr<BinaryTreeNode<T>> next;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+        this->next = nullptr;
+    }
+};
+
+class Solution {
+public:
+    vector<vector<int>> constructRightSibling(shared_ptr<BinaryTreeNode<int>> tree) {
+        shared_ptr<BinaryTreeNode<int>> pointer = tree;
+        while (pointer && pointer->left) {
+            populateLowerLevelNextField(pointer);
+            pointer = pointer->left;
+        }
+
+        std::vector<std::vector<int>> result;
+        auto level_start = tree;
+        while (level_start) {
+            result.emplace_back();
+            auto level_iter = level_start;
+            while (level_iter) {
+                result.back().push_back(level_iter->data);
+                level_iter = level_iter->next;
+            }
+            level_start = level_start->left;
+        }
+        return result;
+    }
+
+    void populateLowerLevelNextField(shared_ptr<BinaryTreeNode<int>> start_node) {
+        while (start_node) {
+            // Populate left child's next field.
+            start_node->left->next = start_node->right;
+            // Populate right child's next field if start_node is not the last node of
+            // this level.
+            if (start_node->next) {
+                start_node->right->next = start_node->next->left;
+            }
+            start_node = start_node->next;
+        }
+    }
+};
+```

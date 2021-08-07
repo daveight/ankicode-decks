@@ -4,7 +4,6 @@ import java.util.List;
 
 public class Solution {
     public int findLongestSubarrayLessEqualK(List<Integer> A, int k) {
-
         // Build the prefix sum according to A.
         List<Integer> prefixSum = new ArrayList<>();
         int sum = 0;

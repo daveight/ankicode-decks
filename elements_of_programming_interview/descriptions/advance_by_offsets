@@ -1,3 +1,2 @@
-Given an array of integers where each element represents the max number of steps that can be made forward from that element.
-Write a function to return the minimum number of jumps to reach the end of the array (starting from the first element).
-If an element is 0, they cannot move through that element.
+Write a program which takes an array of n integers, where A[i] denotes the maximum you can advance from index i,
+and returns whether it is possible to advance to the last index starting from the beginning of the array.

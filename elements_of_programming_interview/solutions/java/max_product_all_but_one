@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Solution {
     public int findBiggestProductNMinusOneProduct(List<Integer> A) {
-
         // Builds suffix products.
         int product = 1;
         List<Integer> suffixProducts =

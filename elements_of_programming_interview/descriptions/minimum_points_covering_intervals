@@ -1,1 +1,2 @@
--
+You are given a set of closed intervals. Design an efficient algorithm for finding a minimum sized set of numbers that
+covers all the intervals.

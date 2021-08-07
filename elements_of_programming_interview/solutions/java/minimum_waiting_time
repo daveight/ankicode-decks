@@ -4,7 +4,6 @@ import java.util.List;
 
 public class Solution {
     public int minimumTotalWaitingTime(List<Integer> serviceTimes) {
-
         // Sort the service times in increasing order.
         Collections.sort(serviceTimes);
 

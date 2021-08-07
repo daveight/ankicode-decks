@@ -1,1 +1,2 @@
--
+You are given traffic at various timestamps and a window length. Compute for each input timestamp, the maximum traffic
+over the window length time interval which ends at that timestamp.

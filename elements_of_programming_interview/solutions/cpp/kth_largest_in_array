@@ -23,7 +23,6 @@ public:
         return FindKth(k, greater<int>(), &A_ptr);
     }
 
-
     template<typename Compare>
     int FindKth(int k, Compare comp, vector<int>* A_ptr) {
         vector<int> A = *A_ptr;

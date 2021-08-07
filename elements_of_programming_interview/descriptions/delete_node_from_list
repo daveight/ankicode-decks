@@ -1,1 +1,1 @@
--
+Delete the node immediately following aNode. Assumes aNode is not a tail.

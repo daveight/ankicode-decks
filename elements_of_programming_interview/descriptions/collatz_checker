@@ -1,5 +1,3 @@
 The Collatz conjecture is a conjecture that a particular sequence always reaches 1.
-The sequence is defined as: start with a number n.
-The next number in the sequence is n/2 if n is even and 3n + 1 if n is odd.
-
-Test the Collatz conjecture for the first n positive integers.
+The sequence is defined as: start with a number n. The next number in the sequence is n/2 if n is even and 3n + 1
+if n is odd. Test the Collatz conjecture for the first n positive integers.

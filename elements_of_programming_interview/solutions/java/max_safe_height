@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Solution {
     public int getHeight(int cases, int drops) {
-
         List<List<Integer>> F = new ArrayList<>(cases + 1);
         for (int i = 0; i < cases + 1; ++i) {
             F.add(new ArrayList<>(Collections.nCopies(drops + 1, -1)));
@@ -20,8 +19,7 @@ public class Solution {
             return drops;
         }
         if (F.get(cases).get(drops) == -1) {
-            F.get(cases).set(drops, getHeightHelper(cases, drops - 1, F) +
-                                                                    getHeightHelper(cases - 1, drops - 1, F) + 1);
+            F.get(cases).set(drops, getHeightHelper(cases, drops - 1, F) + getHeightHelper(cases - 1, drops - 1, F) + 1);
         }
         return F.get(cases).get(drops);
     }

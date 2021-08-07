@@ -8,7 +8,6 @@ class Interval {
 
 public class Solution {
     public Integer findMinimumVisits(List<Interval> intervals) {
-
         // Sort intervals based on the right endpoints.
         intervals.sort((i1, i2) -> Integer.compare(i1.right, i2.right));
         Integer lastVisitTime = Integer.MIN_VALUE;

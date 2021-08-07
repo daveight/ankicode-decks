@@ -1,1 +1,1 @@
-Write a program which applies a permutation P to an array A, using O(1) extra space.
+Given an array A of n elements and a permutation P, apply P to A.

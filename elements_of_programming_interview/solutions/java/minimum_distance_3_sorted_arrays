@@ -24,7 +24,6 @@ public class Solution {
         }
     }
 
-
     public int findMinDistanceSortedArrays(List<List<Integer>> sortedArrays) {
         // Indices into each of the arrays.
         List<Integer> heads = new ArrayList<>(sortedArrays.size());

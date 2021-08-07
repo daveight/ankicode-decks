@@ -1,1 +1,2 @@
--
+Write a program which takes two nodes in a BST and a third node, the "middle" node, and determines if one of the two
+nodes is a proper ancestor and the other a proper descendant of the middle.

@@ -1,1 +1,3 @@
--
+The goal of this problem is to design an algorithm for computing the kth largest element in a sequence of elements that
+is presented one element at a time. The length of the sequence is not known in advance, and could be very large.
+Design an algorithm for computing the kth largest element in a sequence of elements.

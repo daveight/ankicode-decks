@@ -1,1 +1,2 @@
--
+Let A be an array representing the heights of adjacent buildings of unit width. Design an algorithm to compute the area
+of the largest rectangle contained in this skyline.

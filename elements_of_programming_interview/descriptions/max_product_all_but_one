@@ -1,1 +1,3 @@
--
+Given an array A of length n whose entries are integers, compute the largest product that can be made using n - 1
+entries in A. You cannot use an entry more than once. Array entries may be positive, negative, or 0. Your algorithm
+cannot use the division operator, explicitly or implicitly.

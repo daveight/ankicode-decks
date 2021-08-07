@@ -17,7 +17,6 @@ public class Solution {
     // Input nodes are nonempty and the key at s is less than or equal to that at
     // b.
     public BinaryTreeNode<Integer> findLCA(BinaryTreeNode<Integer> tree, BinaryTreeNode<Integer> s, BinaryTreeNode<Integer> b) {
-
         BinaryTreeNode<Integer> p = tree;
         while (p.data < s.data || p.data > b.data) {
             // Keep searching since p is outside of [s, b].

@@ -70,7 +70,6 @@ class QueueWithMaxUsingDeque {
 
 public class Solution {
     public List<TrafficElement> computeTrafficVolumes(List<TrafficElement> A, int w) {
-
         QueueWithMaxUsingDeque.QueueWithMax<TrafficElement> slidingWindow =
                 new QueueWithMaxUsingDeque.QueueWithMax<>();
         List<TrafficElement> maximumVolumes = new ArrayList<>();

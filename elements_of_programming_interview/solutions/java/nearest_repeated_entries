@@ -5,7 +5,6 @@ import java.util.Map;
 
 public class Solution {
     public int findNearestRepetition(List<String> paragraph) {
-
         Map<String, Integer> wordToLatestIndex = new HashMap<>();
         int nearestRepeatedDistance = Integer.MAX_VALUE;
         for (int i = 0; i < paragraph.size(); ++i) {

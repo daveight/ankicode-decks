@@ -3,7 +3,6 @@ import java.util.List;
 
 public class Solution {
     public int binarySearchUnknownLength(List<Integer> A, int k) {
-
         // Find a range where k exists, if it's present.
         int p = 0;
         while (true) {

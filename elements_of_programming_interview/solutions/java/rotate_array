@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Solution {
     public List<Integer> rotateArray(List<Integer> A, int rotateAmount) {
-
         rotateAmount %= A.size();
         reverse(0, A.size(), A);
         reverse(0, rotateAmount, A);

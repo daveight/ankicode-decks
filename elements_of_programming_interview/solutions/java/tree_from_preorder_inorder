@@ -19,9 +19,7 @@ class BinaryTreeNode<T> {
 }
 
 public class Solution {
-    public BinaryTreeNode<Integer>
-    binaryTreeFromPreorderInorder(List<Integer> preorder, List<Integer> inorder) {
-
+    public BinaryTreeNode<Integer> binaryTreeFromPreorderInorder(List<Integer> preorder, List<Integer> inorder) {
         return binaryTreeFromPreorderInorderHelper(
                 preorder, 0, preorder.size(), 0, inorder.size(), IntStream.range(0, inorder.size())
                         .boxed()
@@ -30,8 +28,8 @@ public class Solution {
 
     // Builds the subtree with preorder.subList(preorderStart, preorderEnd) and
     // inorder.subList(inorderStart, inorderEnd).
-    private BinaryTreeNode<Integer>
-    binaryTreeFromPreorderInorderHelper(List<Integer> preorder, int preorderStart, int preorderEnd, int inorderStart, int inorderEnd, Map<Integer, Integer> nodeToInorderIdx) {
+    private BinaryTreeNode<Integer> binaryTreeFromPreorderInorderHelper(List<Integer> preorder,
+        int preorderStart, int preorderEnd, int inorderStart, int inorderEnd, Map<Integer, Integer> nodeToInorderIdx) {
         if (preorderEnd <= preorderStart || inorderEnd <= inorderStart) {
             return null;
         }

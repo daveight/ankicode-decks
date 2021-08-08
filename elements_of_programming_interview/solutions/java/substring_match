@@ -3,7 +3,6 @@ public class Solution {
     // Returns the index of the first character of the substring if found, -1
     // otherwise.
     public int rabinKarp(String t, String s) {
-
         if (s.length() > t.length()) {
             return -1; // s is not a substring of t.
         }

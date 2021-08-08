@@ -1,1 +1,4 @@
--
+When you type keywords in a search engine, the search engine will return results, and each result contains a digest of
+the web page, i.e., a highlighting within that page of the keywords that you searched for.
+Write a program which takes an array of strings and a set of strings, and return the indices of the starting and ending
+index of a shortest subarray of the given array that "covers" the set, i.e., contains all strings in the set.

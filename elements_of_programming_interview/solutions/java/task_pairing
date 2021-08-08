@@ -17,7 +17,6 @@ class PairedTasks {
 
 public class Solution {
     public List<PairedTasks> optimumTaskAssignment(List<Integer> taskDurations) {
-
         Collections.sort(taskDurations);
         List<PairedTasks> optimumAssignments = new ArrayList<>();
         for (int i = 0, j = taskDurations.size() - 1; i < j; ++i, --j) {

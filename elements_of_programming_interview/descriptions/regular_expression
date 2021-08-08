@@ -1,1 +1,10 @@
--
+A regular expression is a sequence of characters that forms a search pattern. For this problem we define a simple subset
+of a full regular expression language. We describe regular expressions by examples, rather than a formal syntax and
+semantics.
+A regular expression is a string made up of the following characters: alphanumeric, . (dot), * (star), A, and $.
+Examples of regular expressions are a, aW, aW.9, aW.9», aW.*9», Aa, aW$, and AaW.9*$. Not all strings are valid regular
+expressions. For example, if A appears, it must be the first character, if $ appears, it must be the last character, and
+star must follow an alphanumeric character or dot. Beyond the base cases—a single alphanumeric character, dot, a single
+alphanumeric character followed by a star, dot followed by star—regular expressions are concatenations of shorter
+regular expressions.
+Design an algorithm that takes a regular expression and a string, and checks if the regular expression matches the string.

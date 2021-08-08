@@ -1,1 +1,8 @@
--
+The California Department of Transportation is considering adding a new section of highway to the California Highway
+System. Each highway section connects two cities. City officials have submitted proposals for the new highway—each
+proposal includes the pair of cities being connected and the length of the section.
+Write a program which takes the existing highway network (specified as a set of highway sections between pairs of
+cities) and proposals for new highway sections, and returns the proposed highway section which leads to the most
+improvement in the total driving distance. The total driving distance is defined to be the sum of the shortest path
+distances between all pairs of cities. All sections, existing and proposed, allow for bi-directional traffic, and the
+original network is connected.

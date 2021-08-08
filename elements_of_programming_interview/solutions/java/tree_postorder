@@ -22,7 +22,6 @@ class BinaryTreeNode<T> {
 public class Solution {
     // We use stack and previous node pointer to simulate postorder traversal.
     public List<Integer> postorderTraversal(BinaryTreeNode<Integer> tree) {
-
         if (tree == null) { // Empty tree.
             return Collections.emptyList();
         }

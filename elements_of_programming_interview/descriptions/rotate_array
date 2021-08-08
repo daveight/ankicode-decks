@@ -1,1 +1,5 @@
--
+Let A be an array of n elements. If memory is not a concern, rotating A by i positions is trivial; we create a new array
+B of length n, and set B[y] = A[(i+j) mod n] for each j. If all we have is additional storage for c elements, we can
+repeatedly rotate the array by c a total of [i/c] times; this increases the time complexity to 0(n[i/c]).
+Design an algorithm for rotating an array A of n elements to the right by i positions. Do not use library functions
+implementing rotate.

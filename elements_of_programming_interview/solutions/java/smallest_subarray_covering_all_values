@@ -17,7 +17,6 @@ public class Solution {
     }
 
     public int findSmallestSequentiallyCoveringSubset(List<String> paragraph, List<String> keywords) {
-
         // Maps each keyword to its index in the keywords array.
         Map<String, Integer> keywordToIdx = new HashMap<>();
 

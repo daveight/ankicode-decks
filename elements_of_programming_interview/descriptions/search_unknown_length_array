@@ -1,1 +1,5 @@
--
+Binary search is usually applied to an array of known length. Sometimes, the array is "virtual", i.e., it is an
+abstraction of data that is spread across multiple machines. In such cases, the length is not known in advance;
+accessing elements beyond the end results in an exception.
+Design an algorithm that takes a sorted array whose length is not known, and a key, and returns an index of an array
+element which is equal to the key. Assume that an out-of-bounds access throws an exception.

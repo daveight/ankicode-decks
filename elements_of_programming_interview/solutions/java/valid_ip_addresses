@@ -6,7 +6,6 @@ import java.util.function.BiPredicate;
 
 public class Solution {
     public List<String> getValidIpAddress(String s) {
-
         List<String> result = new ArrayList<>();
         for (int i = 1; i < 4 && i < s.length(); ++i) {
             final String first = s.substring(0, i);

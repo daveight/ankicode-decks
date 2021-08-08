@@ -1,1 +1,2 @@
--
+Define the snakestring of s to be the left-right top-to-bottom sequence in which characters appear when s is written in
+sinusoidal fashion. For example, the snakestring string for "Hello_World!" is "e_lHloWrdlo!".

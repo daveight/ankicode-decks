@@ -1,1 +1,3 @@
--
+An array is said to be fc-increasing-decreasing if elements repeatedly increase up to a certain index after which they
+decrease, then again increase, a total of k times.
+Design an efficient algorithm for sorting a fc-increasing-decreasing array.

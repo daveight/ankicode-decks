@@ -1,0 +1,34 @@
+```cxx
+#include <memory>
+using std::shared_ptr;
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Solution {
+public:
+    int findFirstGreaterThanK(const shared_ptr<BinaryTreeNode<int>> &tree, int k) {
+        BinaryTreeNode<int> *subtree = tree.get(), *first_so_far = nullptr;
+        while (subtree) {
+            if (subtree->data > k) {
+                first_so_far = subtree;
+                subtree = subtree->left.get();
+            } else {  // Root and all keys in left subtree are <= k, so skip them.
+                subtree = subtree->right.get();
+            }
+        }
+        return first_so_far ? first_so_far->data : -1;
+    }
+};
+```

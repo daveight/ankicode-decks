@@ -1,0 +1,4 @@
+Let A be an array of integers. Call the pair of indices (i, j) inverted if i < j and A[i] > A[j].
+For example, if A - (4,1,2,3), then the pair of indices (0,3) is inverted.
+Intuitively, the number of inverted pairs in an array is a measure of how unsorted it is.
+Design an efficient algorithm that takes an array of integers and returns the number of inverted pairs of indices.

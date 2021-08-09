@@ -1,0 +1,25 @@
+```python
+T = TypeVar('T')
+
+class ListNode(Generic[T]):
+    def __init__(self, data: Optional[Type[T]]=None):
+        self.data = data
+        self.next = None
+
+def even_odd_merge(L):
+    if L is None:
+        return L
+    evenDummyHead = ListNode(0)
+    oddDummyHead = ListNode(0)
+    tails = [evenDummyHead, oddDummyHead]
+    turn = 0
+    iter = L
+    while iter is not None:
+        tails[turn].next = iter
+        tails[turn] = tails[turn].next
+        turn ^= 1
+        iter = iter.next
+    tails[1].next = None
+    tails[0].next = oddDummyHead.next
+    return evenDummyHead.next
+```

@@ -1,0 +1,4 @@
+LetLbe a singly linked list. Assume its nodes are numbered starting at 0. Define the zip of L to be the list consisting
+of the interleaving of the nodes numbered 0,1, 2, . . . with the nodes numbered n-1,n-2,n-3,.. where n is the number of
+nodes in the list.
+Implement the zip function.

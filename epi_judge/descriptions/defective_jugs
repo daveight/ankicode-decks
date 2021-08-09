@@ -1,0 +1,9 @@
+You have three measuring jugs, A, B, and C. The measuring marks have worn out, making it impossible to measure
+exact volumes. Specifically, each time you measure with A, all you can be sure of is that you have a volume
+that is in the range [230, 240] mL. (The next time you use A, you may get a different volume—all that you know
+with certainty is that the quantity will be in [230, 240] mL.) Jugs B and C can be used to measure a volume in
+[290,310] mL and in [500,515] mL, respectively. Your recipe for chocolate chip cookies calls for at least 2100 mL
+and no more than 2300 mL of milk.
+
+Write a program that determines if there exists a sequence of steps by which the required amount of milk can be
+obtained using the worn-out jugs.

@@ -1,0 +1,56 @@
+```java
+class Edge {
+    int fr;
+    int to;
+}
+
+enum Color {WHITE, GRAY, BLACK}
+
+class GraphVertex {
+    Color color;
+    List<GraphVertex> edges;
+
+    public GraphVertex() {
+        color = Color.WHITE;
+        edges = new ArrayList<>();
+    }
+}
+
+public class Solution {
+    public boolean isDeadlocked(int numNodes, List<Edge> edges) {
+        if (numNodes <= 0) {
+            throw new RuntimeException("Invalid numNodes value");
+        }
+        List<GraphVertex> graph = new ArrayList<>();
+        for (int i = 0; i < numNodes; i++) {
+            graph.add(new GraphVertex());
+        }
+        for (Edge e : edges) {
+            if (e.fr < 0 || e.fr >= numNodes || e.to < 0 || e.to >= numNodes) {
+                throw new RuntimeException("Invalid vertex index");
+            }
+            graph.get(e.fr).edges.add(graph.get(e.to));
+        }
+        return graph.stream().anyMatch(
+            vertex -> vertex.color == Color.WHITE && hasCycle(vertex));
+    }
+
+    private boolean hasCycle(GraphVertex cur) {
+        // Visiting a gray vertex means a cycle.
+        if (cur.color == Color.GRAY) {
+            return true;
+        }
+
+        cur.color = Color.GRAY; // Marks current vertex as a gray one.
+
+        // Traverse the neighbor vertices.
+        if (cur.edges.stream().anyMatch(next -> next.color != Color.BLACK && hasCycle(next))) {
+            return true;
+        }
+
+        cur.color = Color.BLACK; // Marks current vertex as black.
+
+        return false;
+    }
+}
+```

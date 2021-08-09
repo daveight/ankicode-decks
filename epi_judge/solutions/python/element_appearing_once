@@ -1,0 +1,15 @@
+```python
+def find_element_appears_once(A):
+    counts = [0] * 32
+    for x in A:
+        for i in range(0, 32):
+            counts[i] += x & 1
+            x >>= 1
+
+    def handle_negative(n):
+        return n if n < 2**31 else n - 2**32
+
+    # Any result greater than or equal to 2**31 must correspond to an negative
+    # value.
+    return handle_negative(sum(1 << i for i, c in enumerate(counts) if c % 3))
+```

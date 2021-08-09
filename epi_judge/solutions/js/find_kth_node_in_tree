@@ -1,0 +1,33 @@
+```js
+class BinaryTreeNode {
+    constructor(data = null) {
+        this.data = data
+        this.left = null
+        this.right = null
+        this.size = 0
+    }
+}
+
+function findKthNodeBinaryTree(tree, k) {
+    initSize(tree)
+    while (tree) {
+        left_size = tree.left? tree.left.size : 0
+        if (left_size + 1 < k) { // k-th node must be in right subtree of tree.
+            k -= left_size + 1
+            tree = tree.right
+        } else if (left_size == k - 1) {  // k-th is iter itself.
+            return tree.data
+        } else {  // k-th node must be in left subtree of iter.
+            tree = tree.left
+        }
+    }
+    return -1  // If k is between 1 and the tree size, this is unreachable.
+ }
+
+function initSize(node) {
+    if (!node)
+        return 0
+    node.size = 1 + initSize(node.left) + initSize(node.right)
+    return node.size
+}
+```

@@ -1,0 +1,50 @@
+```python
+class Edge:
+    def __init__(self, fr, to):
+        self.fr = fr
+        self.to = to
+
+class Color:
+    WHITE = 1
+    GRAY = 2
+    BLACK = 3
+
+class GraphVertex:
+    def __init__(self):
+        self.color = Color.WHITE
+        self.edges = []
+
+def is_deadlocked(numNodes, edges):
+    if numNodes <= 0:
+        raise "Invalid numNodes value"
+
+    graph = []
+    for i in range(0, numNodes):
+        graph.append(GraphVertex())
+
+    for e in edges:
+        if e.fr < 0 or e.fr >= numNodes or e.to < 0 or e.to >= numNodes:
+            raise "Invalid vertex index"
+        graph[e.fr].edges.append(graph[e.to])
+
+    for vertex in graph:
+        if vertex.color == Color.WHITE and has_cycle(vertex):
+            return True
+    return False
+
+def has_cycle(cur):
+    # Visiting a gray vertex means a cycle.
+    if cur.color == Color.GRAY:
+        return True
+
+    cur.color = Color.GRAY # Marks current vertex as a gray one.
+
+    # Traverse the neighbor vertices.
+    for next in cur.edges:
+        if next.color != Color.BLACK and has_cycle(next):
+            return True
+
+    cur.color = Color.BLACK; # Marks current vertex as black.
+
+    return False
+```

@@ -1,0 +1,15 @@
+```python
+import collections
+
+class PairedTasks:
+    def __init__(self, task_1: int, task_2: int):
+        self.task_1 = task_1
+        self.task_2 = task_2
+
+def optimum_task_assignment(task_durations):
+    task_durations.sort()
+    return [
+        PairedTasks(task_durations[i], task_durations[~i])
+        for i in range(len(task_durations) // 2)
+    ]
+```

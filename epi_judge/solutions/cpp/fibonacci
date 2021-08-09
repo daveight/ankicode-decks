@@ -1,0 +1,17 @@
+```cxx
+#include <unordered_map>
+
+class Solution {
+public:
+    int fibonacci(int n) {
+        if (n <= 1) {
+            return n;
+        } else if (!cache.count(n)) {
+            cache[n] = fibonacci(n - 1) + fibonacci(n - 2);
+        }
+        return cache[n];
+    }
+private:
+    unordered_map<int, int> cache;
+};
+```

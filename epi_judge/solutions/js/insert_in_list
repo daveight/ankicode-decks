@@ -1,0 +1,20 @@
+```js
+class ListNode {
+    constructor(data = null, next = null) {
+        this.data = data
+        this.next = next
+    }
+}
+
+function insertAfter(list, node_idx, new_node_data) {
+    node = list
+    while (node_idx > 1) {
+        node = node.next
+        --node_idx
+    }
+    const new_node = new ListNode(new_node_data)
+    new_node.next = node.next
+    node.next = new_node
+    return list
+}
+```

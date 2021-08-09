@@ -1,0 +1,16 @@
+```python
+def generate_balanced_parentheses(numPairs):
+    result = []
+    directed_generate_balanced_parentheses(numPairs, numPairs, '', result)
+    return result
+
+def directed_generate_balanced_parentheses(numLeftParensNeeded, numRightParensNeeded, validPrefix,  result):
+    if numRightParensNeeded == 0:
+        result.append(validPrefix)
+        return
+
+    if numLeftParensNeeded > 0: # Able to insert '('.
+        directed_generate_balanced_parentheses(numLeftParensNeeded - 1, numRightParensNeeded, validPrefix + '(', result)
+    if numLeftParensNeeded < numRightParensNeeded: # Able to insert ')'.
+        directed_generate_balanced_parentheses(numLeftParensNeeded, numRightParensNeeded - 1, validPrefix + ')', result)
+```

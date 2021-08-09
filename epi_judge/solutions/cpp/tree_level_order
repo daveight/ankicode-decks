@@ -1,0 +1,54 @@
+```cxx
+#include <memory>
+#include <queue>
+#include <vector>
+using std::queue;
+using std::shared_ptr;
+using std::vector;
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Solution {
+public:
+    vector<vector<int>> binaryTreeDepthOrder(const shared_ptr<BinaryTreeNode<int>> &tree) {
+        vector<vector<int>> result;
+        if (!tree.get()) {
+            return result;
+        }
+    
+        queue<BinaryTreeNode<int> *> curr_depth_nodes({tree.get()});
+        while (!curr_depth_nodes.empty()) {
+            queue<BinaryTreeNode<int> *> next_depth_nodes;
+            vector<int> this_level;
+            while (!curr_depth_nodes.empty()) {
+                auto curr = curr_depth_nodes.front();
+                curr_depth_nodes.pop();
+                this_level.emplace_back(curr->data);
+    
+                if (curr->left) {
+                    next_depth_nodes.emplace(curr->left.get());
+                }
+                if (curr->right) {
+                    next_depth_nodes.emplace(curr->right.get());
+                }
+            }
+    
+            result.emplace_back(this_level);
+            curr_depth_nodes = next_depth_nodes;
+        }
+        return result;
+    }
+};
+```

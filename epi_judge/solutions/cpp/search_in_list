@@ -1,0 +1,26 @@
+```cxx
+#include <memory>
+using std::shared_ptr;
+
+template<typename T>
+
+struct ListNode {
+public:
+    T data;
+    shared_ptr<ListNode<T>> next;
+    ListNode() { }
+    ListNode(T data) : data{data}, next{nullptr} { }
+    ListNode(T data, shared_ptr<ListNode<T>> next) : data{data}, next{next} { }
+};
+
+class Solution {
+public:
+    int searchList(shared_ptr<ListNode<int>> L, int key) {
+        while (L && L->data != key) {
+            L = L->next;
+        }
+        // If key was not present in the list, L will have become null.
+        return L ? L->data : -1;
+    }
+};
+```

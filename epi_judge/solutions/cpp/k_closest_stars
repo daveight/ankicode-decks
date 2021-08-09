@@ -1,0 +1,60 @@
+```cxx
+/**
+* -
+*/
+
+#include <algorithm>
+#include <cmath>
+#include <functional>
+#include <queue>
+#include <vector>
+
+using std::function;
+using std::priority_queue;
+using std::vector;
+
+struct Star {
+    double x;
+    double y;
+    double z;
+
+    bool operator<(const Star &that) const {
+        return Distance() < that.Distance();
+    }
+
+    double Distance() const { return sqrt(x * x + y * y + z * z); }
+};
+
+class Solution {
+public:
+    vector<double> findClosestKStars(vector<Star> stars, int k) {
+        // max_heap to store the closest k stars seen so far.
+        priority_queue<Star> max_heap;
+        vector<Star>::const_iterator stars_begin = cbegin(stars);
+        vector<Star>::const_iterator stars_end = cend(stars);
+
+        while (stars_begin != stars_end) {
+            // Add each star to the max-heap. If the max-heap size exceeds k,
+            // remove the maximum element from the max-heap.
+            max_heap.emplace(*stars_begin++);
+            if (max_heap.size() == k + 1) {
+                max_heap.pop();
+            }
+        }
+
+        // Iteratively extract from the max-heap, which yields the stars
+        // sorted according from furthest to closest.
+        vector<Star> closest_stars;
+        while (!max_heap.empty()) {
+            closest_stars.emplace_back(max_heap.top());
+            max_heap.pop();
+        }
+        closest_stars = {rbegin(closest_stars), rend(closest_stars)};
+        vector<double> result;
+        for (auto item : closest_stars) {
+            result.push_back(item.Distance());
+        }
+        return result;
+    }
+};
+```

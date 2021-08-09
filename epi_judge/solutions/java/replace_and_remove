@@ -1,0 +1,35 @@
+```java
+public class Solution {
+    public List<String> replaceAndRemove(int size, String[] s) {
+        // Forward iteration: remove "b"s and count the number of "a"s.
+        int writeIdx = 0, aCount = 0;
+        for (int i = 0; i < size; ++i) {
+            if (!s[i].equals("b")) {
+                s[writeIdx++] = s[i];
+            }
+            if (s[i].equals("a")) {
+                ++aCount;
+            }
+        }
+
+        // Backward iteration: replace "a"s with "dd"s starting from the end.
+        int curIdx = writeIdx - 1;
+        writeIdx += aCount - 1;
+        final int finalSize = writeIdx + 1;
+        while (curIdx >= 0) {
+            if (s[curIdx].equals("a")) {
+                s[writeIdx--] = "d";
+                s[writeIdx--] = "d";
+            } else {
+                s[writeIdx--] = s[curIdx];
+            }
+            --curIdx;
+        }
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < finalSize; ++i) {
+            result.add(s[i]);
+        }
+        return result;
+    }
+}
+```

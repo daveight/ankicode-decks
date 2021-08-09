@@ -1,0 +1,23 @@
+```python
+T = TypeVar('T')
+
+class ListNode(Generic[T]):
+    def __init__(self, data: Optional[Type[T]]=None):
+        self.data = data
+        self.next = None
+
+# Assumes node_to_delete is not tail.
+def delete_list(head, node_to_delete_idx):
+    node_to_delete = head
+    if node_to_delete is None:
+        raise RuntimeError('List is empty')
+    for _ in range(node_to_delete_idx):
+        if node_to_delete.next is None:
+            raise RuntimeError("Can't delete last node")
+        node_to_delete = node_to_delete.next
+
+    node_to_delete.data = node_to_delete.next.data
+    node_to_delete.next = node_to_delete.next.next
+
+    return head
+```

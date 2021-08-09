@@ -1,0 +1,2 @@
+Write a program for the knapsack problem that selects a subset of items that has maximum value and satisfies the weight
+constraint. All items have integer weights and values. Return the value of the subset.

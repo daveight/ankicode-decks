@@ -1,0 +1,3 @@
+Consider a person who starts with some amount of currency X, goes through a series of exchanges and finally ends up
+with more amount of X (than he initially had). Given n currencies and a table (nxn) of exchange rates, devise an
+algorithm that a person should use to avail maximum profit assuming that he doesn't perform one exchange more than once.

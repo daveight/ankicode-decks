@@ -1,0 +1,41 @@
+```cxx
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+
+    BinaryTreeNode() { }
+
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Solution {
+public:
+    shared_ptr<BinaryTreeNode<int>> rebuildBSTFromPreorder(vector<int> preorder_sequence) {
+        return rebuildBSTFromPreorderHelper(preorder_sequence, 0, preorder_sequence.size());
+    }
+
+private:
+    // Builds a BST from preorder_sequence[start, end - 1].
+    shared_ptr<BinaryTreeNode<int>> rebuildBSTFromPreorderHelper(vector<int> preorder_sequence, int start, int end) {
+        if (start >= end) {
+            return nullptr;
+        }
+
+        int transition_point = distance(cbegin(preorder_sequence),
+            find_if_not(cbegin(preorder_sequence) + start, cend(preorder_sequence),
+            [&](int a) { return a <= preorder_sequence[start]; }));
+
+        return make_shared<BinaryTreeNode<int>>(
+            preorder_sequence[start],
+            rebuildBSTFromPreorderHelper(preorder_sequence, start + 1, transition_point),
+            rebuildBSTFromPreorderHelper(preorder_sequence, transition_point, end));
+    }
+};
+```

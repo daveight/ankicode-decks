@@ -1,0 +1,65 @@
+```cxx
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+using std::string;
+using std::unordered_map;
+using std::unordered_set;
+using std::vector;
+
+class Solution {
+public:
+    struct Subarray {
+        int start, end;
+    };
+    
+    int findSmallestSubarrayCoveringSet(const vector<string> &paragraph, const vector<string> &kw) {
+        unordered_set<string> keywords(kw.begin(), kw.end());
+        unordered_map<string, int> keywords_to_cover;
+        for (const string &keyword : keywords) {
+            ++keywords_to_cover[keyword];
+        }
+
+        Subarray result = Subarray{-1, -1};
+        int remaining_to_cover = keywords.size();
+        for (int left = 0, right = 0; right < paragraph.size(); ++right) {
+            if (keywords.count(paragraph[right]) &&
+                --keywords_to_cover[paragraph[right]] >= 0) {
+                --remaining_to_cover;
+            }
+
+            // Keeps advancing left until keywords_to_cover does not contain all
+            // keywords.
+            while (remaining_to_cover == 0) {
+                if ((result.start == -1 && result.end == -1) ||
+                    right - left < result.end - result.start) {
+                    result = {left, right};
+                }
+                if (keywords.count(paragraph[left]) &&
+                    ++keywords_to_cover[paragraph[left]] > 0) {
+                    ++remaining_to_cover;
+                }
+                ++left;
+            }
+        }
+
+        unordered_set<string> copy(keywords.begin(), keywords.end());
+
+        if (result.start < 0 || result.start >= paragraph.size() || result.end < 0 ||
+            result.end >= paragraph.size() || result.start > result.end) {
+            throw "Index out of range";
+        }
+
+        for (int i = result.start; i <= result.end; i++) {
+            copy.erase(paragraph[i]);
+        }
+
+        if (!copy.empty()) {
+            throw "Not all keywords are in the range";
+        }
+
+        return result.end - result.start + 1;
+    }
+};
+```

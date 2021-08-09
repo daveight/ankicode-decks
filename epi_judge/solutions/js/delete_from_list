@@ -1,0 +1,24 @@
+```js
+class ListNode {
+    constructor(data = null) {
+        this.data = data
+        this.next = null
+    }
+}
+
+/**
+* @param { ListNode<number> } aNode
+* @param { number } i
+* @return ListNode<number>
+*/
+
+function deleteFromList(aNode, i) {
+    //Add code here
+    let n = aNode
+    while (--i > 0) {
+        n = n.next;
+    }
+    n.next = n.next.next
+    return aNode
+}
+```

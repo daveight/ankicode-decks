@@ -1,0 +1,48 @@
+```cxx
+#include <algorithm>
+#include <math.h>
+#include <limits>
+
+class Solution {
+public:
+    typedef enum {
+        kSmaller, kEqual, kLarger
+    } Ordering;
+
+    double squareRoot(double x) {
+        // Decides the search range according to x's value relative to 1.0.
+        double left, right;
+        if (x < 1.0) {
+            left = x, right = 1.0;
+        } else {  // x >= 1.0.
+            left = 1.0, right = x;
+        }
+
+        // Keeps searching as long as left != right, within tolerance.
+        while (compare(left, right) != kEqual) {
+            double mid = left + 0.5 * (right - left);
+            if (double mid_squared = mid * mid; compare(mid_squared, x) == kLarger) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return left;
+    }
+private:
+    double abs(double a) {
+        if (a < 0) {
+            return -a;
+        }
+        return a;
+    }
+    
+    Ordering compare(double a, double b) {
+        // Uses normalization for precision problem.
+        double diff = (a - b) / max(abs(a), abs(b));
+        return diff < -numeric_limits<double>::epsilon()
+               ? kSmaller
+               : diff > numeric_limits<double>::epsilon() ? kLarger : kEqual;
+    }
+};
+```

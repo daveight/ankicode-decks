@@ -1,0 +1,2 @@
+Design an efficient algorithm for computing the value of Binomial Coefficient c(n, k) which has the property that it
+never overflows if the final result fits in the integer word size.

@@ -1,0 +1,32 @@
+```cxx
+#include <algorithm>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+using std::string;
+using std::unordered_map;
+using std::vector;
+
+class Solution {
+public:
+    vector<vector<string>> findAnagrams(vector<string> dictionary) {
+        unordered_map<string, vector<string>> sorted_string_to_anagrams;
+        for (const string &s : dictionary) {
+            // Sorts the string, uses it as a key, and then appends
+            // the original string as another value into hash table.
+            string sorted_str(s);
+            sort(begin(sorted_str), end(sorted_str));
+            sorted_string_to_anagrams[sorted_str].emplace_back(s);
+        }
+
+        vector<vector<string>> anagram_groups;
+        for (const auto&[key, group] : sorted_string_to_anagrams) {
+            if (group.size() >= 2) {  // Found anagrams.
+                anagram_groups.emplace_back(group);
+            }
+        }
+        return anagram_groups;
+    }
+};
+```

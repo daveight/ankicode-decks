@@ -1,0 +1,2 @@
+Write a program for computing the minimum number of chocolates to distribute to the students,
+while ensuring that if a student has better score than a neighbor, then he receives more chocolates than his neighbor.

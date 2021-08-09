@@ -1,0 +1,50 @@
+```cxx
+#include <algorithm>
+#include <iterator>
+#include <memory>
+#include <numeric>
+#include <vector>
+using std::make_shared;
+using std::max;
+using std::min;
+using std::partial_sum;
+using std::vector;
+
+class Solution {
+public:
+    int pickUpCoins(const vector<int> &coins) {
+        vector<vector<int>> maximum_revenue_for_range(coins.size(),
+        vector<int>(coins.size(), 0));
+        return computeMaximumRevenueForRange(
+                coins, 0, coins.size() - 1,
+                make_shared<vector<vector<int>>>(coins.size(), vector<int>(coins.size(), 0))
+                        .get());
+    }
+private:
+    int computeMaximumRevenueForRange(
+            const vector<int> &coins, int a, int b,
+            vector<vector<int>> *maximum_revenue_for_range_ptr) {
+        if (a > b) {
+            // No coins left.
+            return 0;
+        }
+    
+        vector<vector<int>> &maximum_revenue_for_range =
+                *maximum_revenue_for_range_ptr;
+        if (maximum_revenue_for_range[a][b] == 0) {
+            int max_revenue_a =
+                    coins[a] + min(computeMaximumRevenueForRange(
+                            coins, a + 2, b, maximum_revenue_for_range_ptr),
+                                   computeMaximumRevenueForRange(
+                                           coins, a + 1, b - 1, maximum_revenue_for_range_ptr));
+            int max_revenue_b =
+                    coins[b] + min(computeMaximumRevenueForRange(
+                            coins, a + 1, b - 1, maximum_revenue_for_range_ptr),
+                                   computeMaximumRevenueForRange(
+                                           coins, a, b - 2, maximum_revenue_for_range_ptr));
+            maximum_revenue_for_range[a][b] = max(max_revenue_a, max_revenue_b);
+        }
+        return maximum_revenue_for_range[a][b];
+    }
+};
+```

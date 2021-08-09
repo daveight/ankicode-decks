@@ -1,0 +1,25 @@
+```js
+function palindromePartitioning(input) {
+    const result = []
+    directedPalindromeDecompositions(input, 0, [], result)
+    return result
+}
+
+function directedPalindromeDecompositions(input, offset,
+                                              partialPartition,
+                                              result) {
+    if (offset == input.length) {
+        result.push([].concat(partialPartition))
+        return
+    }
+
+    for (let i = offset + 1; i <= input.length; ++i) {
+        let prefix = input.substring(offset, i)
+        if (isPalindrome(prefix)) {
+            partialPartition.push(prefix)
+            directedPalindromeDecompositions(input, i, partialPartition, result)
+            partialPartition.pop()
+        }
+    }
+}
+```

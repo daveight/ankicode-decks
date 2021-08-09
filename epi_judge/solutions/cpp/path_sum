@@ -1,0 +1,33 @@
+```cxx
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+#include <memory>
+using std::unique_ptr;
+
+class Solution {
+public:
+    bool hasPathSum(const shared_ptr<BinaryTreeNode<int>> &tree,
+                    int remaining_weight) {
+        if (tree == nullptr) {
+            return false;
+        } else if (tree->left == nullptr && tree->right == nullptr) {  // Leaf.
+            return remaining_weight == tree->data;
+        }
+        // Non-leaf.
+        return hasPathSum(tree->left, remaining_weight - tree->data) ||
+               hasPathSum(tree->right, remaining_weight - tree->data);
+    }
+};
+```

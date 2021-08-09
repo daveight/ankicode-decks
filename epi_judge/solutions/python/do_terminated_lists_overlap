@@ -1,0 +1,37 @@
+```python
+T = TypeVar('T')
+
+class ListNode(Generic[T]):
+    def __init__(self, data: Optional[Type[T]]=None):
+        self.data = data
+        self.next = None
+
+def overlapping_no_cycle_lists(l0, l1):
+    l0Length = length(l0)
+    l1Length = length(l1)
+
+    # Advances the longer list to get equal length lists.
+    if l0Length > l1Length:
+        l0 = advanceListByK(l0Length - l1Length, l0)
+    else:
+        l1 = advanceListByK(l1Length - l0Length, l1)
+
+    while l0 is not None and l1 is not None and l0.data != l1.data:
+        l0 = l0.next
+        l1 = l1.next
+
+    return l0 # nullptr implies there is no overlap between l0 and l1.
+
+def advanceListByK(k, l):
+    while k > 0:
+        l = l.next
+        k -= 1
+    return l
+
+def length(l):
+    length = 0
+    while l is not None:
+        length += 1
+        l = l.next
+    return length
+```

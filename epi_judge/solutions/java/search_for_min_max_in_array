@@ -1,0 +1,40 @@
+```java
+import java.util.List;
+
+class MinMax {
+    Integer smallest;
+    Integer largest;
+
+    MinMax() { }
+    MinMax(Integer smallest, Integer largest) {
+        this.smallest = smallest;
+        this.largest = largest;
+    }
+    static MinMax minMax(Integer a, Integer b) {
+      return Integer.compare(b, a) < 0 ? new MinMax(b, a) : new MinMax(a, b);
+    }
+}
+
+public class Solution {
+    public MinMax findMinMax(List<Integer> A) {
+        if (A.size() <= 1) {
+            return new MinMax(A.get(0), A.get(0));
+        }
+
+        MinMax globalMinMax = MinMax.minMax(A.get(0), A.get(1));
+        // Process two elements at a time.
+        for (int i = 2; i + 1 < A.size(); i += 2) {
+            MinMax localMinMax = MinMax.minMax(A.get(i), A.get(i + 1));
+            globalMinMax =
+                    new MinMax(Math.min(globalMinMax.smallest, localMinMax.smallest), Math.max(globalMinMax.largest, localMinMax.largest));
+        }
+        // If there is odd number of elements in the array, we still
+        // need to compare the last element with the existing answer.
+        if ((A.size() % 2) != 0) {
+            globalMinMax =
+                    new MinMax(Math.min(globalMinMax.smallest, A.get(A.size() - 1)), Math.max(globalMinMax.largest, A.get(A.size() - 1)));
+        }
+        return globalMinMax;
+    }
+}
+```

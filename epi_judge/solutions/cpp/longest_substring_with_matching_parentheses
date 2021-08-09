@@ -1,0 +1,57 @@
+```cxx
+#include <algorithm>
+#include <stack>
+#include <string>
+#include <vector>
+
+using std::max;
+using std::stack;
+using std::string;
+using std::vector;
+
+class Solution {
+public:
+    int longestMatchingParentheses(const string &s) {
+        int max_length = 0, end = -1;
+        stack<int> left_parentheses_indices;
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] == '(') {
+                left_parentheses_indices.emplace(i);
+            } else if (left_parentheses_indices.empty()) {
+                end = i;
+            } else {
+                left_parentheses_indices.pop();
+                int start = left_parentheses_indices.empty()
+                            ? end
+                            : left_parentheses_indices.top();
+                max_length = max(max_length, i - start);
+            }
+        }
+        return max_length;
+    }
+
+    int longestMatchingParenthesesConstantSpace(const string &s) {
+        return max(parseFromSide('(', begin(s), end(s)),
+                   parseFromSide(')', rbegin(s), rend(s)));
+    }
+private:
+    template<typename IterType> int parseFromSide(char paren, IterType begin, IterType end) {
+        int max_length = 0, num_parens_so_far = 0, length = 0;
+        for (IterType i = begin; i < end; ++i) {
+            if (*i == paren) {
+                ++num_parens_so_far, ++length;
+            } else {  // *i != paren
+                if (num_parens_so_far <= 0) {
+                    num_parens_so_far = length = 0;
+                } else {
+                    --num_parens_so_far, ++length;
+                    if (num_parens_so_far == 0) {
+                        max_length = max(max_length, length);
+                    }
+                }
+            }
+        }
+        return max_length;
+    }
+};
+```

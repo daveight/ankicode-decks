@@ -1,0 +1,24 @@
+```cxx
+#include <vector>
+using std::vector;
+
+class Solution {
+public:
+    // Returns the number of valid entries after deletion.
+    vector<int> deleteDuplicates(vector<int> A) {
+        if (A.empty()) {
+            A.resize(0);
+            return A;
+        }
+    
+        int write_index = 1;
+        for (int i = 1; i < A.size(); ++i) {
+            if (A[write_index - 1] != A[i]) {
+                A[write_index++] = A[i];
+            }
+        }
+        A.resize(write_index);
+        return A;
+    }
+};
+```

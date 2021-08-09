@@ -1,0 +1,17 @@
+```java
+public class Solution {
+    public double buyAndSellStockKTimes(List<Double> prices, int k) {
+        int n = prices.size();
+        double[][] profit = new double[k + 1][n + 1];
+
+        for (int i = 1; i <= k; i++) {
+            double prevDiff = Double.NEGATIVE_INFINITY;
+            for (int j = 1; j < n; j++) {
+                prevDiff = Math.max(prevDiff, profit[i - 1][j - 1] - prices.get(j - 1));
+                profit[i][j] = Math.max(profit[i][j - 1], prices.get(j) + prevDiff);
+            }
+        }
+
+        return profit[k][n - 1];
+    }
+}

@@ -1,0 +1,6 @@
+In practice we may not be interested in a majority token but all tokens whose count exceeds say 1% of the total token
+count. It is fairly straightforward to show that it is impossible to compute such tokens in a single pass when you have
+limited memory. However, if you are allowed to pass through the sequence twice, it is possible to identify the common
+tokens.
+You are reading a sequence of strings separated by whitespace. You are allowed to read the sequence twice.
+Devise an algorithm that uses 0(k) memory to ide

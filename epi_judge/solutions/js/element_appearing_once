@@ -1,0 +1,19 @@
+```js
+function findElementAppearsOnce(A) {
+    const counts = Array(32).fill().map((x, i) => 0)
+
+    for (let x of A) {
+        for (let i = 0; i < 32; ++i) {
+            counts[i] += x & 1
+            x >>= 1
+        }
+    }
+
+    let sum = 0
+    for (let i = 0; i < 32; i++) {
+       sum += (counts[i] % 3) << i
+    }
+
+    return sum
+}
+```

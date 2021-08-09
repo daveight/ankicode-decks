@@ -1,0 +1,30 @@
+```cxx
+template<typename T>
+
+struct ListNode {
+public:
+    T data;
+    shared_ptr<ListNode<T>> next;
+
+    ListNode(T data) : data{data}, next{nullptr} { }
+    ListNode(T data, shared_ptr<ListNode<T>> next) : data{data}, next{next} { }
+    ~ListNode() { while (next) next = std::move(next->next); }
+};
+
+class Solution {
+public:
+    shared_ptr<ListNode<int>> insertAfter(shared_ptr<ListNode<int>> list, int node_idx, int new_node_data) {
+        auto node = list;
+        while (node_idx > 1) {
+            node = node->next;
+            --node_idx;
+        }
+        auto new_node = make_shared<ListNode<int>>(new_node_data, nullptr);
+
+        new_node->next = node->next;
+        node->next = new_node;
+
+        return list;
+    }
+};
+```

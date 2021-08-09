@@ -1,0 +1,30 @@
+```python
+class BinaryTreeNode:
+    def __init__(self, data = None, left = None, right = None):
+        self.data = data
+        self.left = left
+        self.right = right
+
+def build_min_height_b_s_t_from_sorted_array(A):
+    return find_height(build_min_height_b_s_t_from_sorted_array_helper(A, 0, len(A)))
+
+def build_min_height_b_s_t_from_sorted_array_helper(A, start, end):
+    if start >= end:
+        return None
+    mid = start + int((end - start) / 2)
+    return BinaryTreeNode(A[mid],
+                          build_min_height_b_s_t_from_sorted_array_helper(A, start, mid),
+                          build_min_height_b_s_t_from_sorted_array_helper(A, start + 1, mid))
+
+def find_height(node):
+    if node == None:
+        return -1
+
+    lheight = find_height(node.left)
+    rheight = find_height(node.right)
+
+    if lheight > rheight:
+        return lheight + 1
+    else:
+        return rheight + 1
+```

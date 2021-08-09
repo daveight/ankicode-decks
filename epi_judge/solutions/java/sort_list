@@ -1,0 +1,55 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+    public ListNode<Integer> stableSortList(ListNode<Integer> L) {
+        // Base cases: L is empty or a single node, nothing to do.
+        if (L == null || L.next == null) {
+            return L;
+        }
+
+        // Find the midpoint of L using a slow and a fast pointer.
+        ListNode<Integer> preSlow = null, slow = L, fast = L;
+        while (fast != null && fast.next != null) {
+            preSlow = slow;
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+
+        preSlow.next = null; // Splits the list into two equal-sized lists.
+
+        return mergeTwoSortedLists(stableSortList(L), stableSortList(slow));
+    }
+
+    private ListNode<Integer> mergeTwoSortedLists(ListNode<Integer> L1, ListNode<Integer> L2) {
+        // Creates a placeholder for the result.
+        ListNode<Integer> dummyHead = new ListNode<>(0, null);
+        ListNode<Integer> current = dummyHead;
+
+        while (L1 != null && L2 != null) {
+            if (L1.data <= L2.data) {
+                current.next = L1;
+                L1 = L1.next;
+            } else {
+                current.next = L2;
+                L2 = L2.next;
+            }
+            current = current.next;
+        }
+
+        // Appends the remaining nodes of L1 or L2.
+        current.next = L1 != null ? L1 : L2;
+        return dummyHead.next;
+    }
+}
+```

@@ -1,0 +1,47 @@
+```java
+
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    public int buildMinHeightBSTFromSortedArray(List<Integer> A) {
+        return findHeight(buildMinHeightBSTFromSortedArrayHelper(A, 0, A.size()));
+    }
+
+    private BinaryTreeNode<Integer> buildMinHeightBSTFromSortedArrayHelper(List<Integer> A, int start, int end) {
+        if (start >= end) {
+            return null;
+        }
+        int mid = start + ((end - start) / 2);
+        return new BinaryTreeNode<>(A.get(mid),
+                                    buildMinHeightBSTFromSortedArrayHelper(A, start, mid),
+                                    buildMinHeightBSTFromSortedArrayHelper(A, start + 1, mid));
+    }
+
+    private int findHeight(BinaryTreeNode<Integer> node) {
+        if (node == null) {
+            return -1;
+        }
+
+        int lheight = findHeight(node.left);
+        int rheight = findHeight(node.right);
+
+        if (lheight > rheight) {
+            return lheight + 1;
+        } else {
+            return rheight + 1;
+        }
+    }
+}
+```

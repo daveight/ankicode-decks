@@ -1,0 +1,32 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+    public ListNode<Integer> evenOddMerge(ListNode<Integer> L) {
+        if (L == null) {
+            return L;
+        }
+        ListNode<Integer> evenDummyHead = new ListNode<>(0, null), oddDummyHead = new ListNode<>(0, null);
+        List<ListNode<Integer>> tails = Arrays.asList(evenDummyHead, oddDummyHead);
+        int turn = 0;
+        for (ListNode<Integer> iter = L; iter != null; iter = iter.next) {
+            tails.get(turn).next = iter;
+            tails.set(turn, tails.get(turn).next);
+            turn ^= 1;
+        }
+        tails.get(1).next = null;
+        tails.get(0).next = oddDummyHead.next;
+        return evenDummyHead.next;
+    }
+}
+```

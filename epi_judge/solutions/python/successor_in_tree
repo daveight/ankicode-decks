@@ -1,0 +1,57 @@
+```python
+import functools
+
+T = TypeVar('T')
+
+class BinaryTreeNode(Generic[T]):
+    def __init__(self, data: Optional[Type[T]]=None, left=None, right=None):
+        self.data = data
+        self.left = left
+        self.right = right
+        self.parent = None
+
+def find_successor(node, node_idx):
+    node = convert_binary_tree_to_binary_tree_with_parent(node)
+    node = find_node(node, node_idx)
+    if node.right:
+        # Successor is the leftmost element in node's right subtree.
+        node = node.right
+        while node.left:
+            node = node.left
+        result = node
+        return result.data if result else -1
+
+    # Find the closest ancestor whose left subtree contains node.
+    while node.parent and node.parent.right is node:
+        node = node.parent
+
+    # A return value of None means node does not have successor, i.e., node is
+    # the rightmost node in the tree.
+    result = node.parent
+    return result.data if result else -1
+
+def convert_binary_tree_to_binary_tree_with_parent(tree):
+    def add_parent_link(node, parent):
+        if not node:
+            return None
+        node.parent = parent
+        add_parent_link(node.left, node)
+        add_parent_link(node.right, node)
+
+    add_parent_link(tree, None)
+    return tree
+
+def find_node(tree, val):
+    if tree:
+        if tree.data == val:
+            return tree
+
+        left_result = find_node(tree.left, val)
+        if left_result:
+            return left_result
+
+        right_result = find_node(tree.right, val)
+        if right_result:
+            return right_result
+    return None
+```

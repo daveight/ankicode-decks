@@ -1,0 +1,38 @@
+```js
+class BinaryTreeNode {
+    constructor(data = null, left = null, right = null) {
+        this.data = data
+        this.left = left
+        this.right = right
+    }
+}
+
+function buildMinHeightBSTFromSortedArray(A) {
+    return findHeight(buildMinHeightBSTFromSortedArrayHelper(A, 0, A.length))
+}
+
+function buildMinHeightBSTFromSortedArrayHelper(A, start, end) {
+    if (start >= end) {
+        return null
+    }
+    const mid = start + Math.floor((end - start) / 2)
+    return new BinaryTreeNode(A[mid],
+                              buildMinHeightBSTFromSortedArrayHelper(A, start, mid),
+                              buildMinHeightBSTFromSortedArrayHelper(A, start + 1, mid))
+}
+
+function findHeight(node) {
+    if (node == null) {
+        return -1
+    }
+
+    const lheight = findHeight(node.left)
+    const rheight = findHeight(node.right)
+
+    if (lheight > rheight) {
+        return lheight + 1
+    } else {
+        return rheight + 1
+    }
+}
+```

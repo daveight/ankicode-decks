@@ -1,0 +1,4 @@
+Consider the problem of developing a web-service that takes a geographical location, and returns the nearest restaurant.
+The service starts with a set of restaurant locations—each location includes X and Y-coordinates. A query consists of a
+location, and should return the nearest restaurant (ties can be broken arbitrarily).
+Write a program that takes as input a BST and an interval and returns the BST keys that lie in the interval.

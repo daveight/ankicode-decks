@@ -1,0 +1,22 @@
+```js
+function eval(RPNExpression) {
+    const intermediate_results = []
+    const DELIMITER = ','
+    const OPERATORS = {
+        '+'(y, x) { return x + y },
+        '-'(y, x) { return x - y },
+        '*'(y, x) { return x * y },
+        '/'(y, x) { return parseInt(x / y) }
+    }
+
+    for (token of RPNExpression.split(DELIMITER)) {
+        if (token in OPERATORS) {
+            intermediate_results.push(OPERATORS[token](intermediate_results.pop(), intermediate_results.pop()))
+        } else {  // token is a number.
+            intermediate_results.push(parseInt(token))
+        }
+    }
+    return intermediate_results.pop()
+}
+```
+

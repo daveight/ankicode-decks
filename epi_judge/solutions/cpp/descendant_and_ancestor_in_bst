@@ -1,0 +1,95 @@
+```cxx
+#include <memory>
+
+using std::shared_ptr;
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Solution {
+public:
+    bool pairIncludesAncestorAndDescendantOfM(const shared_ptr<BinaryTreeNode<int>> &tree,
+                                              int possible_anc_or_desc_0,
+                                              int possible_anc_or_desc_1,
+                                              int middle) {
+        auto candidate0 = findNode(tree, possible_anc_or_desc_0);
+        auto candidate1 = findNode(tree, possible_anc_or_desc_1);
+        auto middle_node = findNode(tree, middle);
+
+        auto search_0 = candidate0;
+        auto search_1 = candidate1;
+
+        // Perform interleaved searching from possible_anc_or_desc_0 and
+        // possible_anc_or_desc_1 for middle.
+        while (search_0 != candidate1 && search_0 != middle_node &&
+               search_1 != candidate0 && search_1 != middle_node &&
+               (search_0 || search_1)) {
+            if (search_0) {
+                search_0 = search_0->data > middle_node->data ? search_0->left
+                                                         : search_0->right;
+            }
+            if (search_1) {
+                search_1 = search_1->data > middle_node->data ? search_1->left
+                                                         : search_1->right;
+            }
+        }
+
+        // If both searches were unsuccessful, or we got from
+        // possible_anc_or_desc_0 to possible_anc_or_desc_1 without seeing middle,
+        // or from possible_anc_or_desc_1 to possible_anc_or_desc_0 without seeing
+        // middle, middle cannot lie between possible_anc_or_desc_0 and
+        // possible_anc_or_desc_1.
+        if ((search_0 != middle_node && search_1 != middle_node) ||
+            search_0 == candidate1 || search_1 == candidate0) {
+            return false;
+        }
+
+        // If we get here, we already know one of possible_anc_or_desc_0 or
+        // possible_anc_or_desc_1 has a path to middle. Check if middle has a path
+        // to possible_anc_or_desc_1 or to possible_anc_or_desc_0.
+        return searchTarget(middle_node, search_0 == middle_node
+                                    ? candidate1
+                                    : candidate0);
+    }
+private:
+    shared_ptr<BinaryTreeNode<int>> findNode(shared_ptr<BinaryTreeNode<int>> node, int val) {
+        if (node != nullptr) {
+            if (val == node->data) {
+                return node;
+            }
+
+            shared_ptr<BinaryTreeNode<int>> leftResult = findNode(node->left, val);
+            if (leftResult != nullptr) {
+                return leftResult;
+            }
+
+            shared_ptr<BinaryTreeNode<int>> rightResult = findNode(node->right, val);
+            if (rightResult != nullptr) {
+                return rightResult;
+            }
+        }
+
+        return nullptr;
+    }
+
+    bool searchTarget(const shared_ptr<BinaryTreeNode<int>> &from,
+                      const shared_ptr<BinaryTreeNode<int>> &target) {
+        auto iter = from;
+        while (iter && iter != target) {
+            iter = iter->data > target->data ? iter->left : iter->right;
+        }
+        return iter == target;
+    }
+};
+```

@@ -1,0 +1,30 @@
+```js
+const NUM_PEGS = 3
+
+function computeTowerHanoi(num_rings) {
+    function computeTowerHanoiSteps(num_rings_to_move, from_peg, to_peg, use_peg) {
+        if (num_rings_to_move > 0) {
+            computeTowerHanoiSteps(num_rings_to_move - 1, from_peg, use_peg, to_peg)
+            pegs[to_peg].push(pegs[from_peg].pop())
+            result.push([from_peg, to_peg])
+            computeTowerHanoiSteps(num_rings_to_move - 1, use_peg, to_peg, from_peg)
+        }
+    }
+
+    // Initialize pegs.
+    const result = []
+    const pegs = []
+    pegs.push([])
+    pegs.push([])
+    pegs.push([])
+    for (let i = num_rings; i >= 1; i--) {
+        pegs[0].push(i);
+    }
+    for (let i = 1; i < NUM_PEGS; i++) {
+        pegs[1].push(i);
+    }
+    computeTowerHanoiSteps(num_rings, 0, 1, 2)
+    return result
+}
+```
+

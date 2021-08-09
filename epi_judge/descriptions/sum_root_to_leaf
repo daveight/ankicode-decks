@@ -1,0 +1,3 @@
+Consider a binary tree in which each node contains a binary digit. A root- to-leaf path can be associated with a binary
+number—the MSB is at the root.
+Design an algorithm to compute the sum of the binary numbers represented by the root-to-leaf paths.

@@ -1,0 +1,35 @@
+```cxx
+#include <algorithm>
+#include <deque>
+#include <vector>
+
+using std::deque;
+using std::max;
+using std::min;
+using std::vector;
+
+class Solution {
+public:
+    int maxSquareSubmatrix(vector<vector<bool>> X) {
+        vector<deque<bool>> A;
+        for (vector<bool> row : X) {
+            deque<bool> d;
+            for (bool val : row) {
+                d.push_back(val);
+            }
+            A.push_back(d);
+        }
+        vector<int> pre(A.front().size(), 0);
+        int max_side = 0;
+        for (const deque<bool> &row : A) {
+            vector<int> curr(begin(row), end(row));
+            for (int j = 1; j < curr.size(); ++j) {
+                curr[j] *= (min({pre[j - 1], pre[j], curr[j - 1]}) + 1);
+            }
+            max_side = max(max_side, *max_element(begin(curr), end(curr)));
+            pre = move(curr);
+        }
+        return max_side * max_side;
+    }
+};
+```

@@ -1,0 +1,19 @@
+```cxx
+#include <algorithm>
+#include <string>
+#include <vector>
+using std::swap;
+using std::vector;
+
+class Solution {
+public:
+    vector<int> rearrange(vector<int> A) {
+        for (int i = 1; i < A.size(); ++i) {
+            if ((!(i % 2) && A[i - 1] < A[i]) || ((i % 2) && A[i - 1] > A[i])) {
+                swap(A[i - 1], A[i]);
+            }
+        }
+        return A;
+    }
+};
+```

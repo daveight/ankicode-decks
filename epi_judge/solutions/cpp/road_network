@@ -1,0 +1,69 @@
+```cxx
+#include <algorithm>
+#include <limits>
+#include <vector>
+
+using std::max;
+using std::min;
+using std::numeric_limits;
+using std::vector;
+
+struct HighwaySection {
+    int x;
+    int y;
+    int distance;
+};
+
+class Solution {
+public:
+    HighwaySection findBestProposals(const vector<HighwaySection> &H,
+                                     const vector<HighwaySection> &P, int n) {
+        // graph stores the shortest path distances between all pairs of vertices.
+        vector<vector<int>> graph(n, vector<int>(n, numeric_limits<int>::max()));
+        for (int i = 0; i < n; ++i) {
+            graph[i][i] = 0;
+        }
+        // Builds an undirected graph graph based on existing highway sections H.
+        for (const HighwaySection &h : H) {
+            graph[h.x][h.y] = graph[h.y][h.x] = h.distance;
+        }
+
+        // Performs Floyd Warshall to build the shortest path between vertices.
+        floydWarshall(&graph);
+
+        // Examines each proposal for shorter distance for all pairs.
+        int best_distance_saving = numeric_limits<int>::min();
+        HighwaySection best_proposal = {-1, -1, 0};  // Default.
+        for (const HighwaySection &p : P) {
+            int proposal_saving = 0;
+            for (int a = 0; a < n; ++a) {
+                for (int b = 0; b < n; ++b) {
+                    int saving =
+                            graph[a][b] - min(graph[a][p.x] + p.distance + graph[p.y][b],
+                                              graph[a][p.y] + p.distance + graph[p.x][b]);
+                    proposal_saving += max(saving, 0);
+                }
+            }
+            if (proposal_saving > best_distance_saving) {
+                best_distance_saving = proposal_saving;
+                best_proposal = p;
+            }
+        }
+        return best_proposal;
+    }
+private:
+    void floydWarshall(vector<vector<int>> *G_ptr) {
+        vector<vector<int>> &graph = *G_ptr;
+        for (int k = 0; k < graph.size(); ++k) {
+            for (int i = 0; i < graph.size(); ++i) {
+                for (int j = 0; j < graph.size(); ++j) {
+                    if (graph[i][k] != numeric_limits<int>::max() &&
+                        graph[k][j] != numeric_limits<int>::max()) {
+                        graph[i][j] = min(graph[i][j], graph[i][k] + graph[k][j]);
+                    }
+                }
+            }
+        }
+    }
+};
+```

@@ -1,0 +1,46 @@
+```js
+class ListNode {
+    constructor(data = null, next = null) {
+        this.data = data
+        this.next = next
+    }
+}
+
+function hasCycle(head) {
+    function cycleLen(end) {
+        let start = end
+        let step = 0
+        while (true) {
+            step++
+            start = start.next
+            if (start === end) {
+                return step
+            }
+        }
+    }
+
+    let fast = head
+    let slow = head
+
+    while (fast && fast.next && fast.next.next) {
+        slow = slow.next
+        fast = fast.next.next
+        if (slow === fast) {
+            // Finds the start of the cycle.
+            let cycle_len_advanced_iter = head
+            for (let i = 0; i < cycleLen(slow); i++) {
+                cycle_len_advanced_iter = cycle_len_advanced_iter.next
+            }
+
+            let it = head
+            // Both iterators advance in tandem.
+            while (it !== cycle_len_advanced_iter) {
+                it = it.next
+                cycle_len_advanced_iter = cycle_len_advanced_iter.next
+            }
+            return it.data  // iter is the start of cycle.
+        }
+    }
+    return -1  // No cycle.
+}
+```

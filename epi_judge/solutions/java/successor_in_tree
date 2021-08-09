@@ -1,0 +1,68 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+    BinaryTreeNode<T> parent;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    public Integer findSuccessor(BinaryTreeNode<Integer> node, int idx) {
+        addParentLink(node, null);
+        BinaryTreeNode<Integer> iter = findNode(node, idx);
+        if (iter.right != null) {
+            // Find the leftmost element in node's right subtree.
+            iter = iter.right;
+            while (iter.left != null) {
+                iter = iter.left;
+            }
+            return iter == null ? -1 : iter.data;
+        }
+
+        // Find the closest ancestor whose left subtree contains node.
+        while (iter.parent != null && iter.parent.right == iter) {
+            iter = iter.parent;
+        }
+        // A return value of null means node does not have successor, i.e., it is
+        // the rightmost node in the tree.
+        return iter.parent == null ? -1 : iter.parent.data;
+    }
+
+    private BinaryTreeNode<Integer> findNode(BinaryTreeNode<Integer> node, Integer val) {
+        if (node != null) {
+            if (val.equals(node.data)) {
+                return node;
+            }
+
+            BinaryTreeNode<Integer> leftResult = findNode(node.left, val);
+            if (leftResult != null) {
+                return leftResult;
+            }
+
+            BinaryTreeNode<Integer> rightResult = findNode(node.right, val);
+            if (rightResult != null) {
+                return rightResult;
+            }
+        }
+
+        return null;
+    }
+
+    private void addParentLink(BinaryTreeNode<Integer> node, BinaryTreeNode<Integer> parent) {
+        if (node == null) {
+            return;
+        }
+        node.parent = parent;
+        addParentLink(node.left, node);
+        addParentLink(node.right, node);
+    }
+}
+```

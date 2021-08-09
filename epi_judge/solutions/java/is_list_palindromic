@@ -1,0 +1,47 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+    public boolean isLinkedListAPalindrome(ListNode<Integer> L) {
+        // Finds the second half of L.
+        ListNode<Integer> slow = L, fast = L;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+
+        // Compare the first half and the reversed second half lists.
+        ListNode<Integer> firstHalfIter = L;
+        ListNode<Integer> secondHalfIter = reverseLinkedList(slow);
+        while (secondHalfIter != null && firstHalfIter != null) {
+            if (!secondHalfIter.data.equals(firstHalfIter.data)) {
+                return false;
+            }
+            secondHalfIter = secondHalfIter.next;
+            firstHalfIter = firstHalfIter.next;
+        }
+        return true;
+    }
+
+    private ListNode<Integer> reverseLinkedList(ListNode<Integer> head) {
+        ListNode<Integer> prev = null, curr = head;
+        while (curr != null) {
+            ListNode<Integer> temp = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = temp;
+        }
+        return prev;
+    }
+}
+```

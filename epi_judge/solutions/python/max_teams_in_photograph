@@ -1,0 +1,35 @@
+```python
+class Edge:
+    def __init__(self, fr: int, to: int):
+        self.fr = fr
+        self.to = to
+
+import functools
+
+class GraphVertex:
+    def __init__(self):
+        self.edges = []
+        # Set max_distance = 0 to indicate unvisitied vertex.
+        self.max_distance = 0
+
+
+def find_largest_number_teams(k, edges):
+    if k <= 0:
+        raise RuntimeError('Invalid k value')
+    graph = [GraphVertex() for _ in range(k)]
+
+    for edge in edges:
+        if edge.fr < 0 or edge.fr >= k or edge.to < 0 or edge.to >= k:
+            raise RuntimeError('Invalid vertex index')
+        graph[edge.fr].edges.append(graph[edge.to])
+
+    def dfs(curr):
+        curr.max_distance = max(
+            ((vertex.max_distance
+              if vertex.max_distance != 0 else dfs(vertex)) + 1
+             for vertex in curr.edges),
+            default=1)
+        return curr.max_distance
+
+    return max(dfs(g) for g in graph if g.max_distance == 0)
+```

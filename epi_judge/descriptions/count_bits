@@ -1,0 +1,5 @@
+Write a program to count number of 1s in the binary representation of integer
+For example:
+Input: n = 6
+Output: 2
+Binary representation of 6 is 110 and it has 2 set bits

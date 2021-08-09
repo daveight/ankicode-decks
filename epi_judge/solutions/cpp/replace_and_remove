@@ -1,0 +1,42 @@
+```cxx
+#include <iterator>
+#include <string>
+#include <vector>
+using std::string;
+using std::vector;
+
+class Solution {
+public:
+    vector<string> replaceAndRemove(int size, vector<string> s) {
+        // Forward iteration: remove "b"s and count the number of "a"s.
+        int write_idx = 0, a_count = 0;
+        for (int i = 0; i < size; ++i) {
+            if (s[i] != "b") {
+                s[write_idx++] = s[i];
+            }
+            if (s[i] == "a") {
+                ++a_count;
+            }
+        }
+
+        // Backward iteration: replace "a"s with "dd"s starting from the end.
+        int cur_idx = write_idx - 1;
+        write_idx = write_idx + a_count - 1;
+        const int final_size = write_idx + 1;
+        while (cur_idx >= 0) {
+            if (s[cur_idx] == "a") {
+                s[write_idx--] = "d";
+                s[write_idx--] = "d";
+            } else {
+                s[write_idx--] = s[cur_idx];
+            }
+            --cur_idx;
+        }
+        vector<string> result;
+        for (int i = 0; i < final_size; ++i) {
+            result.emplace_back(s[i]);
+        }
+        return result;
+    }
+};
+```

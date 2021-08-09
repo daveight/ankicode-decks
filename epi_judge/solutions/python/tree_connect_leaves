@@ -1,0 +1,21 @@
+```python
+T = TypeVar('T')
+
+class BinaryTreeNode(Generic[T]):
+    def __init__(self, data: Optional[Type[T]]=None, left=None, right=None):
+        self.data = data
+        self.left = left
+        self.right = right
+
+def create_list_of_leaves_wrap(tree):
+    if not tree:
+        return []
+    if not tree.left and not tree.right:
+        return [tree]
+    else:
+        # First do the left subtree, and then do the right subtree.
+        return create_list_of_leaves_wrap(tree.left) + create_list_of_leaves_wrap(tree.right)
+
+def create_list_of_leaves(tree):
+    return [x.data for x in create_list_of_leaves_wrap(tree)]
+```

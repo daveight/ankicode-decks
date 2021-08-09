@@ -1,0 +1,49 @@
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiPredicate;
+
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    public List<Integer> findKLargestInBst(BinaryTreeNode<Integer> tree, int k) {
+        List<Integer> kLargestElements = new ArrayList<>();
+        findKLargestInBstHelper(tree, k, kLargestElements);
+        return kLargestElements;
+    }
+
+    private void findKLargestInBstHelper(BinaryTreeNode<Integer> tree, int k, List<Integer> kLargestElements) {
+        // Perform reverse inorder traversal.
+        if (tree != null && kLargestElements.size() < k) {
+            findKLargestInBstHelper(tree.right, k, kLargestElements);
+            if (kLargestElements.size() < k) {
+                kLargestElements.add(tree.data);
+                findKLargestInBstHelper(tree.left, k, kLargestElements);
+            }
+        }
+    }
+
+    public BiPredicate<List<Integer>, List<Integer>> comp =
+            (expected, result) -> {
+        if (result == null) {
+            return false;
+        }
+        Collections.sort(expected);
+        Collections.sort(result);
+        return expected.equals(result);
+    };
+}
+```

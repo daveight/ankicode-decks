@@ -1,0 +1,39 @@
+```cxx
+include <algorithm>
+#include <limits>
+#include <vector>
+
+using std::max;
+using std::min;
+using std::numeric_limits;
+using std::vector;
+
+class Solution {
+public:
+    double buyAndSellStockKTimes(const vector<double> &prices, int k) {
+        if (!k) {
+            return 0.0;
+        } else if (2 * k >= prices.size()) {
+            return unlimitedPairsProfits(prices);
+        }
+        vector<double> min_prices(k, numeric_limits<double>::max()),
+                max_profits(k, 0.0);
+        for (double price : prices) {
+            for (int i = k - 1; i >= 0; --i) {
+                max_profits[i] = max(max_profits[i], price - min_prices[i]);
+                min_prices[i] =
+                        min(min_prices[i], price - (i ? max_profits[i - 1] : 0.0));
+            }
+        }
+        return max_profits.back();
+    }
+private:
+    double unlimitedPairsProfits(const vector<double> &prices) {
+        double profit = 0.0;
+        for (int i = 1; i < prices.size(); ++i) {
+            profit += max(0.0, prices[i] - prices[i - 1]);
+        }
+        return profit;
+    }
+};
+```

@@ -1,0 +1,18 @@
+```java
+class ListNode<T> {
+    public T data;
+    public ListNode<T> next;
+}
+
+public class Solution {
+    public ListNode<Integer> deleteFromList(ListNode<Integer> aNode, int i) {
+        //Add code here
+        ListNode<Integer> n = aNode;
+        while (--i > 0) {
+            n = n.next;
+        }
+        n.next = n.next.next;
+        return aNode;
+    }
+}
+```

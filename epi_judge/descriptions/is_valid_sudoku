@@ -1,0 +1,3 @@
+Check whether a 9 X 9 2D array representing a partially completed Sudoku is valid. Specifically, check that no row,
+column, or 3 X 3 2D subarray contains duplicates. A 0-value in the 2D array indicates that entry is blank;
+every other entry is in [1,9].

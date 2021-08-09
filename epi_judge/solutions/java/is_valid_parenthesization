@@ -1,0 +1,22 @@
+```java
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Map;
+
+public class Solution {
+    public boolean isWellFormed(String s) {
+        Deque<Character> leftChars = new ArrayDeque<>();
+        final Map<Character, Character> LOOKUP =
+                Map.of('(', ')', '{', '}', '[', ']');
+        for (int i = 0; i < s.length(); ++i) {
+            if (LOOKUP.get(s.charAt(i)) != null) {
+                leftChars.addFirst(s.charAt(i));
+            } else if (leftChars.isEmpty() ||
+                                 LOOKUP.get(leftChars.removeFirst()) != s.charAt(i)) {
+                return false; // Unmatched right char.
+            }
+        }
+        return leftChars.isEmpty();
+    }
+}
+```

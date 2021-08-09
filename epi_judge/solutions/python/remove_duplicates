@@ -1,0 +1,28 @@
+```python
+import functools
+import itertools
+
+class Name:
+    def __init__(self, firstName: str, lastName: str):
+        self.firstName = firstName
+        self.lastName = lastName
+
+    def __eq__(self, other):
+        return self.firstName == other.firstName
+
+    def __lt__(self, other):
+        return (self.firstName < other.firstName
+                if self.firstName != other.firstName else
+                self.lastName < other.lastName)
+
+
+def eliminate_duplicate(A):
+    A.sort()  # Makes identical elements become neighbors.
+    write_idx = 1
+    for cand in A[1:]:
+        if cand != A[write_idx - 1]:
+            A[write_idx] = cand
+            write_idx += 1
+    del A[write_idx:]
+    return [a.firstName for a in A]
+```

@@ -1,0 +1,4 @@
+This is a common interview question where the input is a sorted list of disjoint intervals, and your goal is to insert
+a new interval and merge all necessary intervals returning a final new list. For example, if the interval list is
+[[1,5], [10,15], [20,25]] and you need to insert the interval [12,27], then your program should return the new list:
+[[1,5], [10,27]].

@@ -1,0 +1,2 @@
+Given an integer array, in which each entry but one appears in triplicate, with the remaining element appearing once,
+find the element appearing once. For example, if the array is (2,4,2,5,2,5,5), you should return 4.

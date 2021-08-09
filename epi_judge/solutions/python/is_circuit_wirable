@@ -1,0 +1,39 @@
+```python
+# -
+
+import collections
+import functools
+
+
+class Edge:
+    def __init__(self, fr: int, to: int):
+        self.fr = fr
+        self.to = to
+
+class GraphVertex:
+    def __init__(self):
+        self.d = -1
+        self.edges = []
+
+def is_any_placement_feasible(k, edges):
+    graph = [GraphVertex() for _ in range(k)]
+    for edge in edges:
+        if edge.fr < 0 or edge.fr >= k or edge.to < 0 or edge.to >= k:
+            raise RuntimeError('Invalid vertex index')
+        graph[edge.fr].edges.append(graph[edge.to])
+    def bfs(s):
+        s.d = 0
+        q = collections.deque([s])
+
+        while q:
+            for t in q[0].edges:
+                if t.d == -1:  # Unvisited vertex.
+                    t.d = q[0].d + 1
+                    q.append(t)
+                elif t.d == q[0].d:
+                    return False
+            del q[0]
+        return True
+
+    return all(bfs(v) for v in graph if v.d == -1)
+```

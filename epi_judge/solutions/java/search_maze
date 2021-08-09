@@ -1,0 +1,75 @@
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+class Coordinate {
+    int x;
+    int y;
+
+    public Coordinate() { }
+    public Coordinate(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Coordinate that = (Coordinate)o;
+        if (x != that.x || y != that.y) {
+            return false;
+        }
+        return true;
+    }
+}
+
+public class Solution {
+    public enum Color { WHITE, BLACK }
+
+    public boolean searchMaze(List<List<Integer>> maze, Coordinate s, Coordinate e) {
+        List<Coordinate> path = new ArrayList<>();
+        searchMazeHelper(maze, s, e, path);
+        if (path.isEmpty()) {
+            return s.equals(e);
+        }
+        return true;
+    }
+
+    // Performs DFS to find a feasible path.
+    private boolean searchMazeHelper(List<List<Integer>> maze, Coordinate cur, Coordinate e, List<Coordinate> path) {
+        // Checks cur is within maze and is a white pixel.
+        if (cur.x < 0 || cur.x >= maze.size() || cur.y < 0 ||
+            cur.y >= maze.get(cur.x).size() ||
+            maze.get(cur.x).get(cur.y) != Color.WHITE.ordinal()) {
+
+            return false;
+        }
+        path.add(cur);
+        maze.get(cur.x).set(cur.y, Color.BLACK.ordinal());
+        if (cur.equals(e)) {
+            return true;
+        }
+        for (Coordinate nextMove : List.of(
+            new Coordinate(cur.x, cur.y + 1),
+            new Coordinate(cur.x, cur.y - 1),
+            new Coordinate(cur.x + 1, cur.y),
+            new Coordinate(cur.x - 1, cur.y))) {
+
+            if (searchMazeHelper(maze, nextMove, e, path)) {
+                return true;
+            }
+        }
+        // Cannot find a path, remove the entry added in path.add(cur).
+        path.remove(path.size() - 1);
+        return false;
+    }
+}
+```

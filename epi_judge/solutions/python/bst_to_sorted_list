@@ -1,0 +1,39 @@
+```python
+T = TypeVar('T')
+
+class BinaryTreeNode(Generic[T]):
+    def __init__(self, data: Optional[Type[T]]=None, left=None, right=None):
+        self.data = data
+        self.left = left
+        self.right = right
+
+class HeadAndTail:
+    def __init__(self, head, tail):
+        self.head = head
+        self.tail = tail
+
+def bst_to_doubly_linked_list(tree):
+    return bst_to_doubly_linked_list_helper(tree).head
+
+def bst_to_doubly_linked_list_helper(tree):
+    # Empty subtree.
+    if tree is None:
+        return HeadAndTail(None, None)
+
+    # Recursively build the list from left and right subtrees.
+    left = bst_to_doubly_linked_list_helper(tree.left)
+    right = bst_to_doubly_linked_list_helper(tree.right)
+
+    # Append tree to the list from left subtree.
+    if left.tail is not None:
+        left.tail.right = tree
+    tree.left = left.tail
+
+    # Append the list from right subtree to tree.
+    tree.right = right.head
+    if right.head is not None:
+        right.head.left = tree
+
+    return HeadAndTail(left.head if left.head is not None else tree,
+            right.tail if right.tail is not None else tree)
+```

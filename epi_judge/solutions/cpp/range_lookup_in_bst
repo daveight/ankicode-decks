@@ -1,0 +1,52 @@
+```cxx
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+struct Interval {
+    int left;
+    int right;
+};
+
+#include <memory>
+#include <vector>
+using std::shared_ptr;
+using std::vector;
+
+class Solution {
+public:
+    vector<int> rangeLookupInBst(const shared_ptr<BinaryTreeNode<int>> &tree,
+                                 const Interval &interval) {
+        vector<int> result;
+        rangeLookupInBSTHelper(tree, interval, &result);
+        return result;
+    }
+private:
+    void rangeLookupInBSTHelper(const shared_ptr<BinaryTreeNode<int>> &tree,
+                                const Interval &interval, vector<int> *result) {
+        if (tree == nullptr) {
+            return;
+        }
+        if (interval.left <= tree->data && tree->data <= interval.right) {
+            // tree->data lies in the interval.
+            rangeLookupInBSTHelper(tree->left, interval, result);
+            result->emplace_back(tree->data);
+            rangeLookupInBSTHelper(tree->right, interval, result);
+        } else if (interval.left > tree->data) {
+            rangeLookupInBSTHelper(tree->right, interval, result);
+        } else {  // interval.right > tree->data
+            rangeLookupInBSTHelper(tree->left, interval, result);
+        }
+    }
+};
+```

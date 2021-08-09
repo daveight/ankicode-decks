@@ -1,0 +1,30 @@
+```python
+T = TypeVar('T')
+
+class BinaryTreeNode(Generic[T]):
+    def __init__(self, data: Optional[Type[T]]=None, left=None, right=None):
+        self.data = data
+        self.left = left
+        self.right = right
+
+def find_kth_node_binary_tree(tree, k):
+    def init_size(node):
+        if not node:
+            return 0
+        node.size = 1 + init_size(node.left) + init_size(node.right)
+        return node.size
+
+    init_size(tree)
+
+    while tree:
+        left_size = tree.left.size if tree.left else 0
+        if left_size + 1 < k:  # k-th node must be in right subtree of tree.
+            k -= left_size + 1
+            tree = tree.right
+        elif left_size == k - 1:  # k-th is iter itself.
+            return tree.data
+        else:  # k-th node must be in left subtree of iter.
+            tree = tree.left
+
+    return None  # If k is between 1 and the tree size, this is unreachable.
+```

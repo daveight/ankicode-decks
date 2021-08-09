@@ -1,0 +1,3 @@
+It is straightforward to check whether the sequence stored in an array is a palindrome. However, if this sequence is
+stored as a singly linked list, the problem of detecting palindromicity becomes more challenging.
+Write a program that tests whether a singly linked list is palindromic.

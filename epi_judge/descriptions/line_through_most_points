@@ -1,0 +1,2 @@
+You are given a set of points in the plane. Each point has integer coordinates. Design an algorithm for computing a line
+that contains the maximum number of points in the set.

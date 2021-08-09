@@ -1,0 +1,17 @@
+```python
+T = TypeVar('T')
+
+class BinaryTreeNode(Generic[T]):
+    def __init__(self, data: Optional[Type[T]]=None, left=None, right=None):
+        self.data = data
+        self.left = left
+        self.right = right
+
+def is_binary_tree_b_s_t(tree, low_range=float('-inf'), high_range=float('inf')):
+    if not tree:
+        return True
+    elif not low_range <= tree.data <= high_range:
+        return False
+    return (is_binary_tree_b_s_t(tree.left, low_range, tree.data)
+            and is_binary_tree_b_s_t(tree.right, tree.data, high_range))
+```

@@ -1,0 +1,61 @@
+```js
+class CharWithFrequency {
+    constructor(chr, freq) {
+        this.chr = chr
+        this.freq = freq
+    }
+}
+
+function huffmanEncoding(symbols) {
+    class BinaryTree {
+        constructor(aggregate_freq, s, left=null, right=null) {
+            this.aggregate_freq = aggregate_freq
+            this.s = s
+            this.left = left
+            this.right = right
+        }
+    }
+
+    // Initially assigns each symbol into candidates.
+    candidates = []
+    for (s of symbols) {
+        candidates.push(new BinaryTree(s.freq, s))
+    }
+
+    // Keeps combining two nodes until there is one node left.
+    while (candidates.length > 1) {
+        //todo: use min-heap here
+        candidates.sort(function(a, b) {
+            return b.aggregate_freq - a.aggregate_freq
+        })
+        left = candidates.pop()
+        right = candidates.pop()
+        candidates.push(new BinaryTree(left.aggregate_freq + right.aggregate_freq, null, left, right))
+    }
+
+    function assign_huffman_code(tree, code) {
+        if (tree) {
+            if (tree.s) {
+                // This node is a leaf.
+                huffman_encoding[tree.s.chr] = code
+            } else {  // Non-leaf node.
+                code += '0'
+                assign_huffman_code(tree.left, code)
+                code[code.length - 1] = '1'
+                assign_huffman_code(tree.right, code)
+                code = code.slice(0, -1)
+            }
+        }
+    }
+
+    huffman_encoding = {}
+    // Traverses the binary tree, assigning codes to nodes.
+    assign_huffman_code(candidates[0], [])
+    let sum = 0
+    for (let s of symbols) {
+        sum += huffman_encoding[s.chr].length * s.freq / 100
+
+    }
+    return sum
+}
+```

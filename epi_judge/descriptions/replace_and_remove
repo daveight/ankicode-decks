@@ -1,0 +1,5 @@
+Consider the following two rules that are to be applied to an array of characters.
+• Replace each 'a' by two 'd's.
+• Delete each entry containing a 'b'.
+For example, applying these rules to the array (a,c,d,b,b,c,a) results in the array (d,d,c,d,c,d,d).
+Write a program which takes as input an array of characters, and removes each 'b' and replaces each 'a' by two 'd's.

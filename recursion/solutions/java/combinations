@@ -1,0 +1,70 @@
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+
+public class Solution {
+    public static class LexicographicalListComparator<T extends Comparable<T>> implements Comparator<List<T>> {
+        @Override
+        public int compare(List<T> o1, List<T> o2) {
+            Iterator<T> i1 = o1.iterator();
+            Iterator<T> i2 = o2.iterator();
+            int result;
+
+            do {
+                if (!i1.hasNext()) {
+                    if (!i2.hasNext())
+                        return 0;
+                    else
+                        return -1;
+                }
+                if (!i2.hasNext()) {
+                    return 1;
+                }
+
+                result = i1.next().compareTo(i2.next());
+            } while (result == 0);
+
+            return result;
+        }
+    }
+
+    public static BiPredicate<List<List<Integer>>, List<List<Integer>>> comp =
+            (expected, result) -> {
+                if (result == null) {
+                    return false;
+                }
+                expected.sort(new LexicographicalListComparator<>());
+                result.sort(new LexicographicalListComparator<>());
+                return expected.equals(result);
+            };
+
+    public List<List<Integer>> combinations(int n, int k) {
+        List<List<Integer>> result = new ArrayList<>();
+        directedCombinations(n, k, 1, new ArrayList<Integer>(), result);
+        return result;
+    }
+
+    private void directedCombinations(int n, int k, int offset,
+                                             List<Integer> partialCombination,
+                                             List<List<Integer>> result) {
+        if (partialCombination.size() == k) {
+            result.add(new ArrayList<>(partialCombination));
+            return;
+        }
+
+        // Generate remaining combinations over {offset, ..., n - 1} of size
+        // numRemaining.
+        final int numRemaining = k - partialCombination.size();
+        for (int i = offset; i <= n && numRemaining <= n - i + 1; ++i) {
+            partialCombination.add(i);
+            directedCombinations(n, k, i + 1, partialCombination, result);
+            partialCombination.remove(partialCombination.size() - 1);
+        }
+    }
+}
+```

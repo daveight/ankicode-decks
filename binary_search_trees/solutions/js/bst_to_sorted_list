@@ -1,0 +1,46 @@
+```js
+class BinaryTreeNode {
+    constructor(data, left, right) {
+        this.data = data
+        this.left = left
+        this.right = right
+    }
+}
+
+class HeadAndTail {
+    constructor(head, tail) {
+        this.head = head
+        this.tail = tail
+    }
+}
+
+function bstToDoublyLinkedList(tree) {
+    return bstToDoublyLinkedListHelper(tree).head
+}
+
+function bstToDoublyLinkedListHelper(tree) {
+    // Empty subtree.
+    if (tree == null) {
+        return new HeadAndTail(null, null)
+    }
+
+    // Recursively build the list from left and right subtrees.
+    let left = bstToDoublyLinkedListHelper(tree.left)
+    let right = bstToDoublyLinkedListHelper(tree.right)
+
+    // Append tree to the list from left subtree.
+    if (left.tail != null) {
+        left.tail.right = tree
+    }
+    tree.left = left.tail
+
+    // Append the list from right subtree to tree.
+    tree.right = right.head
+    if (right.head != null) {
+        right.head.left = tree
+    }
+
+    return new HeadAndTail(left.head != null ? left.head : tree,
+            right.tail != null ? right.tail : tree)
+}
+```

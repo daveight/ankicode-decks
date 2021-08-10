@@ -1,0 +1,4 @@
+Define a path in the triangle to be a sequence of entries in the triangle in which adjacent entries in the sequence
+correspond to entries that are adjacent in the triangle. The path must start at the top, descend the triangle
+continuously, and end with an entry on the bottom row. The weight of a path is the sum of the entries.
+Write a program that takes as input a triangle of numbers and returns the weight of a minimum weight path.

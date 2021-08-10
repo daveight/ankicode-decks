@@ -1,0 +1,5 @@
+A number of buildings are visible from a point. A building appears as a rectangle, with the bottom of each building
+lying on a fixed horizontal line. A building is specified using its left and right coordinates, and its height.
+One building may partly obstruct another. The skyline is the list of coordinates and corresponding heights of what
+is visible.
+Design an efficient algorithm for computing the skyline.

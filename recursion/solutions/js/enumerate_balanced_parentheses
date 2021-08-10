@@ -1,0 +1,25 @@
+```js
+function generateBalancedParentheses(numPairs) {
+    const result = []
+    directedGenerateBalancedParentheses(numPairs, numPairs, '', result)
+    return result
+}
+
+function directedGenerateBalancedParentheses(numLeftParensNeeded, numRightParensNeeded, validPrefix,  result) {
+    if (numRightParensNeeded == 0) {
+        result.push(validPrefix)
+        return
+    }
+
+    if (numLeftParensNeeded > 0) { // Able to insert '('.
+        directedGenerateBalancedParentheses(numLeftParensNeeded - 1,
+                numRightParensNeeded,
+                validPrefix + '(', result)
+    }
+    if (numLeftParensNeeded < numRightParensNeeded) { // Able to insert ')'.
+        directedGenerateBalancedParentheses(numLeftParensNeeded,
+                numRightParensNeeded - 1,
+                validPrefix + ')', result)
+    }
+}
+```

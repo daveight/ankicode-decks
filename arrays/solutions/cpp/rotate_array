@@ -1,0 +1,16 @@
+```cxx
+#include <algorithm>
+#include <vector>
+using std::vector;
+
+class Solution {
+public:
+    vector<int> rotateArray(vector<int> A, int rotate_amount) {
+        rotate_amount %= A.size();
+        reverse(begin(A), end(A));
+        reverse(begin(A), begin(A) + rotate_amount);
+        reverse(begin(A) + rotate_amount, end(A));
+        return A;
+    }
+};
+```

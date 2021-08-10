@@ -1,0 +1,64 @@
+```cxx
+#include <vector>
+using std::vector;
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    shared_ptr<BinaryTreeNode<T>> parent;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+        this->parent = nullptr;
+    }
+};
+
+class Solution {
+public:
+    vector<int> inorderTraversal(const shared_ptr<BinaryTreeNode<int>> &tree) {
+        addParentLink(tree, nullptr);
+        shared_ptr<BinaryTreeNode<int>> prev = nullptr, curr = tree;
+        vector<int> result;
+
+        while (curr != nullptr) {
+            shared_ptr<BinaryTreeNode<int>> next;
+            if (curr->parent == prev) {
+                // We came down to curr from prev.
+                if (curr->left != nullptr) {  // Keep going left.
+                    next = curr->left;
+                } else {
+                    result.emplace_back(curr->data);
+                    // Done with left, so go right if right is not empty.
+                    // Otherwise, go up.
+                    next = (curr->right != nullptr) ? curr->right : curr->parent;
+                }
+            } else if (curr->left == prev) {
+                // We came up to curr from its left child.
+                result.emplace_back(curr->data);
+                // Done with left, so go right if right is not empty. Otherwise, go up.
+                next = (curr->right != nullptr) ? curr->right : curr->parent;
+            } else {  // Done with both children, so move up.
+                next = curr->parent;
+            }
+
+            prev = curr;
+            curr = next;
+        }
+        return result;
+    }
+private:
+    void addParentLink(const shared_ptr<BinaryTreeNode<int>>& node, const shared_ptr<BinaryTreeNode<int>>& parent) {
+        if (node == nullptr) {
+            return;
+        }
+        node->parent = parent;
+        addParentLink(node->left, node);
+        addParentLink(node->right, node);
+    }
+};
+```

@@ -1,0 +1,29 @@
+```cxx
+template<typename T>
+
+struct ListNode {
+public:
+    T data;
+    shared_ptr<ListNode<T>> next;
+    ListNode() { }
+    ListNode(T data) : data{data}, next{nullptr} { }
+    ListNode(T data, shared_ptr<ListNode<T>> next) : data{data}, next{next} { }
+};
+
+class Solution {
+public:
+    // Assumes node_to_delete is not tail.
+    shared_ptr<ListNode<int>> deleteList(const shared_ptr<ListNode<int>> &head, int node_to_delete_idx) {
+        shared_ptr<ListNode<int>> selected_node = head;
+        while (node_to_delete_idx-- > 0) {
+            if (!selected_node || !selected_node->next)
+                throw std::runtime_error("Node index is out of range");
+            selected_node = selected_node->next;
+        }
+
+        selected_node->data = selected_node->next->data;
+        selected_node->next = selected_node->next->next;
+        return head;
+    }
+};
+```

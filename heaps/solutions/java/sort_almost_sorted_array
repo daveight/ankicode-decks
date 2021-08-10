@@ -1,0 +1,34 @@
+```java
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class Solution {
+    public List<Integer> sortApproximatelySortedData(List<Integer> list, int k) {
+        Iterator<Integer> sequence = list.iterator();
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        // Adds the first k elements into minHeap. Stop if there are fewer than k
+        // elements.
+        for (int i = 0; i < k && sequence.hasNext(); ++i) {
+            minHeap.add(sequence.next());
+        }
+
+        List<Integer> result = new ArrayList<>();
+        // For every new element, add it to minHeap and extract the smallest.
+        while (sequence.hasNext()) {
+            minHeap.add(sequence.next());
+            Integer smallest = minHeap.remove();
+            result.add(smallest);
+        }
+
+        // sequence is exhausted, iteratively extracts the remaining elements.
+        result.addAll(Stream.generate(minHeap::remove)
+                                            .limit(minHeap.size())
+                                            .collect(Collectors.toList()));
+        return result;
+    }
+}
+```

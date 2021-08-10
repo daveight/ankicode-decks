@@ -1,0 +1,12 @@
+```python
+def decode(encoded: str)->str:
+    s = encoded
+    count, result = 0, []
+    for c in s:
+        if c.isdigit():
+            count = count * 10 + int(c)
+        else:  # c is a letter of alphabet.
+            result.append(c * count)  # Appends count copies of c to result.
+            count = 0
+    return ''.join(result)
+```

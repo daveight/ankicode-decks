@@ -1,0 +1,7 @@
+```python
+import functools
+
+def ss_decode_col_i_d(col):
+    return functools.reduce(
+        lambda result, c: result * 26 + ord(c) - ord('A') + 1, col, 0)
+```

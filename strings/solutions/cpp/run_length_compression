@@ -1,0 +1,23 @@
+```cxx
+#include <cctype>
+#include <string>
+using std::string;
+using std::to_string;
+
+class Solution {
+public:
+    string decode(const string &s) {
+        int count = 0;
+        string result;
+        for (const char &c : s) {
+            if (isdigit(c)) {
+                count = count * 10 + c - '0';
+            } else {                    // c is a letter of alphabet.
+                result.append(count, c);  // Appends count copies of c to result.
+                count = 0;
+            }
+        }
+        return result;
+    }
+};
+```

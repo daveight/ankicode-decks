@@ -1,0 +1,17 @@
+```python
+T = TypeVar('T')
+
+class ListNode(Generic[T]):
+    def __init__(self, data: Optional[Type[T]]):
+        self.data = data
+        self.next = None
+
+def delete_from_list(aNode: ListNode[int], i: int)->ListNode[int]:
+    #Add code here
+    n = aNode
+    while i > 1:
+        i -= 1
+        n = n.next
+    n.next = n.next.next
+    return aNode
+```

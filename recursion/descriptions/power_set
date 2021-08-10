@@ -1,0 +1,2 @@
+The power set of a set S is the set of all subsets of S, including both the empty set 0 and S itself.
+Write a function that takes as input a set and returns its power set.

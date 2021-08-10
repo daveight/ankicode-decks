@@ -1,0 +1,6 @@
+Let A be a Boolean 2D array encoding a black-and-white image. The entry A(a,b) can be viewed as encoding the color at
+entry (a,b). Call two entries adjacent if one is to the left, right, above or below the other. Note that the definition
+implies that an entry can be adjacent to at most four other entries, and that adjacency is symmetric, i.e., if eO is
+adjacent to entry el, then el is adjacent to eO.
+Implement a routine that takes an n X m Boolean array A together with an entry (x, y) and flips the color of the region
+associated with (x, y).

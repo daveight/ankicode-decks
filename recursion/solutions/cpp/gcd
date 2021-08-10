@@ -1,0 +1,19 @@
+```cxx
+class Solution {
+public:
+    long gcd(long long x, long long y) {
+        if (x > y) {
+            return gcd(y, x);
+        } else if (x == 0) {
+            return y;
+        } else if (!(x & 1) && !(y & 1)) {  // x and y are even.
+            return gcd(x >> 1, y >> 1) << 1;
+        } else if (!(x & 1) && y & 1) {  // x is even, and y is odd.
+            return gcd(x >> 1, y);
+        } else if (x & 1 && !(y & 1)) {  // x is odd, and y is even.
+            return gcd(x, y >> 1);
+        }
+        return gcd(x, y - x);  // Both x and y are odd.
+    }
+};
+```

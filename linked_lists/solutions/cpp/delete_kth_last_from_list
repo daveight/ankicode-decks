@@ -1,0 +1,28 @@
+```cxx
+template<class T>
+struct ListNode {
+public:
+    T data;
+    shared_ptr<ListNode<T>> next;
+};
+
+class Solution {
+public:
+    shared_ptr<ListNode<int>> removeKthLast(shared_ptr<ListNode<int>> L, int k) {
+        shared_ptr<ListNode<int>> dummy_head = make_shared<ListNode<int>>();
+        dummy_head->next = L;
+        auto first = dummy_head->next;
+        while (k--) {
+            first = first->next;
+        }
+
+        auto second = dummy_head;
+        while (first) {
+            second = second->next, first = first->next;
+        }
+        // second points to the (k + 1)-th last node, deletes its successor.
+        second->next = second->next->next;
+        return dummy_head->next;
+    }
+};
+```

@@ -1,0 +1,48 @@
+```cpp
+template<typename T>
+
+struct ListNode {
+public:
+    T data;
+    shared_ptr<ListNode<T>> next;
+
+    ListNode(T data) : data{data}, next{nullptr} { }
+    ListNode(T data, shared_ptr<ListNode<T>> next) : data{data}, next{next} { }
+    ~ListNode() { while (next) next = std::move(next->next); }
+};
+
+class Solution {
+public:
+    int hasCycle(shared_ptr<ListNode<int>> head) {
+        shared_ptr<ListNode<int>> fast = head, slow = head;
+        while (fast != nullptr && fast->next != nullptr) {
+            slow = slow->next;
+            fast = fast->next->next;
+            if (slow == fast) {
+                // There is a cycle, so now let's calculate the cycle length.
+                int cycleLen = 0;
+                do {
+                    ++cycleLen;
+                    fast = fast->next;
+                } while (slow != fast);
+
+                // Finds the start of the cycle.
+                shared_ptr<ListNode<int>> cycleLenAdvancedIter = head;
+                // cycleLenAdvancedIter pointer advances cycleLen first.
+                while (cycleLen-- > 0) {
+                    cycleLenAdvancedIter = cycleLenAdvancedIter->next;
+                }
+
+                shared_ptr<ListNode<int>> iter = head;
+                // Both iterators advance in tandem.
+                while (iter != cycleLenAdvancedIter) {
+                    iter = iter->next;
+                    cycleLenAdvancedIter = cycleLenAdvancedIter->next;
+                }
+                return iter->data; // iter is the start of cycle.
+            }
+        }
+        return -1; // no cycle.
+    }
+};
+```

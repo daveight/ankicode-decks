@@ -1,0 +1,21 @@
+```cxx
+template<class T>
+struct ListNode {
+public:
+    T data;
+    ListNode<T>* next;
+};
+
+class Solution {
+public:
+    ListNode<int> deleteFromList(ListNode<int>* aNode, int i) {
+        //Add code here
+        ListNode<int>* n = aNode;
+        while (--i > 0) {
+            n = n->next;
+        }
+        n->next = n->next->next;
+        return *aNode;
+    }
+};
+```

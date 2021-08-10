@@ -1,0 +1,15 @@
+```js
+function hIndex(citations) {
+    citations.sort(function(a, b) {
+        return a - b;
+    })
+    n = citations.length
+    for (let i = 0; i < citations.length; i++) {
+        c = citations[i]
+        if (c >= n - i) {
+            return n - i
+        }
+    }
+    return 0
+}
+```

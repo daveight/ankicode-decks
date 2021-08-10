@@ -1,0 +1,38 @@
+```cxx
+struct Name {
+    bool operator==(const Name &that) const {
+        return firstName == that.firstName;
+    }
+
+    bool operator<(const Name &that) const {
+        return firstName != that.firstName ? firstName < that.firstName
+                                                 : lastName < that.lastName;
+    }
+
+    string firstName, lastName;
+};
+
+#include <algorithm>
+#include <iterator>
+#include <string>
+#include <vector>
+
+using std::string;
+using std::vector;
+
+class Solution {
+public:
+    vector<string> eliminateDuplicate(vector<Name> names) {
+        sort(begin(names), end(names));  // Makes identical elements become neighbors.
+        // unique() removes adjacent duplicates and returns an iterator to the
+        // element the follows the last element not removed. The effect of erase()
+        // is to restrict names to the distinct elements.
+        names.erase(unique(begin(names), end(names)), end(names));
+        vector<string> res;
+        for (Name n : names) {
+            res.push_back(n.firstName);
+        }
+        return res;
+    }
+};
+```

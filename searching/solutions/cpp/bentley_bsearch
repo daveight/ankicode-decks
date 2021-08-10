@@ -1,0 +1,52 @@
+```cxx
+class Solution {
+public:
+    vector<int> bsearch(int t, vector<int> A) {
+        int start = findFirstOccurrence(t, A);
+        int end = start;
+        for (int i = start; i < A.size() && i >= 0; i++) {
+            if (A[i] == t) {
+                end = i;
+            } else {
+                break;
+            }
+        }
+        vector<int> result;
+        result.push_back(start);
+        result.push_back(end);
+
+        return result;
+    }
+private:
+    int findFirstOccurrence(int t, vector<int> A) {
+        // search space is `A[left…right]`
+        int left = 0;
+        int right = A.size() - 1;
+
+        // initialize the result by -1
+        int result = -1;
+
+        // loop till the search space is exhausted
+        while (left <= right) {
+            // find the mid-value in the search space and compares it with the target
+            int mid = (left + right) / 2;
+
+            // if the key is located, update the result and
+            // search towards the left (lower indices)
+            if (t == A[mid]) {
+                result = mid;
+                right = mid - 1;
+            } else if (t < A[mid]) {
+                // if the key is less than the middle element, discard the right half
+                right = mid - 1;
+            } else {
+                // if the key is more than the middle element, discard the left half
+                left = mid + 1;
+            }
+        }
+
+        // return the leftmost index, or -1 if the element is not found
+        return result;
+    }
+};
+```

@@ -1,0 +1,8 @@
+Consider an expression of the form (3 O 1 O 4 O 1 O 5), where each O is an operator, e.g., +, x,+.
+The expression takes different values based on what the operators are. Some examples are 14 (if all operators are +),
+60 (if all operators are x), and 22 (3 - 1 + 4 X 1 X 5).
+Write a program that takes an array of digits and a target value, and returns true if it is possible to intersperse
+multiplies (x) and adds (+) with the digits of the array such that the resulting expression evaluates to the target
+value. For example, if the array is (1, 2, 3, 2, 5, 3, 7, 8, 5, 9} and the target value is 995, then the target value
+can be realized by the expression 123 + 2 + 5 x 3 x 7 + 85 x 9, so your program should return true.
+

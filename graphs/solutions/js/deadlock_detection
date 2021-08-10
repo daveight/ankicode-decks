@@ -1,0 +1,59 @@
+```js
+class Edge {
+    constructor(fr, to) {
+        this.fr = fr
+        this.to = to
+    }
+}
+
+const Color = { WHITE: 1, GRAY: 2, BLACK: 3 }
+
+class GraphVertex {
+    constructor() {
+        this.color = Color.WHITE
+        this.edges = []
+    }
+}
+
+function isDeadlocked(numNodes, edges) {
+    if (numNodes <= 0) {
+        throw "Invalid numNodes value"
+    }
+    const graph = []
+    for (let i = 0; i < numNodes; i++) {
+        graph.push(new GraphVertex())
+    }
+    for (let e of edges) {
+        if (e.fr < 0 || e.fr >= numNodes || e.to < 0 || e.to >= numNodes) {
+            throw "Invalid vertex index"
+        }
+        graph[e.fr].edges.push(graph[e.to])
+    }
+    for (let vertex of graph) {
+        if (vertex.color == Color.WHITE && hasCycle(vertex)) {
+            return true
+        }
+    }
+    return false
+}
+
+function hasCycle(cur) {
+    // Visiting a gray vertex means a cycle.
+    if (cur.color == Color.GRAY) {
+        return true
+    }
+
+    cur.color = Color.GRAY // Marks current vertex as a gray one.
+
+    // Traverse the neighbor vertices.
+    for (let next of cur.edges) {
+        if (next.color != Color.BLACK && hasCycle(next)) {
+            return true
+        }
+    }
+
+    cur.color = Color.BLACK; // Marks current vertex as black.
+
+    return false
+}
+```

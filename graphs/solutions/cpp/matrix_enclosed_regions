@@ -1,0 +1,58 @@
+```cxx
+#include <deque>
+#include <queue>
+#include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
+
+using std::deque;
+using std::pair;
+using std::queue;
+using std::string;
+using std::vector;
+
+class Solution {
+public:
+    vector<vector<string>> fillSurroundedRegions(vector<vector<string>> board) {
+        // Identifies the regions that are reachable via white path starting from
+        // the first or last columns.
+        for (int i = 0; i < board.size(); ++i) {
+            markBoundaryRegion(i, 0, &board);
+            markBoundaryRegion(i, board[i].size() - 1, &board);
+        }
+        // Identifies the regions that are reachable via white path starting from
+        // the first or last rows.
+        for (int j = 0; j < board.front().size(); ++j) {
+            markBoundaryRegion(0, j, &board);
+            markBoundaryRegion(board.size() - 1, j, &board);
+        }
+
+        // Marks the surrounded white regions as black.
+        for (int i = 0; i < board.size(); ++i) {
+            for (int j = 0; j < board[i].size(); ++j) {
+                board[i][j] = board[i][j] != "T" ? "B" : "W";
+            }
+        }
+
+        return board;
+    }
+private:
+    void markBoundaryRegion(int i, int j, vector<vector<string>>* board_ptr) {
+        vector<vector<string>> &board = *board_ptr;
+        queue<pair<int, int>> q(deque<pair<int, int>>(1, {i, j}));
+        // Uses BFS to traverse this region.
+        while (!q.empty()) {
+            const auto[x, y] = q.front();
+            q.pop();
+            if (x >= 0 && x < board.size() && y >= 0 && y < board[x].size() && board[x][y] == "W") {
+                board[x][y] = "T";
+                q.emplace(x - 1, y);
+                q.emplace(x + 1, y);
+                q.emplace(x, y + 1);
+                q.emplace(x, y - 1);
+            }
+        }
+    }
+};
+```

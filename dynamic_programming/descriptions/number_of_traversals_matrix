@@ -1,0 +1,3 @@
+In this problem you are to count the number of ways of starting at the top-left comer of a 2D array and getting to the
+bottom-right comer. All moves must either go right or down.
+Write a program that counts how many ways you can go from the top-left to the bottom-right in a 2D array.

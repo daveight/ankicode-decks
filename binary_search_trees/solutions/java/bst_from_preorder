@@ -1,0 +1,36 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    public BinaryTreeNode<Integer> rebuildBSTFromPreorder(List<Integer> preorderSequence) {
+        return rebuildBSTFromPreorderHelper(preorderSequence, 0, preorderSequence.size());
+    }
+
+    private BinaryTreeNode<Integer> rebuildBSTFromPreorderHelper(List<Integer> preorderSequence, int start, int end) {
+        if (start >= end) {
+            return null;
+        }
+        int transitionPoint = start + 1;
+        while (transitionPoint < end &&
+               Integer.compare(preorderSequence.get(transitionPoint), preorderSequence.get(start)) < 0) {
+            ++transitionPoint;
+        }
+        return new BinaryTreeNode<>(
+                preorderSequence.get(start),
+                rebuildBSTFromPreorderHelper(preorderSequence, start + 1, transitionPoint),
+                rebuildBSTFromPreorderHelper(preorderSequence, transitionPoint, end));
+    }
+}
+```

@@ -1,0 +1,22 @@
+```cxx
+class Solution {
+public:
+    int findElementAppearsOnce(vector<int> A) {
+        int counts[32] = {0};
+
+        for (int x : A) {
+            for (int i = 0; i < 32; ++i) {
+                counts[i] += x & 1;
+                x >>= 1;
+            }
+        }
+
+        int sum = 0;
+        for (int i = 0; i < 32; i++) {
+            sum += (counts[i] % 3) << i;
+        }
+
+        return sum;
+    }
+};
+```

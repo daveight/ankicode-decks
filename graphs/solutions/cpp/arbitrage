@@ -1,0 +1,57 @@
+```cxx
+#include <algorithm>
+#include <vector>
+#include <cmath>
+
+using std::swap;
+using std::vector;
+
+class Solution {
+public:
+    bool isArbitrageExist(vector<vector<double>> graph) {
+        // Transforms each edge in graph.
+        for_each(begin(graph), end(graph), [](vector<double> &edge_list) {
+            for_each(begin(edge_list), end(edge_list),
+                     [](double &edge) { edge = -log10(edge); });
+        });
+
+        // Uses Bellman-Ford to find negative weight cycle.
+        return bellmanFord(graph, 0);
+    }
+
+private:
+    bool bellmanFord(const vector<vector<double>> &graph, int source) {
+        vector<double> dis_to_source(graph.size(), numeric_limits<double>::max());
+        dis_to_source[source] = 0;
+
+        for (int times = 1; times < graph.size(); ++times) {
+            bool have_update = false;
+            for (int i = 0; i < graph.size(); ++i) {
+                for (int j = 0; j < graph[i].size(); ++j) {
+                    if (dis_to_source[i] != numeric_limits<double>::max() &&
+                        dis_to_source[j] > dis_to_source[i] + graph[i][j]) {
+                        have_update = true;
+                        dis_to_source[j] = dis_to_source[i] + graph[i][j];
+                    }
+                }
+            }
+
+            // No update in this iteration means no negative cycle.
+            if (have_update == false) {
+                return false;
+            }
+        }
+
+        // Detects cycle if there is any further update.
+        for (int i = 0; i < graph.size(); ++i) {
+            for (int j = 0; j < graph[i].size(); ++j) {
+                if (dis_to_source[i] != numeric_limits<double>::max() &&
+                    dis_to_source[j] > dis_to_source[i] + graph[i][j]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+};
+```

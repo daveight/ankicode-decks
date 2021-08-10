@@ -1,0 +1,39 @@
+```cxx
+#include <stack>
+#include <vector>
+using std::stack;
+using std::vector;
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Solution {
+public:
+    vector<int> preorderTraversal(const shared_ptr<BinaryTreeNode<int>> &tree) {
+        stack<BinaryTreeNode<int> *> path;
+        path.emplace(tree.get());
+        vector<int> result;
+        while (!path.empty()) {
+            auto curr = path.top();
+            path.pop();
+            if (curr != nullptr) {
+                result.emplace_back(curr->data);
+                path.emplace(curr->right.get());
+                path.emplace(curr->left.get());
+            }
+        }
+        return result;
+    }
+};
+```

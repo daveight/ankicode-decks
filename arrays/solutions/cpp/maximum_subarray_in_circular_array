@@ -1,0 +1,53 @@
+```cxx
+#include <algorithm>
+#include <vector>
+using std::max;
+using std::vector;
+
+class Solution {
+public:
+    int maxSubarraySumInCircular(const vector<int> &A) {
+        return max(findMaxSubarray(A), findCircularMaxSubarray(A));
+    }
+private:
+    // Calculates the non-circular solution.
+    int findMaxSubarray(const vector<int> &A) {
+        int maximum_till = 0, maximum = 0;
+        for (int a : A) {
+            maximum_till = max(a, a + maximum_till);
+            maximum = max(maximum, maximum_till);
+        }
+        return maximum;
+    }
+    
+    vector<int> computeRunningMaximum(const vector<int> &A) {
+        vector<int> running_maximum;
+        int sum = A.front();
+        running_maximum.emplace_back(sum);
+        for (int i = 1; i < A.size(); ++i) {
+            sum += A[i];
+            running_maximum.emplace_back(max(running_maximum.back(), sum));
+        }
+        return running_maximum;
+    }
+    
+    // Calculates the solution which is circular.
+    int findCircularMaxSubarray(const vector<int> &A) {
+        // Maximum subarray sum starts at index 0 and ends at or before index i.
+        vector<int> maximum_begin = computeRunningMaximum(A);
+    
+        // Maximum subarray sum starts at index i + 1 and ends at the last element.
+        vector<int> maximum_end = computeRunningMaximum({crbegin(A), crend(A)});
+        maximum_end.pop_back();
+        reverse(begin(maximum_end), end(maximum_end));
+        maximum_end.emplace_back(0);
+    
+        // Calculates the maximum subarray which is circular.
+        int circular_max = 0;
+        for (int i = 0; i < A.size(); ++i) {
+            circular_max = max(circular_max, maximum_begin[i] + maximum_end[i]);
+        }
+        return circular_max;
+    }
+};
+```

@@ -1,0 +1,48 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+    int size;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    public Integer findKthNodeBinaryTree(BinaryTreeNode<Integer> tree, int k) {
+        tree = convertToTreeWithSize(tree);
+        BinaryTreeNode<Integer> iter = tree;
+        while (iter != null) {
+            int leftSize = iter.left != null ? iter.left.size : 0;
+            if (leftSize + 1 < k) { // k-th node must be in right subtree of iter.
+                k -= (leftSize + 1);
+                iter = iter.right;
+            } else if (leftSize == k - 1) { // k-th is iter itself.
+                return iter.data;
+            } else { // k-th node must be in left subtree of iter.
+                iter = iter.left;
+            }
+        }
+        // If k is between 1 and the tree size, this line is unreachable.
+        return null;
+    }
+
+    public BinaryTreeNode<Integer> convertToTreeWithSize(BinaryTreeNode<Integer> original) {
+        if (original == null)
+            return null;
+        BinaryTreeNode<Integer> left = convertToTreeWithSize(original.left);
+        BinaryTreeNode<Integer> right = convertToTreeWithSize(original.right);
+        int lSize = left == null ? 0 : left.size;
+        int rSize = right == null ? 0 : right.size;
+        BinaryTreeNode result = new BinaryTreeNode<>(original.data, left, right);
+        result.size = 1 + lSize + rSize;
+        return result;
+    }
+}
+```

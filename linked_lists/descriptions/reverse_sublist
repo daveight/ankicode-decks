@@ -1,0 +1,3 @@
+Write a program which takes a singly linked list L and two integers s and f as arguments, and reverses the order of the
+nodes from the s-th node to f-th node, inclusive. The numbering begins at 1, i.e., the head node is the first node.
+Do not allocate additional nodes.

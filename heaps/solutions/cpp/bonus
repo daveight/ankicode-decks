@@ -1,0 +1,47 @@
+```cxx
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <queue>
+#include <vector>
+
+using std::function;
+using std::max;
+using std::priority_queue;
+using std::vector;
+
+class Solution {
+public:
+    int calculateBonus(const vector<int>& productivity) {
+        struct EmployeeData {
+            int productivity, index;
+        };
+        priority_queue<EmployeeData, vector<EmployeeData>,
+                function<bool(EmployeeData, EmployeeData)>>
+                min_heap([](const EmployeeData& a, const EmployeeData& b) {
+            return a.productivity > b.productivity;
+        });
+        for (int i = 0; i < productivity.size(); ++i) {
+            min_heap.emplace(EmployeeData{productivity[i], i});
+        }
+
+        // Initially assigns one ticket to everyone.
+        vector<int> tickets(productivity.size(), 1);
+        // Fills tickets from lowest rating to highest rating.
+        while (min_heap.size() > 0) {
+            int next_dev = min_heap.top().index;
+            // Handles the left neighbor.
+            if (next_dev > 0 && productivity[next_dev] > productivity[next_dev - 1]) {
+                tickets[next_dev] = tickets[next_dev - 1] + 1;
+            }
+            // Handles the right neighbor.
+            if (next_dev + 1 < tickets.size() &&
+                productivity[next_dev] > productivity[next_dev + 1]) {
+                tickets[next_dev] = max(tickets[next_dev], tickets[next_dev + 1] + 1);
+            }
+            min_heap.pop();
+        }
+        return accumulate(begin(tickets), end(tickets), 0);
+    }
+};
+```

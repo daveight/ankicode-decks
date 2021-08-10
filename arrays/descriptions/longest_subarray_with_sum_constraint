@@ -1,0 +1,2 @@
+Design an algorithm that takes as input an array A of n numbers and a key k, and returns the length of a longest
+subarray of A for which the subarray sum is less than or equal to k.

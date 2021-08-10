@@ -1,0 +1,15 @@
+```cxx
+#include <cstdlib>
+
+class Solution {
+public:
+    long long reverse(int x) {
+        long long result = 0, x_remaining = abs(x);
+        while (x_remaining) {
+            result = result * 10 + x_remaining % 10;
+            x_remaining /= 10;
+        }
+        return x < 0 ? -result : result;
+    }
+};
+```

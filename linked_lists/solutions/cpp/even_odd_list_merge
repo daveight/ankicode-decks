@@ -1,0 +1,39 @@
+```cxx
+template<typename T>
+
+struct ListNode {
+public:
+    T data;
+    shared_ptr<ListNode<T>> next;
+
+    ListNode() { }
+
+    ListNode(T data, shared_ptr<ListNode<T>> next) {
+        this->data = data;
+        this->next = next;
+    }
+};
+
+class Solution {
+public:
+    shared_ptr<ListNode<int>> evenOddMerge(shared_ptr<ListNode<int>> L) {
+        if (L == nullptr) {
+            return L;
+        }
+        shared_ptr<ListNode<int>> evenDummyHead = make_shared<ListNode<int>>(0, nullptr);
+        shared_ptr<ListNode<int>> oddDummyHead = make_shared<ListNode<int>>(0, nullptr);
+        vector<shared_ptr<ListNode<int>>> tails;
+        tails.push_back(evenDummyHead);
+        tails.push_back(oddDummyHead);
+        int turn = 0;
+        for (shared_ptr<ListNode<int>> iter = L; iter != nullptr; iter = iter->next) {
+            tails[turn]->next = iter;
+            tails[turn] = tails[turn]->next;
+            turn ^= 1;
+        }
+        tails[1]->next = nullptr;
+        tails[0]->next = oddDummyHead->next;
+        return evenDummyHead->next;
+    }
+};
+```

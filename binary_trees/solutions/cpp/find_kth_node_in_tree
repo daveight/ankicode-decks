@@ -1,0 +1,50 @@
+```cxx
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    int size;
+
+    BinaryTreeNode() {
+    }
+
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right, int size) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+        this->size = size;
+    }
+};
+
+class Solution {
+public:
+    int findKthNodeBinaryTree(shared_ptr<BinaryTreeNode<int>> tree, int k) {
+        shared_ptr<BinaryTreeNode<int>> iter = convertToTreeWithSize(tree);
+        while (iter != nullptr) {
+            int leftSize = iter->left != nullptr ? iter->left->size : 0;
+            if (leftSize + 1 < k) { // k-th node must be in right subtree of iter.
+                k -= (leftSize + 1);
+                iter = iter->right;
+            } else if (leftSize == k - 1) { // k-th is iter itself.
+                return iter->data;
+            } else { // k-th node must be in left subtree of iter.
+                iter = iter->left;
+            }
+        }
+        // If k is between 1 and the tree size, this line is unreachable.
+        return -1;
+    }
+private:
+    shared_ptr<BinaryTreeNode<int>> convertToTreeWithSize(shared_ptr<BinaryTreeNode<int>> original) {
+        if (original == nullptr)
+            return original;
+        shared_ptr<BinaryTreeNode<int>> left = convertToTreeWithSize(original->left);
+        shared_ptr<BinaryTreeNode<int>> right = convertToTreeWithSize(original->right);
+        int lSize = left == nullptr ? 0 : left->size;
+        int rSize = right == nullptr ? 0 : right->size;
+        return make_shared<BinaryTreeNode<int>>(original->data, left, right, 1 + lSize + rSize);
+    }
+};
+```

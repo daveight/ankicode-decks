@@ -1,0 +1,3 @@
+A string over the characters "{,},(,),[,]" is said to be well-formed if the different types of brackets match in the
+correct order. For example, "([]){()}" is well-formed, as is "[()[]|()()|]". However, "{)" and "[()[]{()()" are not
+well-formed, Write a program that tests if a string made up of the characters '(', ')', '[', and"}' is well-formed.

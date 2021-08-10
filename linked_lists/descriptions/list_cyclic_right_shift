@@ -1,0 +1,2 @@
+Write a program that takes as input a singly linked list and a nonnegative integer k, and returns the list cyclically
+shifted to the right by k. See Figure 8.9 for an example of a cyclic right shift.

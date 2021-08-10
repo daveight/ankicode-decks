@@ -1,0 +1,12 @@
+```java
+public class Solution {
+    public short countBitsSet(int n) {
+        int bitsSet = 0;
+        while (n != 0) {
+            bitsSet += (n & 1);
+            n >>>= 1;
+        }
+        return bitsSet;
+    }
+}
+```

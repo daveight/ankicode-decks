@@ -1,0 +1,2 @@
+Write a program which takes an array of positive integers and returns the smallest number which is not to the sum of a
+subset of elements of the array.

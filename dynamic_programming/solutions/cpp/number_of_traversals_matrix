@@ -1,0 +1,29 @@
+```cxx
+#include <algorithm>
+#include <memory>
+#include <vector>
+using std::make_unique;
+using std::swap;
+using std::vector;
+
+class Solution {
+public:
+    int numberOfWays(int n, int m) {
+        if (n < m) {
+            swap(n, m);
+        }
+        vector<int> A(m, 1);
+        for (int i = 1; i < n; ++i) {
+            int prev_res = 0;
+            if (n < m) {
+                swap(n, m);
+            }
+            for (int j = 0; j < m; ++j) {
+                A[j] = A[j] + prev_res;
+                prev_res = A[j];
+            }
+        }
+        return A[m - 1];
+    }
+};
+```

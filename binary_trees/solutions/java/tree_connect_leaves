@@ -1,0 +1,42 @@
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    public List<Integer> createListOfLeaves(BinaryTreeNode<Integer> tree) {
+        List<BinaryTreeNode<Integer>> leaves = new ArrayList<>();
+        addLeavesLeftToRight(tree, leaves);
+        List<Integer> extractedRes = new ArrayList<>();
+        for (BinaryTreeNode<Integer> x : leaves) {
+            extractedRes.add(x.data);
+        }
+        return extractedRes;
+    }
+
+    private void addLeavesLeftToRight(BinaryTreeNode<Integer> tree, List<BinaryTreeNode<Integer>> leaves) {
+        if (tree != null) {
+            if (tree.left == null && tree.right == null) {
+                leaves.add(tree);
+            } else {
+                addLeavesLeftToRight(tree.left, leaves);
+                addLeavesLeftToRight(tree.right, leaves);
+            }
+        }
+    }
+}
+```

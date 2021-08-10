@@ -1,0 +1,2 @@
+Design an algorithm that takes as input a BST and returns a sorted doubly linked list on the same elements.
+Your algorithm should not do any dynamic allocation.

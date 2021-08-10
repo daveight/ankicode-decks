@@ -1,0 +1,19 @@
+```js
+function findSalaryCap(target_payroll, current_salaries) {
+    current_salaries.sort(function(a, b) {
+      return a - b;
+    })
+    let unadjusted_salary_sum = 0.0
+    for (let i = 0; i < current_salaries.length; i++) {
+        let current_salary = current_salaries[i];
+        let adjusted_people = current_salaries.length - i
+        let adjusted_salary_sum = current_salary * adjusted_people
+        if (unadjusted_salary_sum + adjusted_salary_sum >= target_payroll) {
+            return (target_payroll - unadjusted_salary_sum) / adjusted_people
+        }
+        unadjusted_salary_sum += current_salary
+    }
+    // No solution, since target_payroll > existing payroll.
+    return -1.0
+}
+```

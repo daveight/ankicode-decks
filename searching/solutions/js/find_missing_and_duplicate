@@ -1,0 +1,42 @@
+```js
+class DuplicateMissing {
+    constructor(duplicate, missing) {
+        this.duplicate = duplicate
+        this.missing = missing
+    }
+}
+
+function findDuplicateMissing(A) {
+    // Compute the XOR of all numbers from 0 to |A| - 1 and all entries in A.
+    let missXORDup = 0
+    for (i = 0; i < A.length; ++i) {
+        missXORDup ^= i ^ A[i]
+    }
+
+    // We need to find a bit that's set to 1 in miss_XOR_dup. Such a bit must
+    // exist if there is a single missing number and a single duplicated number
+    // in A.
+    //
+    // The bit-fiddling assignment below sets all of bits in differ_bit
+    // to 0 except for the least significant bit in miss_XOR_dup that's 1.
+    differBit = missXORDup & (~(missXORDup - 1))
+    missOrDup = 0
+    for (let i = 0; i < A.length; i++) {
+        const a = A[i];
+        // Focus on entries and numbers in which the differ_bit-th bit is 1.
+        if (i & differBit) {
+            missOrDup ^= i
+        }
+        if (a & differBit) {
+            missOrDup ^= a
+        }
+    }
+
+    // miss_or_dup is either the missing value or the duplicated entry.
+    // If miss_or_dup is in A, miss_or_dup is the duplicate;
+    // otherwise, miss_or_dup is the missing value.
+    return A.indexOf(missOrDup) >= 0
+        ? new DuplicateMissing(missOrDup, missOrDup ^ missXORDup)
+        : new DuplicateMissing(missOrDup ^ missXORDup, missOrDup)
+}
+```

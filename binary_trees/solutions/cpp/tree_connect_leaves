@@ -1,0 +1,45 @@
+```cxx
+#include <memory>
+#include <vector>
+using std::shared_ptr;
+using std::vector;
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Solution {
+public:
+    vector<int> createListOfLeaves(const shared_ptr<BinaryTreeNode<int>> &tree) {
+        vector<const shared_ptr<BinaryTreeNode<int>> *> leaves;
+        addLeavesLeftToRight(tree, &leaves);
+        vector<int> extracted_result;
+        for (const auto &x : leaves) {
+            extracted_result.push_back(x->get()->data);
+        }
+        return extracted_result;
+    }
+private:
+    void addLeavesLeftToRight(const shared_ptr<BinaryTreeNode<int>> &tree,
+            vector<const shared_ptr<BinaryTreeNode<int>> *> *leaves_ptr) {
+        if (tree != nullptr) {
+            if (tree->left == nullptr && tree->right == nullptr) {
+                leaves_ptr->emplace_back(&tree);
+            } else {
+                addLeavesLeftToRight(tree->left, leaves_ptr);
+                addLeavesLeftToRight(tree->right, leaves_ptr);
+            }
+        }
+    }
+};
+```

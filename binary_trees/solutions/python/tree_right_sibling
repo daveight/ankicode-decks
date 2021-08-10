@@ -1,0 +1,48 @@
+```python
+T = TypeVar('T')
+
+class BinaryTreeNode(Generic[T]):
+    def __init__(self, data: Optional[Type[T]]=None, left=None, right=None):
+        self.data = data
+        self.left = left
+        self.right = right
+        self.next = None
+
+def construct_right_sibling(tree):
+    cloned = clone_tree(tree)
+    pointer = cloned;
+    def populate_children_next_field(start_node):
+        while start_node and start_node.left:
+            # Populate left child's next field.
+            start_node.left.next = start_node.right
+            # Populate right child's next field if start_node is not the last
+            # node of level.
+            start_node.right.next = start_node.next and start_node.next.left
+            start_node = start_node.next
+
+    while pointer and pointer.left:
+        populate_children_next_field(pointer)
+        pointer = pointer.left
+
+    return [[n.data for n in traverse_next(level)]
+            for level in traverse_left(cloned)]
+
+def traverse_next(node):
+    while node:
+        yield node
+        node = node.next
+
+
+def traverse_left(node):
+    while node:
+        yield node
+        node = node.left
+
+
+def clone_tree(original):
+    if not original:
+        return None
+    cloned = BinaryTreeNode(original.data)
+    cloned.left, cloned.right = clone_tree(original.left), clone_tree(original.right)
+    return cloned
+```

@@ -1,0 +1,20 @@
+You need to test the design of a protective case. Specifically, the case can protect the enclosed device from a fall
+from up to some number of floors, and you want to determine what that number of floors is. You can assume the following:
+• All cases have identical physical properties. In particular, if one breaks when falling from a particular level, all
+  of them will break when falling from that level.
+• A case that survives a fall can be used again, and a broken case must be dis¬ carded.
+• If a case breaks when dropped, then it would break if dropped from a higher floor, and if a case survives a fall,
+  then it would survive a shorter fall.
+
+It is not ruled out that the first-floor windows break eggs, nor is it ruled out that eggs can survive the 36th-floor
+windows. An additional constraint is that you can perform only a fixed number of drops before the building supervisor
+stops you.
+
+If we have two cases and are allowed 5 drops, we can do better. For example, we could test by dropping from floors 2, 4,
+6, 8, 9. If a case breaks on the first four drops, we have narrowed the critical floor to that floor or the one below
+it. We can test the one below it with the second case. If the case breaks on the fifth drop, we know the critical floor
+is 9. If the case does not break, we know it is able to last to a ninth floor drop. Clearly having two cases is better
+than one.
+
+Given c cases and a maximum of d allowable drops, what is the maximum number of floors that you can test in the
+worst-case?

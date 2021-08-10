@@ -1,0 +1,58 @@
+```cxx
+#include <algorithm>
+#include <memory>
+#include <stack>
+#include <stdexcept>
+#include <vector>
+
+using std::make_unique;
+using std::max;
+using std::vector;
+
+struct Edge {
+    int fr;
+    int to;
+};
+
+struct GraphVertex {
+    vector<GraphVertex *> edges;
+    // Set max_distance = 0 to indicate unvisited vertex.
+    int max_distance = 0;
+};
+
+class Solution {
+public:
+    int findLargestNumberTeams(int k, vector<Edge> edges) {
+        if (k <= 0) {
+            throw std::runtime_error("Invalid k value");
+        }
+
+        vector<GraphVertex> graph(k, GraphVertex{});
+
+        for (const Edge &e : edges) {
+            if (e.fr < 0 || e.fr >= k || e.to < 0 || e.to >= k) {
+                throw std::runtime_error("Invalid vertex index");
+            }
+            graph[e.fr].edges.push_back(&graph[e.to]);
+        }
+
+        int max_level = 0;
+        for (GraphVertex g : graph) {
+            if (g.max_distance == 0) {
+                max_level = max(max_level, dfs(&g));
+            }
+        }
+        return max_level;
+    }
+    
+    int dfs(GraphVertex *curr) {
+        curr->max_distance = 1;
+        for (GraphVertex *vertex : curr->edges) {
+            curr->max_distance =
+                    max(curr->max_distance,
+                        (vertex->max_distance ? vertex->max_distance : dfs(vertex)) + 1);
+        }
+        return curr->max_distance;
+    }
+};
+```

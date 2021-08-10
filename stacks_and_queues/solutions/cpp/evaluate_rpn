@@ -1,0 +1,32 @@
+```cxx
+#include <stack>
+#include <unordered_map>
+
+class Solution {
+public:
+    int eval(string RPNExpression) {
+        stack<int> intermediate_results;
+        stringstream ss(RPNExpression);
+        string token;
+        const char kDelimiter = ',';
+        const unordered_map<string, function<int(int, int)>> kOperators = {
+            {"+", [](int x, int y) -> int { return x + y; }},
+            {"-", [](int x, int y) -> int { return x - y; }},
+            {"*", [](int x, int y) -> int { return x * y; }},
+            {"/", [](int x, int y) -> int { return x / y; }}};
+
+        while (getline(ss, token, kDelimiter)) {
+            if (kOperators.count(token)) {
+                const int y = intermediate_results.top();
+                intermediate_results.pop();
+                const int x = intermediate_results.top();
+                intermediate_results.pop();
+                intermediate_results.emplace(kOperators.at(token)(x, y));
+            } else {  // token is a number.
+                intermediate_results.emplace(stoi(token));
+            }
+        }
+        return intermediate_results.top();
+    }
+};
+```

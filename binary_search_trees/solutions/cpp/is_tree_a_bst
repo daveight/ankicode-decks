@@ -1,0 +1,53 @@
+```cxx
+#include <limits>
+#include <memory>
+
+using std::numeric_limits;
+using std::shared_ptr;
+
+template <typename T>
+
+struct BinaryTreeNode {
+    T data;
+    shared_ptr<BinaryTreeNode<T>> left;
+    shared_ptr<BinaryTreeNode<T>> right;
+    BinaryTreeNode() { }
+    BinaryTreeNode(T data, shared_ptr<BinaryTreeNode<T>> left, shared_ptr<BinaryTreeNode<T>> right) {
+        this->data = data;
+        this->left = left;
+        this->right = right;
+    }
+};
+
+class Solution {
+public:
+    bool isBinaryTreeBST(const shared_ptr<BinaryTreeNode<int>> &tree) {
+        return areKeysInRange(tree, numeric_limits<int>::min(),
+                              numeric_limits<int>::max());
+    }
+private:
+    bool areKeysInRange(const shared_ptr<BinaryTreeNode<int>> &tree, int low_range,
+                        int high_range) {
+        if (tree == nullptr) {
+            return true;
+        } else if (tree->data < low_range || tree->data > high_range) {
+            return false;
+        }
+
+        return areKeysInRange(tree->left, low_range, tree->data) &&
+               areKeysInRange(tree->right, tree->data, high_range);
+    }
+
+    bool inorderTraversal(const shared_ptr<BinaryTreeNode<int>> &tree, BinaryTreeNode<int> **prev) {
+        if (!tree) {
+            return true;
+        } else if (!inorderTraversal(tree->left, prev)) {
+            return false;
+        } else if (*prev && (*prev)->data > tree->data) {
+            return false;
+        }
+        *prev = tree.get();
+        return inorderTraversal(tree->right, prev);
+    }
+};
+```

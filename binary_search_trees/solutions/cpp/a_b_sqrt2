@@ -1,0 +1,38 @@
+```cxx
+#include <math.h>
+#include <functional>
+#include <set>
+#include <vector>
+
+using std::function;
+using std::set;
+using std::vector;
+
+struct Number {
+    Number(int a, int b) : a(a), b(b), val(a + b * sqrt(2)) {}
+    int a, b;
+    double val;
+};
+
+class Solution {
+public:
+    vector<double> generateFirstKABSqrt2(int k) {
+        set<Number, function<bool(Number, Number)>> candidates(
+                [](const Number &a, const Number &b) { return a.val < b.val; });
+        // Initial for 0 + 0 * sqrt(2).
+        candidates.emplace(0, 0);
+
+        vector<double> result;
+        while (result.size() < k) {
+            auto next_smallest = cbegin(candidates);
+            result.emplace_back(next_smallest->val);
+
+            // Adds the next two numbers derived from next_smallest.
+            candidates.emplace(next_smallest->a + 1, next_smallest->b);
+            candidates.emplace(next_smallest->a, next_smallest->b + 1);
+            candidates.erase(next_smallest);
+        }
+        return result;
+    }
+};
+```

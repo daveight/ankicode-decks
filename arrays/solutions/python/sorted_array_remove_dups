@@ -1,0 +1,13 @@
+```python
+# Returns the number of valid entries after deletion.
+def delete_duplicates(A):
+    if not A:
+        return []
+
+    write_index = 1
+    for i in range(1, len(A)):
+        if A[write_index - 1] != A[i]:
+            A[write_index] = A[i]
+            write_index += 1
+    return A[:write_index]
+```

@@ -1,0 +1,52 @@
+```c++
+template<typename T>
+
+struct ListNode {
+public:
+    T data;
+    shared_ptr<ListNode<T>> next;
+
+    ListNode() { }
+
+    ListNode(T data, shared_ptr<ListNode<T>> next) {
+        this->data = data;
+        this->next = next;
+    }
+};
+
+class Solution {
+public:
+    shared_ptr<ListNode<int>> overlappingNoCycleLists(shared_ptr<ListNode<int>> l0, shared_ptr<ListNode<int>> l1) {
+        int l0Length = length(l0), l1Length = length(l1);
+
+        // Advances the longer list to get equal length lists.
+        if (l0Length > l1Length) {
+            l0 = advanceListByK(l0Length - l1Length, l0);
+        } else {
+            l1 = advanceListByK(l1Length - l0Length, l1);
+        }
+
+        while (l0 != nullptr && l1 != nullptr && l0->data != l1->data) {
+            l0 = l0->next;
+            l1 = l1->next;
+        }
+        return l0; // nullptr implies there is no overlap between l0 and l1.
+    }
+
+    shared_ptr<ListNode<int>> advanceListByK(int k, shared_ptr<ListNode<int>> l) {
+        while (k-- > 0) {
+            l = l->next;
+        }
+        return l;
+    }
+private:
+    int length(shared_ptr<ListNode<int>> l) {
+        int length = 0;
+        while (l != nullptr) {
+            ++length;
+            l = l->next;
+        }
+        return length;
+    }
+};
+```

@@ -1,0 +1,68 @@
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Stack;
+
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    public List<List<Integer>> generateAllBinaryTrees(int numNodes) throws Exception {
+        List<BinaryTreeNode<Integer>> result = doGenerateAllBinaryTrees(numNodes);
+
+        List<List<Integer>> serialized = new ArrayList<>();
+        for (BinaryTreeNode<Integer> x : result) {
+            serialized.add(serializeStructure(x));
+        }
+        return serialized;
+    }
+
+    private List<BinaryTreeNode<Integer>> doGenerateAllBinaryTrees(int numNodes) {
+        List<BinaryTreeNode<Integer>> result = new ArrayList<>();
+        if (numNodes == 0) { // Empty tree, add as an null.
+            result.add(null);
+        }
+
+        for (int numLeftTreeNodes = 0; numLeftTreeNodes < numNodes;
+                 ++numLeftTreeNodes) {
+            int numRightTreeNodes = numNodes - 1 - numLeftTreeNodes;
+            List<BinaryTreeNode<Integer>> leftSubtrees = doGenerateAllBinaryTrees(numLeftTreeNodes);
+            List<BinaryTreeNode<Integer>> rightSubtrees = doGenerateAllBinaryTrees(numNodes - 1 - numLeftTreeNodes);
+            // Generates all combinations of leftSubtrees and rightSubtrees.
+            for (BinaryTreeNode<Integer> left : leftSubtrees) {
+                for (BinaryTreeNode<Integer> right : rightSubtrees) {
+                    result.add(new BinaryTreeNode<>(0, left, right));
+                }
+            }
+        }
+        return result;
+    }
+
+    private List<Integer> serializeStructure(BinaryTreeNode<Integer> tree) {
+        List<Integer> result = new ArrayList<>();
+        Stack<BinaryTreeNode<Integer>> stack = new Stack<>();
+        stack.push(tree);
+        while (!stack.empty()) {
+            BinaryTreeNode<Integer> p = stack.pop();
+            result.add(p == null ? 0 : 1);
+            if (p != null) {
+                stack.push(p.left);
+                stack.push(p.right);
+            }
+        }
+        return result;
+    }
+}
+```

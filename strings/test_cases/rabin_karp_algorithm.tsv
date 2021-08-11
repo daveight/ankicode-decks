@@ -1,5 +1,5 @@
-string[s];string[t];int
-"hello world";"orl";7
-"abcdefgh";"bcd";1
-"abcdefgh";"zk";-1
-"a";"ab";-1
+string[s]	string[t]	int
+"hello world"	"orl"	7
+"abcdefgh"	"bcd"	1
+"abcdefgh"	"zk"	-1
+"a"	"ab"	-1

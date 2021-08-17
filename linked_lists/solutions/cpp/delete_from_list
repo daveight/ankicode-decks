@@ -1,21 +1,25 @@
 ```cxx
-template<class T>
+template<typename T>
+
 struct ListNode {
 public:
     T data;
-    ListNode<T>* next;
+    shared_ptr<ListNode<T>> next;
+    ListNode() { }
+    ListNode(T data) : data{data}, next{nullptr} { }
+    ListNode(T data, shared_ptr<ListNode<T>> next) : data{data}, next{next} { }
 };
 
 class Solution {
 public:
-    ListNode<int> deleteFromList(ListNode<int>* aNode, int i) {
+    shared_ptr<ListNode<int>> deleteFromList(shared_ptr<ListNode<int>> aNode, int i) {
         //Add code here
-        ListNode<int>* n = aNode;
+        shared_ptr<ListNode<int>> n = aNode;
         while (--i > 0) {
             n = n->next;
         }
         n->next = n->next->next;
-        return *aNode;
+        return aNode;
     }
 };
 ```

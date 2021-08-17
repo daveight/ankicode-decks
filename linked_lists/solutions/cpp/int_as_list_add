@@ -8,7 +8,6 @@ public:
 
     ListNode(T data) : data{data}, next{nullptr} { }
     ListNode(T data, shared_ptr<ListNode<T>> next) : data{data}, next{next} { }
-    ~ListNode() { while (next) next = std::move(next->next); }
 };
 
 class Solution {

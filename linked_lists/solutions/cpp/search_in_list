@@ -1,5 +1,4 @@
 ```cxx
-#include <memory>
 using std::shared_ptr;
 
 template<typename T>
@@ -11,16 +10,18 @@ public:
     ListNode() { }
     ListNode(T data) : data{data}, next{nullptr} { }
     ListNode(T data, shared_ptr<ListNode<T>> next) : data{data}, next{next} { }
+    ~ListNode() { while (next) next = std::move(next->next); }
 };
 
 class Solution {
 public:
     int searchList(shared_ptr<ListNode<int>> L, int key) {
-        while (L && L->data != key) {
-            L = L->next;
+        shared_ptr<ListNode<int>> ptr = L;
+        while (ptr && ptr->data != key) {
+            ptr = ptr->next;
         }
         // If key was not present in the list, L will have become null.
-        return L ? L->data : -1;
+        return ptr ? ptr->data : -1;
     }
 };
 ```

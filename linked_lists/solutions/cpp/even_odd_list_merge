@@ -5,13 +5,9 @@ struct ListNode {
 public:
     T data;
     shared_ptr<ListNode<T>> next;
-
     ListNode() { }
-
-    ListNode(T data, shared_ptr<ListNode<T>> next) {
-        this->data = data;
-        this->next = next;
-    }
+    ListNode(T data) : data{data}, next{nullptr} { }
+    ListNode(T data, shared_ptr<ListNode<T>> next) : data{data}, next{next} { }
 };
 
 class Solution {

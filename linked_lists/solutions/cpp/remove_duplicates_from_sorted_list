@@ -1,5 +1,4 @@
 ```cxx
-#include <memory>
 using std::shared_ptr;
 
 template<typename T>

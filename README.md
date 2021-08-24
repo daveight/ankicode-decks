@@ -1,6 +1,7 @@
 # Collection of Programming Challenges for AnkiCode
 
 ## Decks
+  Decks src code is located in the `src` folder
   Compiled decks are located in the `dist` folder in .csv format
 
 ## Build decks
@@ -9,7 +10,6 @@
   As the result, csv files will be generated and placed into `dist` folder
   
 ## Add new coding problems to the existing deck
-
    - `title/<problem_name>` - contains a title of a new coding problem
    - `description/<problem_name>` - contains a text description of a new coding problem
    - `fn_names/<problem_name>` - function name which will be used in the solution template

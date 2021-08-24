@@ -1,7 +1,7 @@
 # Collection of Programming Challenges for AnkiCode
 
 ## Decks
-  Compiled decks are located in the `dist` folder in .csv and .apkg formats
+  Compiled decks are located in the `dist` folder in .csv format
 
 ## Build decks
   Build decks with the following command:

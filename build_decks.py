@@ -40,7 +40,7 @@ args = parser.parse_args()
 
 for deck_name in [item for item in os.listdir('.') if os.path.isdir(os.path.join('.', item))]:
     out = ''
-    if deck_name.startswith('.') or deck_name in ['debug', 'template']:
+    if deck_name.startswith('.') or deck_name in ['debug', 'template', 'dist']:
         continue
     for name in sorted(os.listdir(f'./{deck_name}/test_cases')):
         try:
@@ -101,7 +101,7 @@ for deck_name in [item for item in os.listdir('.') if os.path.isdir(os.path.join
                 out = ''
 
             if not args.debug:
-                result = open(f'{deck_name}.csv', 'w+')
+                result = open(f'dist/{deck_name}.csv', 'w+')
                 result.write(out)
                 result.close()
         except FileNotFoundError:

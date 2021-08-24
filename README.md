@@ -1,26 +1,12 @@
 # Collection of Programming Challenges for AnkiCode
 
 ## Decks
-
-  - `dynamic_programming.csv`
-    Collection of dynamic programming problems
-    
-  - `google_interview.csv`
-    Contains a collection of google interview coding problems
-    
-  - `graph.csv`
-    Graph problems
-    
-  - `sorting.csv`
-    Collection of sorting algorithms
-    
-  - `string.csv`
-    Collection of string coding problems
+  Compiled decks are located in the `dist` folder in .csv and .apkg formats
 
 ## Build decks
-
   Build decks with the following command:
   `python3 build_decks.py`
+  As the result, csv files will be generated and placed into `dist` folder
   
 ## Add new coding problems to the existing deck
 
@@ -31,7 +17,7 @@
    - `solutions/python/<problem_name>` - markdown file containing Python solution of a problem
    - `solutions/java/<problem_name>` - markdown file containing Java solution of a problem
    - `solutions/js/<problem_name>` - markdown file containing JavaScript solution of a problem
-   - `test_cases/<problem_name>` - a CSV file with test-cases
+   - `test_cases/<problem_name>` - a TSV (tab-separated) file with test-cases
 
 ## Add a new deck
    To add a new deck - simply copy the `template` folder

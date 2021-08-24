@@ -1,17 +1,56 @@
 ```java
 public class Solution {
     public double buyAndSellStockKTimes(List<Double> prices, int k) {
-        int n = prices.size();
-        double[][] profit = new double[k + 1][n + 1];
+        if (k == 0) {
+            return 0.0;
+        } else if (2 * k >= prices.size()) {
+            return unlimitedPairsProfits(prices);
+        }
+        List<Double> minPrices = new ArrayList<>(Collections.nCopies(k, Double.MAX_VALUE));
+        List<Double> maxProfits = new ArrayList<>(Collections.nCopies(k, 0.0));
+        for (Double price : prices) {
+            for (int i = k - 1; i >= 0; --i) {
+                maxProfits.set(i, Math.max(maxProfits.get(i), price - minPrices.get(i)));
+                minPrices.set(i, Math.min(minPrices.get(i), price - (i > 0 ? maxProfits.get(i - 1) : 0.0)));
+            }
+        }
+        return maxProfits.get(maxProfits.size() - 1);
+    }
 
-        for (int i = 1; i <= k; i++) {
-            double prevDiff = Double.NEGATIVE_INFINITY;
-            for (int j = 1; j < n; j++) {
-                prevDiff = Math.max(prevDiff, profit[i - 1][j - 1] - prices.get(j - 1));
-                profit[i][j] = Math.max(profit[i][j - 1], prices.get(j) + prevDiff);
+    private double unlimitedPairsProfits(List<Double> prices) {
+        double profit = 0.0;
+        for (int i = 1; i < prices.size(); ++i) {
+            profit += Math.max(0.0, prices.get(i) - prices.get(i - 1));
+        }
+        return profit;
+    }
+
+    public double buyAndSellStockKTimesSimple(List<Double> prices, int k) {
+        int n = prices.size();
+
+        double[] evenProfits = new double[prices.size()];
+        double[] oddProfits = new double[prices.size()];
+
+        for (int t = 1; t < k + 1; t++) {
+            double maxThusFar = Double.NEGATIVE_INFINITY;
+            double[] currentProfits;
+            double[] previousProfits;
+
+            if (t % 2 == 1) {
+                currentProfits = oddProfits;
+                previousProfits = evenProfits;
+            } else {
+                currentProfits = evenProfits;
+                previousProfits = oddProfits;
+            }
+
+            for (int d = 1; d < n; d++) {
+                maxThusFar = Math.max(maxThusFar, previousProfits[d - 1] - prices.get(d - 1));
+                currentProfits[d] = Math.max(currentProfits[d - 1], maxThusFar + prices.get(d));
             }
         }
 
-        return profit[k][n - 1];
+        return (k % 2 == 0) ? evenProfits[n - 1] : oddProfits[n - 1];
     }
 }
+```

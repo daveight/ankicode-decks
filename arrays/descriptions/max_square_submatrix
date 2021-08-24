@@ -1,4 +1,4 @@
 Let A be an n X m Boolean 2D array. Design efficient algorithms for the following two problems:
 • What is the largest square 2D subarray containing only Is?
-What are the time and space complexities of your algorithms as a function of n and m?
+• What are the time and space complexities of your algorithms as a function of n and m?
 

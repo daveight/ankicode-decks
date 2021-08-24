@@ -38,36 +38,36 @@ parser = ArgumentParser()
 parser.add_argument('--debug', dest='debug', action='store_true')
 args = parser.parse_args()
 
-for deck_name in [item for item in os.listdir('.') if os.path.isdir(os.path.join('.', item))]:
+for deck_name in [item for item in os.listdir('src')]:
     out = ''
-    if deck_name.startswith('.') or deck_name in ['debug', 'template', 'dist']:
+    if deck_name.startswith('.') or deck_name in ['template']:
         continue
-    for name in sorted(os.listdir(f'./{deck_name}/test_cases')):
+    for name in sorted(os.listdir(f'src/{deck_name}/test_cases')):
         try:
             if not name.endswith('.tsv'):
                 continue
-            file = open(f'./{deck_name}/test_cases/' + name, 'r')
+            file = open(f'src/{deck_name}/test_cases/' + name, 'r')
             lines = file.readlines()
 
             name = name.replace('.tsv', '')
-            description = get_file_content(f'./{deck_name}/descriptions/' + name)
+            description = get_file_content(f'src/{deck_name}/descriptions/' + name)
             if description is None:
                 print('can\'t find description for ' + name)
                 continue
 
-            title = get_file_content(f'./{deck_name}/titles/' + name)
+            title = get_file_content(f'src/{deck_name}/titles/' + name)
             if title is None:
                 print('can\'t find title for ' + name)
                 continue
 
-            func_name = get_file_content(f'./{deck_name}/fn_names/' + name)
+            func_name = get_file_content(f'src/{deck_name}/fn_names/' + name)
             if not func_name:
                 print('can\'t find func name for ' + name)
                 continue
 
             solution = ''
             for section in SOLUTION_SECTIONS:
-                txt = get_file_content(f'./{deck_name}/solutions/{section[0]}/{name}')
+                txt = get_file_content(f'src/{deck_name}/solutions/{section[0]}/{name}')
                 if txt is None:
                     print(f'can\'t find {section[0]} solution for {name}')
                     continue

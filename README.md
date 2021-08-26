@@ -1,8 +1,8 @@
 # Collection of Programming Challenges for AnkiCode
 
 ## Decks
-  Decks src code is located in the `src` folder
-  Compiled decks are located in the `dist` folder in .csv format
+  * Decks src code is located in the `src` folder
+  * Compiled decks are located in the `dist` folder in .csv format
 
 ## Build decks
   Build decks with the following command:

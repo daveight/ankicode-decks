@@ -1,0 +1,8 @@
+Time : O(logN); Space: O(1)
+ 
+Description: 
+Implement pow(x, n).
+ 
+{@link https://leetcode.com/problems/powx-n/ }
+P.S. : 1. deal with StackOverflow
+       2. bit operation to judge for odd or even number

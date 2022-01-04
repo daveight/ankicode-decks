@@ -1,0 +1,7 @@
+linked_list(int)[head]	bool
+[1,1,2,2,3,3,4]	false
+[1,1,2,2,3,3,4,0]	true
+[1,1,2,2,3,3,4,1]	true
+[1,1,2,2,3,3,4,3]	true
+[1]	false
+[1,0]	true

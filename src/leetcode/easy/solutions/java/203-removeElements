@@ -1,0 +1,34 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+    public ListNode<Integer> removeElements(ListNode<Integer> head, int val) {
+        ListNode<Integer> dummy = new ListNode<>();
+        dummy.data = -1;
+        dummy.next = head;
+        ListNode<Integer> pre = dummy;
+        ListNode<Integer> node = dummy.next;
+        while (node != null) {
+            if (node.data == val) {
+                // delete current node
+                pre.next = node.next;
+            } else {
+                pre = pre.next;
+            }
+            // go to next node
+            node = node.next;
+        }
+        return dummy.next;
+    }
+}
+```

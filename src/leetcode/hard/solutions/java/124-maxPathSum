@@ -1,0 +1,43 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    private int globalMax;
+
+    public int maxPathSum(BinaryTreeNode<Integer> root) {
+        if (root == null) {
+            return 0;
+        }
+        globalMax = Integer.MIN_VALUE;
+        maxPathSumDown(root);
+        return globalMax;
+    }
+
+    // return the max path that starts from root node
+    // while updating potential global max
+    private int maxPathSumDown(BinaryTreeNode<Integer> root) {
+        // base case
+        if (root == null) {
+            return 0;
+        }
+        // recursive case
+        int leftMaxPathSum = Math.max(0, maxPathSumDown(root.left));
+        int rightMaxPathSum = Math.max(0, maxPathSumDown(root.right));
+        globalMax = Math.max(globalMax, leftMaxPathSum + rightMaxPathSum + root.data);
+        return root.data + Math.max(leftMaxPathSum, rightMaxPathSum);
+    }
+}
+```

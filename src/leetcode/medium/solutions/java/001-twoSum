@@ -1,0 +1,26 @@
+```java
+public class Solution {
+
+    /**
+     * Construct a map to memo expected value and its index. 
+     */
+    public int[] twoSum(int[] nums, int target) {
+        int[] result = new int[2];
+        Map<Integer, Integer> indexMap = new HashMap<Integer, Integer>();
+        for (int i = 0; i < nums.length; i++) {
+            int number = nums[i];
+            if (indexMap.containsKey(number)) {
+                // found the two numbers we are looking for!
+                // ! required result is not zero-based indexed, but 1-based
+                result[0] = 1 + indexMap.get(number);
+                result[1] = 1 + i;
+                break;
+            } else {
+                // put the number we are expecting into the map
+                indexMap.put(target - number, i);
+            }
+        }
+        return result;
+    }
+}
+```

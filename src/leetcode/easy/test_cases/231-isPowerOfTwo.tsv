@@ -1,0 +1,7 @@
+int[n]	bool
+2	true
+4	true
+1024	true
+1023	false
+23	false
+22	false

@@ -1,0 +1,14 @@
+```java
+public class Solution {
+
+    public boolean canJump(int[] nums) {
+        int i = 0;
+        int n = nums.length;
+        int reach = 0;
+        for (; i < n && i <= reach; i++) {
+            reach = Math.max(nums[i] + i, reach);
+        }
+        return i == n;
+    }
+}
+```

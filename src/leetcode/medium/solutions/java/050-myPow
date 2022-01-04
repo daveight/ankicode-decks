@@ -1,0 +1,22 @@
+```java
+public class Solution {
+
+    public double myPow(double x, int n) {
+        if (n == 0) {
+            return 1;
+        }
+        if (n == 1) {
+            return x;
+        }
+        // local cache
+        double result = myPow(x, n / 2);
+        result *= result;
+        if ((n & 0x1) == 1) {
+            // if n is odd number: only if last bit in n is 1, n & 0x1 can be 1
+            // pay attention to negative n
+            result *= n > 0 ? x : (1 / x);
+        }
+        return result;
+    }
+}
+```

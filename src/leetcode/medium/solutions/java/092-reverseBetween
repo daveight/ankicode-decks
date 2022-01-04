@@ -1,0 +1,37 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+
+    public ListNode<Integer> reverseBetween(ListNode<Integer> head, int m, int n) {
+        ListNode<Integer> dummy = new ListNode();
+        dummy.next = head;
+
+        ListNode<Integer> pre = dummy;
+        // let pre walks (m - 1) steps itself
+        for (int i = 0; i < m - 1; i++) {
+            pre = pre.next;
+        }
+        ListNode<Integer> start = pre.next;
+        ListNode<Integer> then = start.next;
+        // reverse nodes between m and n
+        for (int i = 0; i < n -m; i++) {
+            start.next = then.next;
+            then.next = pre.next;
+            pre.next = then;
+            then = start.next;
+        }
+        return dummy.next;
+    }
+}
+```

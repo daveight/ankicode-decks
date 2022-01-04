@@ -1,0 +1,8 @@
+Time : O(logN); Space: O(1)
+ 
+Description: 
+Follow up for "Search in Rotated Sorted Array" 
+Duplicates are allowed in array.
+Write a function to determine if a given target is in the array.
+ 
+{@link https://leetcode.com/problems/search-in-rotated-sorted-array-ii/ }

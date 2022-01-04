@@ -1,0 +1,32 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+
+    public boolean hasCycle(ListNode<Integer> head) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+        ListNode<Integer> fast = head.next;
+        ListNode<Integer> slow = head;
+        while (fast != null && fast.next != null) {
+            if (fast == slow || fast.next == slow) {
+                return true;
+            }
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        return false;
+    }
+}
+```

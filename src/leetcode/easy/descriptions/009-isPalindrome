@@ -1,0 +1,9 @@
+Time : O(N); Space : O(1)
+ 
+Description: 
+Determine whether an integer is a palindrome. Do this without extra space.
+For this problem, negative numbers are considered not palindrome number.
+ 
+{@link https://leetcode.com/problems/palindrome-number/ }
+1. compare head and tail in one number
+2. reverse a number; counting digits of number

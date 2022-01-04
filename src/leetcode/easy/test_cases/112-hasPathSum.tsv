@@ -1,0 +1,11 @@
+binary_tree(int)[root]	int[sum]	bool
+[5, 4, 8, 11, null, 13, 4, 7, 2, null, 1]	22	true
+[10, 5, 12, 4, 7]	22	true
+[10, 5, 12, 4, 7]	15	false
+[5, 4, null, 3, null, 2, null, 1]	15	true
+[1, null, 2, null, 3, null, 4, null, 5]	15	true
+[5, null, 4, null, 3, null, 2, null, 1]	16	false
+[1, null]	16	false
+[1, null]	16	false
+null	16	false
+[1, 2]	1	false

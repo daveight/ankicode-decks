@@ -1,0 +1,57 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+    public ListNode<Integer> reorderList(ListNode<Integer> head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode<Integer> dummy = new ListNode<>();
+        ListNode<Integer> fast = head;
+        ListNode<Integer> slow = head;
+        // let slow stops at the middle node
+        while (fast != null && fast.next != null && fast.next.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        // reverse from slow.next to end
+        ListNode<Integer> preMiddle = slow;
+        ListNode<Integer> preCurrent = slow.next;
+        while (preCurrent.next != null) {
+            ListNode current = preCurrent.next;
+            preCurrent.next = current.next;
+            current.next = preMiddle.next;
+            preMiddle.next = current;
+        }
+
+        ListNode<Integer> l2 = preMiddle.next;
+        slow.next = null;
+
+        // merge two lists (l2 might be one node less than l1)
+        ListNode<Integer> l1 = head;
+        ListNode<Integer> node = dummy;
+        while (l2 != null) {
+            node.next = l1;
+            l1 = l1.next;
+            node = node.next;
+            node.next = l2;
+            l2 = l2.next;
+            node = node.next;
+        }
+        // last node in list1
+        node.next = l1;
+
+        return head;
+    }
+}
+```

@@ -1,0 +1,8 @@
+array(string)[words]	int[maxWidth]	list(string)
+["This", "is", "an", "example", "of", "text", "justification."]	16	["This    is    an", "example  of text", "justification.  "]
+["This", "is", "an", "example"]	7	["This is", "an     ", "example"]
+["This", "is", "a", "good", "example"]	7	["This is", "a  good", "example"]
+[""]	3	["   "]
+["very", "good"]	4	["very", "good"]
+["What", "must", "be", "shall", "be."]	12	["What must be", "shall be.   "]
+["Don't", "go", "around", "saying", "the", "world", "owes", "you", "a", "living", "the", "world", "owes", "you", "nothing", "it", "was", "here", "first."]	30	["Don't  go  around  saying  the", "world  owes  you  a living the", "world  owes you nothing it was", "here first.                   "]

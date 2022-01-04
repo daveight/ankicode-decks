@@ -1,0 +1,38 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    public int minDepth(BinaryTreeNode<Integer> root) {
+        // base case
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null && root.right == null) {
+            // reach leaf node
+            return 1;
+        }
+        // recursive case
+        int depth = Integer.MAX_VALUE;
+        if (root.left != null) {
+            depth = Math.min(depth, 1 + minDepth(root.left));
+        }
+        if (root.right != null) {
+            depth = Math.min(depth, 1 + minDepth(root.right));
+        }
+        return depth;
+    }
+}
+```

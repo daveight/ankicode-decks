@@ -1,0 +1,21 @@
+```java
+public class Solution {
+
+    // try each possible start index from haystack
+    public int strStr(String haystack, String needle) {
+        for (int index = 0; index <= haystack.length() - needle.length(); index++) {
+            int i = index;
+            int j = 0;
+            while (j < needle.length() && haystack.charAt(i) == needle.charAt(j)) {
+                i++;
+                j++;
+            }
+            if (j == needle.length()) {
+                // found
+                return index;
+            }
+        }
+        return -1;
+    }
+}
+```

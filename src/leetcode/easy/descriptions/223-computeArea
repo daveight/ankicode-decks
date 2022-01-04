@@ -1,0 +1,8 @@
+Time : O(1) ; Space: O(1)
+ 
+Description:
+Find the total area covered by two rectilinear rectangles in a 2D plane. 
+Each rectangle is defined by its bottom left corner and top right corner as 
+shown in the figure.
+ 
+{@link https://leetcode.com/problems/rectangle-area/ }

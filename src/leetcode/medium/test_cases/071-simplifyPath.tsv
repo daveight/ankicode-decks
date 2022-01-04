@@ -1,0 +1,7 @@
+string[path]	string
+"/home/"	"/home"
+"/a/./b/../../c/"	"/c"
+"/../"	"/"
+"/home//foo/"	"/home/foo"
+"/abc/..."	"/abc/..."
+"///"	"/"

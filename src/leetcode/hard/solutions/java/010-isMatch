@@ -1,0 +1,36 @@
+```java
+public class Solution {
+
+    public boolean isMatch(String s, String p) {
+        int sLen = s.length();
+        int pLen = p.length();
+
+        boolean[][] dp = new boolean[sLen + 1][pLen + 1];
+
+        for (int i = sLen; i >= 0; i--) {
+            for (int j = pLen; j >= 0; j--) {
+                boolean matched = false;
+                if (i == sLen && j == pLen) {
+                    matched = true;
+                } else if (i < sLen && j == pLen) {
+                    matched = false;
+                } else if ((j + 1) < pLen && p.charAt(j + 1) == '*') {
+                    if (i < sLen && (p.charAt(j) == s.charAt(i) || p.charAt(j) == '.')) {
+                        // if equals or met with '.', then move on to the next state
+                        matched = dp[i][j + 2]
+                               || dp[i + 1][j + 2] 
+                               || dp[i + 1][j];
+                    } else {
+                        // ignore '*'
+                        matched = dp[i][j + 2];
+                    }
+                } else if (i < sLen && j < pLen && (s.charAt(i) == p.charAt(j) || (p.charAt(j) == '.' ))) {
+                    matched = dp[i + 1][j + 1];
+                }
+                dp[i][j] = matched;
+            }
+        }
+        return dp[0][0];
+    }
+}
+```

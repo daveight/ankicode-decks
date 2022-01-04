@@ -1,0 +1,58 @@
+```java
+public class Solution {
+
+    /** use interface as work-around for lambda expression */
+    public interface Operator {
+        int eval(int x, int y);
+    }
+
+    /**
+     * global map for operator and its corresponding operation
+     */
+    public static final Map<String, Operator> OperatorMap = new HashMap<String, Solution.Operator>() {
+        {
+            put("+", new Operator() {
+                public int eval(int x, int y) {
+                    return x + y;
+                }
+            });
+            put("-", new Operator() {
+                public int eval(int x, int y) {
+                    return x - y;
+                }
+            });
+            put("*", new Operator() {
+                public int eval(int x, int y) {
+                    return x * y;
+                }
+            });
+            put("/", new Operator() {
+                public int eval(int x, int y) {
+                    return x / y;
+                }
+            });
+        }
+    };
+
+    /**
+     * For operands (numbers), push them into stack for later use;
+     * For operators (+,-,*,/), retrieve the latest two operands in stack
+     * , evaluate the result and then push the result back to stack 
+     */
+    public int eval(String[] tokens) {
+        Stack<Integer> operands = new Stack<Integer>();
+        for (String token : tokens) {
+            if (OperatorMap.containsKey(token)) {
+                // for operator: calculate operation and then push to stack
+                int op2 = operands.pop();
+                int op1 = operands.pop();
+                operands.push(OperatorMap.get(token).eval(op1, op2));
+            } else {
+                // for operand: push to stack
+                operands.push(Integer.parseInt(token));
+            }
+        }
+        return operands.pop();
+    }
+}
+```

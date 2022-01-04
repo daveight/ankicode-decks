@@ -1,0 +1,36 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+// iterative version
+public class Solution {
+
+    // Solution1: push right child before pushing left child
+    public List<Integer> preorderTraversal(BinaryTreeNode<Integer> root) {
+        List<Integer> result = new ArrayList<>();
+        Stack<BinaryTreeNode<Integer>> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            BinaryTreeNode<Integer> node = stack.pop();
+            if (node != null) {
+                result.add(node.data);
+                // push right child before pushing left child
+                stack.add(node.right);
+                stack.add(node.left);
+            }
+        }
+        return result;
+    }
+}
+```

@@ -1,0 +1,52 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    public List<BinaryTreeNode<Integer>> generateTrees(int n) {
+        if (n <= 0) {
+            return new ArrayList<BinaryTreeNode<Integer>>();
+        }
+        int start = 1;
+        int end = n;
+        return generateTrees(start, end);
+    }
+
+    private List<BinaryTreeNode<Integer>> generateTrees(int start, int end) {
+        List<BinaryTreeNode<Integer>> result = new ArrayList<>();
+        // base case
+        if (start > end) {
+            result.add(null);
+            return result;
+        }
+
+        // recursive case
+        for (int rootVal = start; rootVal <= end; rootVal++) {
+            List<BinaryTreeNode<Integer>> lefts = generateTrees(start, rootVal - 1);
+            List<BinaryTreeNode<Integer>> rights = generateTrees(rootVal + 1, end);
+            for (BinaryTreeNode<Integer> left : lefts) {
+                for (BinaryTreeNode<Integer> right : rights) {
+                    BinaryTreeNode<Integer> root = new BinaryTreeNode<Integer>();
+                    root.data = rootVal;
+                    root.left = left;
+                    root.right = right;
+                    result.add(root);
+                }
+            }
+        }
+        return result;
+    }
+}
+```

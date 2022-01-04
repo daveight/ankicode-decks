@@ -1,0 +1,37 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    public boolean isSymmetric(BinaryTreeNode<Integer> root) {
+        if (root == null) {
+            // base case
+            return true;
+        }
+        return isMirror(root.left, root.right);
+    }
+
+    private boolean isMirror(BinaryTreeNode<Integer> left, BinaryTreeNode<Integer> right) {
+        if (left == null && right == null) {
+            return true;
+        } else if (left != null && right != null) {
+            return left.data == right.data
+                    && isMirror(left.left, right.right)
+                    && isMirror(left.right, right.left) ;
+        } else {
+            return false;
+        }
+    }
+}
+```

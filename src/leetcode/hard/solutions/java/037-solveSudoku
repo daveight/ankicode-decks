@@ -1,0 +1,71 @@
+```java
+public class Solution {
+
+    private int[][] rows = new int[9][9];
+    private int[][] cols = new int[9][9];
+    private int[][] cells = new int[9][9];
+
+    public String[][] solveSudoku(String[][] board) {
+        // process current board
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                char ch = board[i][j].charAt(0);
+                if (ch != '.') {
+                    int digitIndex = ch - '1';
+                    rows[i][digitIndex] = 1;
+                    cols[j][digitIndex] = 1;
+                    cells[i / 3 * 3 + j / 3][digitIndex] = 1;
+                }
+            }
+        }
+        // solve sudoku
+        solveSudoku(board, 0);
+        return board;
+    }
+
+    public boolean solveSudoku(String[][] board, int pos) {
+        if (pos >= 81) {
+            // board slots are filled
+            return true;
+        }
+        int row = pos / 9;
+        int col = pos % 9;
+        if (!board[row][col].equals(".")) {
+            // try next position
+            return solveSudoku(board, pos + 1);
+        } else {
+            // try to fill a number here
+            for (char digit = '1'; digit <= '9'; digit++) {
+                if (isBoardOk(board, row, col, digit)) {
+                    int digitIndex = digit - '1';
+
+                    // fill this number and update
+                    board[row][col] = String.valueOf(digit);
+                    rows[row][digitIndex] = 1;
+                    cols[col][digitIndex] = 1;
+                    cells[row / 3 * 3 + col / 3][digitIndex] = 1;
+
+                    // try next position
+                    if (solveSudoku(board, pos + 1)) {
+                        return true;
+                    }
+
+                    // restore
+                    board[row][col] = ".";
+                    rows[row][digitIndex] = 0;
+                    cols[col][digitIndex] = 0;
+                    cells[row / 3 * 3 + col / 3][digitIndex] = 0;
+
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isBoardOk(String[][] board, int row, int col, char digit) {
+        int digitIndex = digit - '1';
+        return rows[row][digitIndex] == 0 && cols[col][digitIndex] == 0
+                && cells[row / 3 * 3 + col / 3][digitIndex] == 0;
+    }
+}
+```

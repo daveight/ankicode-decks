@@ -1,0 +1,57 @@
+```java
+public class Solution {
+
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        List<List<Integer>> result = new ArrayList<List<Integer>>();
+        if (nums.length == 0) {
+            return result;
+        }
+        Arrays.sort(nums);
+        int index = 0;
+        List<Integer> sub = new ArrayList<Integer>();
+        permuteUnique(nums, index, sub, result);
+        return result;
+    }
+
+    private void permuteUnique(int[] nums, int index, List<Integer> sub,
+            List<List<Integer>> result) {
+        // base case
+        if (index == nums.length) {
+            // one valid sub found
+            result.add(sub);
+            return;
+        }
+
+        // recursive case
+        // either use set or sort nums[index]:nums[end] to avoid duplicates
+        Set<Integer> appearred = new HashSet<Integer>();
+        for (int i = index; i < nums.length; i++) {
+            if (appearred.contains(nums[i])) {
+                // duplicates appear
+                continue;
+            }
+            appearred.add(nums[i]);
+            // swap nums[i] with nums[index]
+            swap(nums, i, index);
+
+            // go on searching
+            List<Integer> copy = new ArrayList<Integer>(sub);
+            copy.add(nums[index]);
+            permuteUnique(nums, index + 1, copy, result);
+
+            // swap back nums[i] with nums[index]
+            swap(nums, index, i);
+
+        }
+    }
+
+    // swap two numbers in an array
+    private void swap(int[] nums, int i, int index) {
+        if (i < nums.length && index < nums.length) {
+            int temp = nums[i];
+            nums[i] = nums[index];
+            nums[index] = temp;
+        }
+    }
+}
+```

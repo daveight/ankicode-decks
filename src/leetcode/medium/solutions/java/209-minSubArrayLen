@@ -1,0 +1,20 @@
+```java
+public class Solution {
+
+    /* keep a sliding window using two pointers */
+    public int minSubArrayLen(int[] nums, int s) {
+        int res = Integer.MAX_VALUE;
+        int cursum = 0;
+        int start = 0;
+        for (int end = 0; end < nums.length; end++) {
+            int num = nums[end];
+            cursum += num;
+            while (start <= end && cursum >= s) {
+                res = Math.min(res, end - start + 1);
+                cursum -= nums[start++];
+            }
+        }
+        return res < Integer.MAX_VALUE ? res : 0;
+    }
+}
+```

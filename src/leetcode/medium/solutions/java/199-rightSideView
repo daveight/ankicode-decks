@@ -1,0 +1,63 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+/**
+ * Summary:
+ * 1. two-queue classic BFS, one for current level, one for next level (see solution below)
+ *
+ * 2. one-queue classic BFS, count size of queue before iterating current level see {@link _199_BinaryTreeRightSideView.SolutionOneQueue }
+ *
+ * 3. use (DFS + level) to achieve level reversal traversal, once a deeper level appears, add that element
+ *
+ * 4. DFS, combine result from right subtree and uncovered elements from left subtree (see {@link _199_BinaryTreeRightSideView.SolutionRecursive }
+ */
+public class Solution {
+
+    /**
+     * Traverse level by level and only keep the last element in each level and
+     * can be improved by using only one queue
+     * {@link _199_BinaryTreeRightSideView.SolutionOneQueue }
+     */
+    public List<Integer> rightSideView(BinaryTreeNode<Integer> root) {
+        List<Integer> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+        Queue<BinaryTreeNode<Integer>> cur = new LinkedList<>();
+        cur.add(root);
+
+        while (!cur.isEmpty()) {
+            Queue<BinaryTreeNode<Integer>> next = new LinkedList<>();
+            while (!cur.isEmpty()) {
+                BinaryTreeNode<Integer> node = cur.poll();
+                // if this is the last node in this level
+                if (cur.isEmpty()) {
+                    result.add(node.data);
+                }
+                if (node.left != null) {
+                    next.add(node.left);
+                }
+                if (node.right != null) {
+                    next.add(node.right);
+                }
+            }
+            // go to next level
+            cur = next;
+        }
+
+        return result;
+    }
+}
+```

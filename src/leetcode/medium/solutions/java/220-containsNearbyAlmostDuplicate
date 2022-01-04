@@ -1,0 +1,25 @@
+```java
+public class Solution {
+
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        TreeSet<Long> values = new TreeSet<>();
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            // remove values that are out of current window
+            int num = nums[i];
+            // in case of integer overflow
+            Long floor = values.floor((long) num);
+            Long ceiling = values.ceiling((long) num);
+            if ((floor != null && num - floor <= t) || (ceiling != null && ceiling - num <= t)) {
+                return true;
+            }
+            values.add((long) num);
+            if (i >= k) {
+                values.remove((long)nums[i - k]);
+            }
+        }
+        return false;
+
+    }
+}
+```

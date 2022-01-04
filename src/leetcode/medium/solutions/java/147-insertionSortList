@@ -1,0 +1,39 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+
+    // insert node from the list into the newly constructed list.
+    public ListNode<Integer> insertionSortList(ListNode<Integer> head) {
+        ListNode<Integer> dummy = new ListNode<>();
+        ListNode<Integer> listHead = head;
+        ListNode<Integer> node = dummy;
+        // insert each node from head list
+        while (listHead != null) {
+            node = dummy;
+            while (node.next != null && node.next.data < listHead.data) {
+                node = node.next;
+            }
+            // l1:       insert(listHead) --------> listHead.next
+            // l2:  node  --------->  node.next
+            // keep the head of l1 and move its head to its next node
+            // then insert the original head between 'node' and 'node.next'
+            ListNode insert = listHead;
+            listHead = listHead.next;
+            insert.next = node.next;
+            node.next = insert;
+        }
+        return dummy.next;
+    }
+}
+```

@@ -1,0 +1,11 @@
+binary_tree(int)[rootNode]	int
+null	0
+[1, null]	1
+[1, null, 2, null, 3]	3
+[1, 2, null, 3]	3
+[1, 2, 3]	2
+[5, 4, 8, 11, null, 13, 4, 7, 2, 5, 1]	4
+[10, 5, 12, 4, 7]	3
+[1, null, 2, 3]	3
+[5, 4, 8, null, null, 13, 14, null, null, 5, 1]	4
+[8, 6, 18, 3, 7, 10, 20, null, 5, null, null, null, null, null, null, 4]	5

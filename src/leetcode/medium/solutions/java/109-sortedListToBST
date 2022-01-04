@@ -1,0 +1,65 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data) { this.data = data; }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+   public BinaryTreeNode<Integer> sortedListToBST(ListNode<Integer> head) {
+        if (head == null) {
+            return null;
+        }
+        int len = 0;
+        ListNode<Integer> node = head;
+        while (node != null) {
+            node = node.next;
+            len++;
+        }
+        return sortedListToBST(head, len);
+    }
+
+    private BinaryTreeNode<Integer> sortedListToBST(ListNode<Integer> head, int len) {
+        // base case
+        if (len == 0) {
+            return null;
+        }
+        if (len == 1) {
+            return new BinaryTreeNode<>(head.data);
+        }
+        // recursive case
+        int middle = (len - 1) / 2;
+        ListNode<Integer> node = head;
+        for (int i = 0; i < middle; i++) {
+            node = node.next;
+        }
+        BinaryTreeNode<Integer> root = new BinaryTreeNode<>(node.data);
+        root.left = sortedListToBST(head, middle);
+        root.right = sortedListToBST(node.next, len - middle - 1);
+        return root;
+    }
+}
+```

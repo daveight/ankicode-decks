@@ -1,0 +1,27 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    /** As long as two nodes are in the subtree, go to that subtree to search */
+    public BinaryTreeNode<Integer> lowestCommonAncestor(BinaryTreeNode<Integer> root, BinaryTreeNode<Integer> p, BinaryTreeNode<Integer> q) {
+        while ((root.data - p.data) * (root.data - q.data) > 0) {
+            // p and q are under the same sub-tree
+            root = root.data > p.data ? root.left : root.right;
+        }
+        return root;
+    }
+}
+```

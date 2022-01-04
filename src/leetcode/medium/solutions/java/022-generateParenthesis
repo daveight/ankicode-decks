@@ -1,0 +1,37 @@
+```java
+public class Solution {
+
+    public List<String> generateParenthesis(int n) {
+        List<String> result = new ArrayList<String>();
+        int leftsUsed = 0;
+        int rightsUsed = 0;
+        String prefix = "";
+        generateParenthesis(n, leftsUsed, rightsUsed, prefix, result);
+        return result;
+    }
+
+    private void generateParenthesis(int n, int leftsUsed, int rightsUsed,
+            String prefix, List<String> result) {
+        // base case
+        if (leftsUsed == n && rightsUsed == n) {
+            // one combination found!
+            result.add(prefix);
+            return;
+        }
+        // recursive case
+        if (leftsUsed == rightsUsed) {
+            // next must be '("
+            generateParenthesis(n, leftsUsed + 1, rightsUsed, prefix + "(", result);
+        } else {
+            // can either be "(" or ")"
+            if (leftsUsed < n) {
+                // still has "(" left for use
+                generateParenthesis(n, leftsUsed + 1, rightsUsed, prefix + "(", result);
+            }
+            if (rightsUsed < n) {
+                generateParenthesis(n, leftsUsed, rightsUsed + 1, prefix + ")", result);
+            }
+        }
+    }
+}
+```

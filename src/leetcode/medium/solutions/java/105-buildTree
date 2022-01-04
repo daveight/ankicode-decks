@@ -1,0 +1,61 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    public BinaryTreeNode<Integer> buildTree(int[] preorder, int[] inorder) {
+        if (preorder.length != inorder.length || preorder.length == 0) {
+            return null;
+        }
+        int preStart = 0;
+        int preEnd = preorder.length - 1;
+        int inStart = 0;
+        int inEnd = inorder.length - 1;
+        return buildTree(preorder, preStart, preEnd, inorder, inStart, inEnd);
+    }
+
+    private BinaryTreeNode<Integer> buildTree(int[] preorder, int preStart, int preEnd,
+            int[] inorder, int inStart, int inEnd) {
+        // base case
+        if (preStart > preEnd) {
+            return null;
+        }
+        if (preStart == preEnd) {
+            BinaryTreeNode<Integer> ret = new BinaryTreeNode<>();
+            ret.data = preorder[preStart];
+            return ret;
+        }
+        // recursive case
+        int rootVal = preorder[preStart];
+        // find index of root in inorder array
+        int rootIndexInInorder = -1;
+        for (int i = inStart; i <= inEnd; i++) {
+            if (inorder[i] == rootVal) {
+                rootIndexInInorder = i;
+                break;
+            }
+        }
+        //TODO: if rootIndex == -1, throws exception
+        BinaryTreeNode<Integer> root = new BinaryTreeNode<>();
+        root.data = rootVal;
+        int leftEnd = rootIndexInInorder - inStart + preStart;
+        root.left = buildTree(preorder, preStart + 1, leftEnd,
+                inorder, inStart, rootIndexInInorder - 1);
+        root.right = buildTree(preorder, leftEnd + 1, preEnd,
+                inorder, rootIndexInInorder + 1, inEnd);
+        return root;
+    }
+}
+```

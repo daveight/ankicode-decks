@@ -1,0 +1,37 @@
+```java
+public class Solution {
+
+    public boolean isScramble(String s1, String s2) {
+        // corner case: different lengths of two string
+        if (s1.length() != s2.length()) {
+            return false;
+        }
+
+        int len = s1.length();
+        // memo[i][j][l] =
+        // isScramble(s1.substring(i, i + l), s2.substring(j, j + l));
+        boolean[][][] memo = new boolean[len + 1][len + 1][len + 1];
+        for (int l = 1; l <= len; l++) {
+            for (int i = len - l; i >= 0; i--) {
+                for (int j = len - l; j >= 0; j--) {
+                    if (l == 1) {
+                        // base case: only one character
+                        memo[i][j][l] = s1.charAt(i) == s2.charAt(j);
+                    } else {
+                        for (int ll = 1; ll < l; ll++) {
+                            // partition s1 and s2, and compare
+                            if ((memo[i][j][ll] && memo[i + ll][j + ll][l - ll])
+                                    || (memo[i][j + l - ll][ll] && memo[i + ll][j][l
+                                            - ll])) {
+                                memo[i][j][l] = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return memo[0][0][len];
+    }
+}
+```

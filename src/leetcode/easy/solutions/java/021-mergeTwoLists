@@ -1,0 +1,35 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+
+    public ListNode<Integer> mergeTwoLists(ListNode<Integer> l1, ListNode<Integer> l2) {
+        ListNode<Integer> dummyHead = new ListNode<>();
+        dummyHead.data = 0;
+        ListNode<Integer> node = dummyHead;
+        while (l1 != null && l2 != null) {
+            if (l1.data <= l2.data) {
+                node.next = l1;
+                l1 = l1.next;
+            } else {
+                node.next = l2;
+                l2 = l2.next;
+            }
+            node = node.next;
+        }
+        // append the remaining list
+        node.next = (l1 != null) ? l1 : l2;
+        return dummyHead.next;
+    }
+}
+```

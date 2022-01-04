@@ -1,0 +1,16 @@
+Time : O(2^n); Space: O(2^n)
+ 
+Description:
+ Given a string s, partition s such that every substring of the 
+ partition is a palindrome. 
+ Return all possible palindrome partitioning of s. 
+ 
+ For example, given s = "aab", 
+ Return 
+     [ 
+         ["aa","b"], 
+         ["a","a","b"] 
+     ]
+     
+ 
+{@link https://leetcode.com/problems/palindrome-partitioning/ }

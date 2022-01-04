@@ -1,0 +1,12 @@
+string[s]	bool
+"[]"	true
+"[]"	true
+"()"	true
+""	true
+")"	false
+"([[]])"	true
+"([[(]])"	false
+"([[]]()[[]])"	true
+"([[])"	false
+"(]"	false
+"([]]"	false

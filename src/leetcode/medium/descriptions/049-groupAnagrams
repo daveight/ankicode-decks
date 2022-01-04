@@ -1,0 +1,8 @@
+Time : O(mnlg(mn)); Space: O()
+ 
+Description: 
+Note: 
+For the return value, each inner list's elements must follow the lexicographic order. 
+All inputs will be in lower-case.
+ 
+{@link https://leetcode.com/problems/anagrams/ }

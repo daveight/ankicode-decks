@@ -1,0 +1,5 @@
+array(string)[strs]	string
+["aa", "a"]	"a"
+["abcdefgh", "aefghijk", "abcefgh"]	"a"
+["", "aefghijk", "abcefgh"]	""
+["bcdefgh", "befghijk", "bcefgh"]	"b"

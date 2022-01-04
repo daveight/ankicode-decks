@@ -1,4 +1,0 @@
-This problem is concerned with computing squares in a chessboard which can be at¬ tacked by rooks that have been placed
-at arbitrary locations.
-Write a program which takes as input a 2D array A of Is and Os, where the Os encode the positions of rooks on an n X m
-chessboard and updates the array to contain Os at all locations which can be attacked by rooks.

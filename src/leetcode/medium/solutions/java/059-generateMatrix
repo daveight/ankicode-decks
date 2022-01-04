@@ -1,0 +1,42 @@
+```java
+public class Solution {
+
+    public int[][] generateMatrix(int n) {
+        int[][] result = new int[n][n];
+        if (n <= 0) {
+            return result;
+        }
+        int number = 1;
+        for (int i = 0; i < (n + 1) / 2; i++) {
+            int rowStart = i;
+            int rowEnd = n - i - 1;
+            int colStart = i;
+            int colEnd = n - i - 1;
+            // top row
+            for (int col = colStart; col <= colEnd; col++) {
+                result[rowStart][col] = number++;
+            }
+
+            // right column
+            for (int row = rowStart + 1; row <= rowEnd; row++) {
+                result[row][colEnd] = number++;
+            }
+
+            // bottom row
+            if (rowEnd > rowStart) {
+                for (int col = colEnd - 1; col >= colStart; col--) {
+                    result[rowEnd][col] = number++;
+                }
+            }
+
+            // left column
+            if (colStart < colEnd) {
+                for (int row = rowEnd - 1; row >= rowStart + 1; row--) {
+                    result[row][colStart] = number++;
+                }
+            }
+        }
+        return result;
+    }
+}
+```

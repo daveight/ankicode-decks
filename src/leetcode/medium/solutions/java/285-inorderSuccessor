@@ -1,0 +1,45 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    // iterative version
+    public BinaryTreeNode<Integer> inorderSuccessor(BinaryTreeNode<Integer> root, BinaryTreeNode<Integer> node) {
+        if (root == null || node == null) {
+            return null;
+        } else if (node.right != null) {
+            // find successor in right subtree, the leftmost child
+            node = node.right;
+            while (node.left != null) {
+                node = node.left;
+            }
+            return node;
+        } else {
+            // find successor from root down to this node
+            BinaryTreeNode<Integer> successor = null;
+            while (root != null && root != node) {
+                if (node.data < root.data) {
+                    // go to left subtree
+                    successor = root;
+                    root = root.left;
+                } else {
+                    root = root.right;
+                }
+            }
+            return successor;
+        }
+    }
+}
+```

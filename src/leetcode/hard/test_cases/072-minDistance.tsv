@@ -1,0 +1,7 @@
+string[word1]	string[word2]	int
+""	""	0
+"a"	""	1
+""	"b"	1
+"a"	"b"	1
+"aaa"	"aaa"	0
+"bbb"	"aaa"	3

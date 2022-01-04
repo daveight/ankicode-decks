@@ -1,0 +1,42 @@
+```java
+public class Solution {
+
+    private static final int[] X = { -1, 1, 0, 0 };
+    private static final int[] Y = { 0, 0, -1, 1 };
+    private static final int INF = Integer.MAX_VALUE;
+
+    /** First find all `0`s, and then fill empty cells with distance */
+    public int[][] wallsAndGates(int[][] rooms) {
+        if (rooms.length == 0 || rooms[0].length == 0) {
+            return rooms;
+        }
+        int rows = rooms.length;
+        int cols = rooms[0].length;
+        Queue<Integer> queue = new LinkedList<>();
+        // find all `0`s
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (rooms[i][j] == 0) {
+                    queue.add(i * cols + j);
+                }
+            }
+        }
+        // fill each empty cell
+        while (!queue.isEmpty()) {
+            int index = queue.poll();
+            int x = index / cols;
+            int y = index % cols;
+            for (int i = 0; i < X.length; i++) {
+                int xx = x + X[i];
+                int yy = y + Y[i];
+                if (xx >= 0 && xx < rows && yy >= 0 && yy < cols && rooms[xx][yy] == INF) {
+                    rooms[xx][yy] = rooms[x][y] + 1;
+                    queue.add(xx * cols + yy);
+                }
+            }
+        }
+
+        return rooms;
+    }
+}
+```

@@ -1,0 +1,4 @@
+binary_tree(int)[root]	binary_tree(int)[p]	binary_tree(int)[q]	binary_tree(int)
+[6, 2, 8, 0, 4, 7, 9, null, null, 3, 5]	[2, 0, 4, null, null, 3, 5]	[4, 3, 5]	[2, 0, 4, null, null, 3, 5]
+[6, 2, 8, 0, 4, 7, 9, null, null, 3, 5]	[2, 0, 4, null, null, 3, 5]	[8, 7, 9]	[6, 2, 8, 0, 4, 7, 9, null, null, 3, 5]
+[6, 2, 8, 0, 4, 7, 9, null, null, 3, 5]	[4, 3, 5]	[9, null]	[6, 2, 8, 0, 4, 7, 9, null, null, 3, 5]

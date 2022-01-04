@@ -1,0 +1,29 @@
+```java
+/**
+ * Use two pointers to keep a window. Check repeating character: 1) repeat in
+ * map; 2) within current window
+ * 
+ */
+public class Solution {
+
+    public int lengthOfLongestSubstring(String s) {
+        int result = 0;
+        int start = 0;  // left side of window
+        // character, and index in s of its latest appearance
+        Map<Character, Integer> posMap = new HashMap<>();
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            // if repeated in current window
+            if (posMap.containsKey(ch) && posMap.get(ch) >= start) {
+                // move left side of current window to remove repeated character
+                start = posMap.get(ch) + 1;
+            } else {
+                // window is expanding
+                result = Math.max(result, i - start + 1);
+            }
+            posMap.put(ch, i);
+        }
+        return result;
+    }
+}
+```

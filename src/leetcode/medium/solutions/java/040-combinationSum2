@@ -1,0 +1,41 @@
+```java
+public class Solution {
+
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        List<List<Integer>> result = new ArrayList<List<Integer>>();
+        List<Integer> combination = new ArrayList<Integer>();
+        Arrays.sort(candidates);
+        int index = 0;
+        combinationSum2(candidates, target, index, combination, result);
+        return result;
+    }
+
+    private void combinationSum2(int[] nums, int target, int index,
+            List<Integer> combination, List<List<Integer>> result) {
+        // base case
+        if (target == 0) {
+            // found one valid combination
+            result.add(combination);
+        }
+
+        // recursive case
+        // try each number as the next number put into combination
+        for (int i = index; i < nums.length; i++) {
+            int num = nums[i];
+            if (i != index && num == nums[i - 1]) {
+                // skip duplicate at the same position of resulting combination
+                continue;
+            }
+            if (target - num < 0) {
+                // prune: no need to try larger number in candidates
+                // to put in current combination
+                // no need to check later siblings
+                break;
+            }
+            List<Integer> copy = new ArrayList<Integer>(combination);
+            copy.add(num);
+            combinationSum2(nums, target - num, i + 1, copy, result);
+        }
+    }
+}
+```

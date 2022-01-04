@@ -1,0 +1,36 @@
+```java
+/**
+ * <p>
+ * 1. Set left bar at the leftmost position and right bar at the rightmost
+ * position.
+ * <p>
+ * 2. Each time, compare the height[left] with height[right] and moves the lower
+ * bar towards center position because the lower bar will decides the
+ * container's capacity. Only by moving the lower bar may we find a larger
+ * container.
+ * <p>
+ * 
+ * <p>
+ *                    | 
+ *    | -->           | 
+ *    |  .....  ....  |
+ *   left            right
+ */
+public class Solution {
+
+    public int maxArea(int[] height) {
+        int left = 0;
+        int right = height.length - 1;
+        int result = 0;
+        while (left < right) {
+            result = Math.max(Math.min(height[left], height[right]) * (right - left), result);
+            if (height[left] < height[right]) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+        return result;
+    }
+}
+```

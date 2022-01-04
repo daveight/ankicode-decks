@@ -1,0 +1,55 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+
+    /**
+     *  Assuming longer list's length is <em>m</em>, shorter list's length is <em>n</em>,
+     *  and the distance between intersecting position and list end is <em>l</em>
+     *               (m + n - l)
+     *                    |
+     *  |==========!==|+++!++|
+     *                            => two pointers will meet at position (m + n - l)
+     *  |+++!++|==========!==|
+     *                    |
+     *               (m + n - l)
+     */
+    public ListNode<Integer> getIntersectionNode(ListNode<Integer> headA, ListNode<Integer> headB) {
+        int lenA = length(headA), lenB = length(headB);
+        // move headA and headB to the same start point
+        while (lenA > lenB) {
+            headA = headA.next;
+            lenA--;
+        }
+        while (lenA < lenB) {
+            headB = headB.next;
+            lenB--;
+        }
+        // find the intersection until end
+        while (headA != null && headB != null && headA.data != headB.data) {
+            headA = headA.next;
+            headB = headB.next;
+        }
+        return headA;
+    }
+
+    private int length(ListNode<Integer> node) {
+        int length = 0;
+        while (node != null) {
+            node = node.next;
+            length++;
+        }
+        return length;
+    }
+}
+```

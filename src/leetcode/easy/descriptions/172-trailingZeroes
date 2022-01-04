@@ -1,0 +1,7 @@
+Time : O(); Space : O()
+ 
+Description: 
+Given an integer n, return the number of trailing zeroes in n!. 
+Note: Your solution should be in logarithmic time complexity.
+ 
+{@link https://leetcode.com/problems/factorial-trailing-zeroes/ }

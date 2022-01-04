@@ -1,0 +1,43 @@
+```java
+public class Solution {
+
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            // skip duplicates
+            if (i != 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            // number will serve as the 1st number in triplet candidate
+            int num = nums[i];
+            int left = i + 1;
+            int right = n - 1;
+            int target = 0 - num;
+            // try to find two numbers that sum up to target
+            while (left < right) {
+                int twoSum = nums[left] + nums[right];
+                if (twoSum < target) {
+                    left++;
+                } else if (twoSum > target) {
+                    right--;
+                } else {
+                    // found one combination
+                    result.add(Arrays.asList(num, nums[left], nums[right]));
+                    while (left + 1 < right && nums[left] == nums[left + 1]) {
+                        left++;
+                    }
+                    left++;
+                    while (right - 1 > left && nums[right] == nums[right - 1]) {
+                        right--;
+                    }
+                    right--;
+                }
+            }
+        }
+        return result;
+    }
+}
+```

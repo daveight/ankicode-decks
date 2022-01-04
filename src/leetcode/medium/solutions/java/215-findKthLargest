@@ -1,0 +1,42 @@
+```java
+public class Solution {
+    
+    // partition until we find k
+    public int findKthLargest(int[] nums, int k) {
+        int len = nums.length;
+        int left = 0;
+        int right = len - 1;
+        while (left <= right) {
+            int index = randomPartition(nums, left, right);
+            if (index == len - k) {
+                return nums[index];
+            } else if (index < len - k) {
+                left = index + 1;
+            } else {
+                right = index - 1;
+            }
+        }
+        return -1;
+    }
+
+    private int randomPartition(int[] nums, int left, int right) {
+        // choose a random index as pivot's position
+        int index = left + new Random().nextInt(right - left + 1);
+        swap(nums, index, right);
+        int i = left - 1;
+        for (int j = left; j < right; j++) {
+            if (nums[j] < nums[right]) {
+                swap(nums, ++i, j);
+            }
+        }
+        swap(nums, ++i, right);
+        return i;
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
+```

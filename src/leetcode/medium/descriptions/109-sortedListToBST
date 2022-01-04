@@ -1,0 +1,8 @@
+Time : O(N); Space: O(N)
+ 
+Description: 
+Given a singly linked list where elements are sorted        
+in ascending order, convert it to a height balanced BST.    
+ 
+{@link https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/ }
+1. how to get middle index (len - 1) / 2 v.s. len / 2;

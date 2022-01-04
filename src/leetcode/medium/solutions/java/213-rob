@@ -1,0 +1,36 @@
+```java
+/** how to break circle down to original house robber problem */
+public class Solution {
+
+    public int rob(int[] nums) {
+        int len = nums.length;
+        if (len == 1) {
+            return nums[0];
+        } else if (len == 2) {
+            return Math.max(nums[0], nums[1]);
+        } else {
+            return Math.max(rob(nums, 0, len - 2), rob(nums, 1, len - 1));
+        }
+    }
+
+    // when you might be able to steal both start and end
+    private int rob(int[] nums, int start, int end) {
+        if (start > end) {
+            return 0;
+        } else if (start == end) {
+            return nums[start];
+        } else {
+            int[] dp = new int[end - start + 2];
+            dp[dp.length - 1] = 0;
+            for (int i = end - start; i >= 0; i--) {
+                if (i == end - start) {
+                    dp[i] = nums[end];
+                } else {
+                    dp[i] = Math.max(dp[i + 1], nums[start + i] + dp[i + 2]);
+                }
+            }
+            return dp[0];
+        }
+    }
+}
+```

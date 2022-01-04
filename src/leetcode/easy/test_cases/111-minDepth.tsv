@@ -1,0 +1,6 @@
+binary_tree(int)[root]	int
+[3, 9, 20, null, null, 15]	2
+[3, 9, null, 15]	3
+[3, null, 9, null, 15]	3
+[3, 9, 15]	2
+[3, null]	1

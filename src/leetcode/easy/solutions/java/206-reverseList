@@ -1,0 +1,27 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+
+    public ListNode<Integer> reverseList(ListNode<Integer> head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode<Integer> next = head.next;
+        ListNode<Integer> rHead = reverseList(next);
+        next.next = head;
+        head.next = null;
+        return rHead;
+    }
+}
+```

@@ -1,0 +1,13 @@
+```java
+public class Solution {
+    public int trailingZeroes(int n) {
+        int numberOf5 = 0;
+        while (n != 0) {
+            int count = n / 5;
+            numberOf5 += count;
+            n = count;
+        }
+        return numberOf5;
+    }
+}
+```

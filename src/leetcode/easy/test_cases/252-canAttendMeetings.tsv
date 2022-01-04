@@ -1,0 +1,3 @@
+array(object(int[start],int[end])<Interval>)[intervals]	bool
+[ [0, 30], [5, 10], [15, 20] ]	false
+[ [5, 10], [15, 20] ]	true

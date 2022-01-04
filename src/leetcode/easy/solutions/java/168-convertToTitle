@@ -1,0 +1,18 @@
+```java
+public class Solution {
+    
+    private int BASE = 26;
+    
+    private int OFFSET = 1;
+    
+    public String convertToTitle(int n) {
+        StringBuilder sb = new StringBuilder();
+        while (n != 0) {
+            char c = (char) ((n - OFFSET) % BASE + 'A');
+            sb.append(c);
+            n = (n - OFFSET) / BASE;
+        }
+        return sb.reverse().toString();
+    }
+}
+```

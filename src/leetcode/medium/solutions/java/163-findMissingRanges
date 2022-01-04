@@ -1,0 +1,27 @@
+```java
+public class Solution {
+
+    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        List<String> res = new ArrayList<>();
+        int exp = lower;
+        int i = 0;
+        // don't forget the last possible missing range
+        while (i <= nums.length && exp <= upper) {
+            int num = i == nums.length ? upper + 1 : nums[i];
+            if (num > upper) {
+                num = upper + 1;
+            }
+            if(num != exp) {
+                StringBuilder sb = new StringBuilder("" + exp);
+                if (num != exp + 1) {
+                    sb.append("->").append(num - 1);
+                } 
+                res.add(sb.toString());
+            }
+            exp = num + 1;
+            i++;
+        }
+        return res;
+    }
+}
+```

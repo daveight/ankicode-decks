@@ -1,0 +1,56 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+
+     // simulating merge sort on linked list
+    public ListNode<Integer> sortList(ListNode<Integer> head) {
+        // base case
+        if (head == null || head.next == null) {
+            return head;
+        }
+
+        // find the middle node
+        ListNode<Integer> fast = head.next;
+        ListNode<Integer> slow = head;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+
+        // cut list into two halves
+        ListNode<Integer> second = slow.next;
+        slow.next = null;
+
+        // merge sort two parts
+        ListNode<Integer> head1 = sortList(head);
+        ListNode<Integer> head2 = sortList(second);
+        ListNode<Integer> dummy = new ListNode();
+        dummy.data = -1;
+        ListNode<Integer> node = dummy;
+        while (head1 != null && head2 != null) {
+            if (head1.data < head2.data) {
+                node.next = head1;
+                head1 = head1.next;
+            } else {
+                node.next = head2;
+                head2 = head2.next;
+            }
+            node = node.next;
+        }
+        // merge the remaining part
+        node.next = head1 != null ? head1 : head2;
+        return dummy.next;
+    }
+}
+```

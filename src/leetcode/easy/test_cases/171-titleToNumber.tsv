@@ -1,0 +1,6 @@
+string[s]	int
+"A"	1
+"Z"	26
+"AA"	27
+"AZ"	52
+"ZZ"	702

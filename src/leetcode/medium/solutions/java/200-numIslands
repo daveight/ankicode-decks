@@ -1,0 +1,46 @@
+```java
+public class Solution {
+
+    // DFS version
+    public int numIslands(String[][] grid) {
+        if (grid.length == 0 || grid[0].length == 0) {
+            return 0;
+        }
+        int rows = grid.length;
+        int cols = grid[0].length;
+        int result = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                // label each reachable land from current position
+                if (grid[i][j].equals("1")) {
+                    labelReachableLand(i, j, rows, cols, grid);
+                    result++;
+                }
+            }
+        }
+        // recover grid
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (grid[i][j].equals("+")) {
+                    grid[i][j] = "1";
+                }
+            }
+        }
+        return result;
+    }
+
+    // DFS to label reachable land
+    private void labelReachableLand(int i, int j, int rows, int cols, String[][] grid) {
+        // base case
+        if (i < 0 || i >= rows || j < 0 || j >= cols || !grid[i][j].equals("1")) {
+            return;
+        }
+        // recursive case
+        grid[i][j] = "I";   // label as visited
+        labelReachableLand(i + 1, j, rows, cols, grid);
+        labelReachableLand(i - 1, j, rows, cols, grid);
+        labelReachableLand(i, j - 1, rows, cols, grid);
+        labelReachableLand(i, j + 1, rows, cols, grid);
+    }
+}
+```

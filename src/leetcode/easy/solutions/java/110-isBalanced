@@ -1,0 +1,36 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    public boolean isBalanced(BinaryTreeNode<Integer> root) {
+        return maxDepth(root) != -1;
+    }
+    
+    // is tree is balanced, it returns the max depth of tree,
+    // return -1 otherwise
+    public int maxDepth(BinaryTreeNode<Integer> root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = maxDepth(root.left);
+        int right = maxDepth(root.right);
+        if (left == -1 || right == -1 || Math.abs(left - right) > 1) {
+            return -1;
+        }
+        return Math.max(left, right) + 1;
+    }
+}
+```

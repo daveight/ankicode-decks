@@ -1,0 +1,7 @@
+string[s1]	string[s2]	bool
+"great"	"rgeat"	true
+"great"	"rgtae"	true
+"dbdac"	"abcdd"	false
+"great"	"great"	true
+"great"	"greata"	false
+"abbbcbaaccacaacc"	"acaaaccabcabcbcb"	true

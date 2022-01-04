@@ -1,0 +1,41 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+    
+    public ListNode<Integer> detectCycle(ListNode<Integer> head) {
+        if (head == null) {
+            return head;
+        }
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (fast == slow.next) {
+                break;
+            }
+        }
+        // no cycle
+        if (fast == null || fast.next == null) {
+            return null;
+        }
+        fast = head;
+        while (fast != slow) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        return fast;
+    }
+}
+```

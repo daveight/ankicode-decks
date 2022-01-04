@@ -1,0 +1,45 @@
+```java
+public class Solution {
+
+    public String fractionToDecimal(int numerator, int denominator) {
+        if (denominator == 0) {
+            return "";
+        }
+        if (numerator == 0) {
+            return "0";
+        }
+        StringBuilder sb = new StringBuilder();
+        if ((numerator > 0 && denominator < 0) || (numerator < 0 && denominator > 0)) {
+            sb.append("-");
+        }
+        long num = Math.abs((long) numerator);
+        long den = Math.abs((long) denominator);
+
+        // integral part
+        sb.append(num / den);
+        if (num % den == 0) {
+            return sb.toString();
+        }
+        sb.append(".");
+
+        // decimal part
+        num = num % den * 10;
+        Map<Long, Integer> index = new HashMap<>();
+        int recur = -1;
+        while (num != 0) {
+            if (index.containsKey(num)) {
+                recur = index.get(num);
+                break;
+            }
+            index.put(num, sb.length());
+            sb.append(num / den);
+            num = num % den * 10;
+        }
+        if (recur != -1) {
+            sb.insert(recur, "(");
+            sb.append(")");
+        }
+        return sb.toString();
+    }
+}
+```

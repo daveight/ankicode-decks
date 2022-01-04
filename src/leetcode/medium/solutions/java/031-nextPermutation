@@ -1,0 +1,30 @@
+```java
+public class Solution {
+    public int[] nextPermutation(int[] input) {
+        int[] nums = new int[input.length];
+        System.arraycopy(input, 0, nums, 0, nums.length);
+        int start = nums.length - 1;
+        while (start > 0 && nums[start - 1] >= nums[start]) {
+            start--;
+        }
+        if (start > 0) {
+            int end = nums.length - 1;
+            while (nums[end] <= nums[start - 1]) {
+                end--;
+            }
+            swap(nums, start - 1, end);
+        }
+
+        for (int i = start; i < (start + nums.length) / 2; i++) {
+            swap(nums, i, nums.length - 1 + start - i);
+        }
+        return nums;
+    }
+
+    void swap(int[] array, int i, int j) {
+        int temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
+```

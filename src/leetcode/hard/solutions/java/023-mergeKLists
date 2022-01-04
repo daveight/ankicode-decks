@@ -1,0 +1,46 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+    public ListNode<Integer> mergeKLists(ListNode<Integer>[] lists) {
+        ListNode<Integer> dummy = new ListNode();
+        ListNode<Integer> node = dummy;
+
+        // stores head node of k merging lists
+        Queue<ListNode<Integer>> queue = new PriorityQueue<>(new Comparator<ListNode<Integer>>() {
+            @Override
+            public int compare(ListNode<Integer> o1, ListNode<Integer> o2) {
+                return o1.data - o2.data;
+            }
+        });
+
+        // push all heads into queue
+        for (ListNode<Integer> head : lists) {
+            if (head != null) {
+                queue.add(head);
+            }
+        }
+
+        // choose next node from k candidates
+        while (!queue.isEmpty()) {
+            ListNode cur = queue.poll();
+            node.next = cur;
+            if (cur.next != null) {
+                queue.add(cur.next);
+            }
+            node = node.next;
+        }
+        return dummy.next;
+    }
+}
+```

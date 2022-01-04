@@ -1,0 +1,37 @@
+```java
+public class Solution {
+
+    public int trap(int[] height) {
+
+        int left = 0;
+        int right = height.length - 1;
+
+        int leftBarrier = 0;
+        int rightBarrier = 0;
+        int result = 0;
+
+        while (left <= right) {
+            if (leftBarrier <= rightBarrier) {
+                // there could be a basin between leftBarrier and rightBarrier
+                // and left side is lower one
+                if (height[left] > leftBarrier) {
+                    // update left barrier
+                    leftBarrier = height[left];
+                } else {
+                    result += leftBarrier - height[left];
+                }
+                left++;
+            } else {
+                if (height[right] > rightBarrier) {
+                    // update right barrier
+                    rightBarrier = height[right];
+                } else {
+                    result += rightBarrier - height[right];
+                }
+                right--;
+            }
+        }
+        return result;
+    }
+}
+```

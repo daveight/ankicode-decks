@@ -1,0 +1,33 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    public boolean isValidBST(BinaryTreeNode<Integer> root) {
+        return isValidBST(root, null, null);
+    }
+
+    private boolean isValidBST(BinaryTreeNode<Integer> root, Integer min, Integer max) {
+        if (root == null) {
+            return true;
+        }
+        if ((min != null && root.data <= min) || (max != null && root.data >= max)) {
+            return false;
+        }
+        return isValidBST(root.left, min, root.data)
+                && isValidBST(root.right, root.data, max);
+    }
+}
+```

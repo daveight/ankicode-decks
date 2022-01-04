@@ -1,0 +1,45 @@
+```java
+public class Solution {
+
+    public int minCostII(int[][] costs) {
+        int n = costs.length;
+        if (n == 0) {
+            return 0;
+        }
+        int k = costs[0].length;
+        int min1 = Integer.MAX_VALUE; // the smallest cost after paint i-th house
+        int min2 = Integer.MAX_VALUE; // second smallest cost
+        int color = -1; // color for min1 choice in last round
+        int[][] f = new int[n][k];
+        for (int i = n - 1; i >= 0; i--) {
+            int temp1 = Integer.MAX_VALUE;
+            int temp2 = Integer.MAX_VALUE;
+            int tempC = -1;
+            for (int c = k - 1; c >= 0; c--) {
+                int mincost = 0;
+                if (i == n - 1) {
+                    mincost = costs[i][c];
+                } else {
+                    if (f[i][c] != min1 && color != c) {
+                        mincost = min1 + costs[i][c];
+                    } else {
+                        mincost = min2 + costs[i][c];
+                    }
+                }
+                if (temp1 <= mincost) {
+                    temp2 = Math.min(temp2, mincost);
+                } else {
+                    temp2 = temp1;
+                    temp1 = mincost;
+                    tempC = c;
+                }
+                f[i][c] = mincost;
+            }
+            min1 = temp1;
+            min2 = temp2;
+            color = tempC;
+        }
+        return min1;
+    }
+}
+```

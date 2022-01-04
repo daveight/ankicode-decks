@@ -1,0 +1,9 @@
+string[s]	bool
+"A man, a plan, a canal: Panama"	true
+"race a car"	false
+""	true
+"a"	true
+"aaa"	true
+"abaa"	false
+"\""	true
+" "	true

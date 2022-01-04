@@ -1,0 +1,63 @@
+```java
+public class Solution {
+
+    /** @see _124_BinaryTreeMaximumPathSum.Solution */
+    public int longestConsecutive(int[] nums) {
+        int result = 0;
+        Map<Integer, Bound> rangeMap = new HashMap<Integer, Bound>();
+
+        for (int i = 0; i < nums.length; i++) {
+            int num = nums[i];
+            if (!rangeMap.containsKey(num)) {
+                int maxRangeToThisNumber = 1;
+                int maxRangeFromThisNumber = 1;
+                // can this number be a right boundary of a range ?
+                if (rangeMap.containsKey(num - 1)) {
+                    maxRangeToThisNumber += rangeMap.get(num - 1).maxRangeAsRightBound;
+                }
+                // can this number be a left boundary of a range?
+                if (rangeMap.containsKey(num + 1)) {
+                    maxRangeFromThisNumber += rangeMap.get(num + 1).maxRangeAsLeftBound;
+                }
+                int maxRangeIncludeThisNumber = maxRangeToThisNumber
+                        + maxRangeFromThisNumber - 1;
+
+                // update range map
+                Bound bound = new Bound(maxRangeFromThisNumber,
+                        maxRangeToThisNumber);
+                rangeMap.put(num, bound);
+
+                // num is not the right boundary of max range including num
+                if (maxRangeFromThisNumber != 1) {
+                    // update the range of number at the right bound
+                    int rightEnd = maxRangeFromThisNumber + num - 1;
+                    Bound boundRight = rangeMap.get(rightEnd);
+                    boundRight.maxRangeAsRightBound = maxRangeIncludeThisNumber;
+                    rangeMap.put(rightEnd, boundRight);
+                }
+                if (maxRangeToThisNumber != 1) {
+                    int leftEnd = num - maxRangeToThisNumber + 1;
+                    Bound boundLeft = rangeMap.get(leftEnd);
+                    boundLeft.maxRangeAsLeftBound = maxRangeIncludeThisNumber;
+                    rangeMap.put(leftEnd, boundLeft);
+                }
+
+                // update global max
+                result = Math.max(result, maxRangeIncludeThisNumber);
+            }
+        }
+
+        return result;
+    }
+
+    public class Bound {
+        public int maxRangeAsRightBound = 0;
+        public int maxRangeAsLeftBound = 0;
+
+        public Bound(int _maxRangeAsLeftBound, int _maxRangeAsRightBound) {
+            maxRangeAsLeftBound = _maxRangeAsLeftBound;
+            maxRangeAsRightBound = _maxRangeAsRightBound;
+        }
+    }
+}
+```

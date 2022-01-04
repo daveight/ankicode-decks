@@ -1,0 +1,33 @@
+```java
+public class Solution {
+
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> res = new LinkedList<List<Integer>>();
+        Arrays.sort(candidates);
+        int index = 0;
+        recurse(new ArrayList<Integer>(), target, candidates, index, res);
+        return res;
+    }
+
+    private void recurse(List<Integer> combination, int target,
+            int[] nums, int index, List<List<Integer>> result) {
+        // base case
+        if (target == 0) {
+            // found one valid combination
+            result.add(new ArrayList<>(combination));
+        }
+
+        // recursive case
+        for (int i = index; i < nums.length; i++) {
+            int num = nums[i];
+            if(target - num < 0) {
+                // no need to check later siblings
+                break;
+            }
+            combination.add(num);
+            recurse(combination, target - num, nums, i, result);
+            combination.remove(combination.size() - 1);
+        }
+    }
+}
+```

@@ -1,0 +1,33 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+
+    public ListNode<Integer> deleteDuplicates(ListNode<Integer> head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode<Integer> dummy = new ListNode<>();
+        dummy.next = head;
+        ListNode<Integer> node = head;
+        while (node != null) {
+            if (node.next != null && node.data == node.next.data) {
+                node.next = node.next.next;
+            } else {
+                node = node.next;
+            }
+        }
+        return dummy.next;
+    }
+}
+```

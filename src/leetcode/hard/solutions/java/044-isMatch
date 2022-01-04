@@ -1,0 +1,36 @@
+```java
+public class Solution {
+    
+    public boolean isMatch(String s, String p) {
+        int sLen = s.length();
+        int pLen = p.length();
+        int sIndex = 0;
+        int pIndex = 0;
+        int index = 0;
+        int startIndex = -1;
+        while (sIndex < sLen) {
+            if (pIndex < pLen && (p.charAt(pIndex) == '?' || s.charAt(sIndex) == p.charAt(pIndex))) {
+                // advance index on s and p together
+                sIndex++;
+                pIndex++;
+            } else if (pIndex < pLen && p.charAt(pIndex) == '*') {
+                // 
+                startIndex = pIndex;
+                index = sIndex;
+                pIndex++;
+            } else if (startIndex != -1) {
+                // 
+                pIndex = startIndex + 1;
+                index++;
+                sIndex = index;
+            } else {
+                return false;
+            }
+        }
+        while (pIndex < pLen && p.charAt(pIndex) == '*') {
+            pIndex++;
+        }
+        return pIndex == pLen;
+    }
+}
+```

@@ -1,0 +1,17 @@
+```java
+public class Solution {
+
+    public int[] moveZeroes(int[] nums) {
+        int count = 0;  // count of nonzero numbers
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0) {
+                nums[count++] = nums[i];
+            }
+        }
+        while (count < nums.length) {
+            nums[count++] = 0;
+        }
+        return nums;
+    }
+}
+```

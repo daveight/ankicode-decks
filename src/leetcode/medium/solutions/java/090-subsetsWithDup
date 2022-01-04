@@ -1,0 +1,34 @@
+```java
+public class Solution {
+
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        // empty list is subset of any list
+        result.add(new ArrayList<>());
+        // enlarged size by last non-repeated number
+        int k = 0;
+        for (int i = 0; i < nums.length; i++) {
+            int num = nums[i];
+            int size = result.size();
+            int start = 0;
+            if (i == 0 || num != nums[i - 1]) {
+                k = size;
+            } else {
+                // for repeating number
+                start = size - k;
+            }
+            // for a non-repeated number, a new number will double the size of current result
+            // by adding this number to each of existing subset;
+            // for a repeated number, this repeated number will only change
+            // those "new subsets" created by last number in the loop
+            for (int j = start; j < size; j++) {
+                List<Integer> list = new ArrayList<>(result.get(j));
+                list.add(num);
+                result.add(list);
+            }
+        }
+        return result;
+    }
+}
+```

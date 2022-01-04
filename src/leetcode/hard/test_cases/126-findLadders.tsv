@@ -1,0 +1,4 @@
+string[start]	string[end]	list(string)[dict]	list(list(string))
+"hit"	"cog"	["hot","dot","dog","lot","log"]	[["hit","hot","dot","dog","cog"],["hit","hot","lot","log","cog"]]
+"hit"	"hit"	["hot","dot","dog","lot","log"]	[["hit","hit"]]
+"a"	"c"	["a","b"]	[["a", "c"]]

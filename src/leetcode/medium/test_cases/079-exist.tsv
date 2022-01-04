@@ -1,0 +1,5 @@
+array(array(string))[board]	string[word]	bool
+[ [ "A", "B", "C", "E" ], [ "S", "F", "C", "S" ], [ "A", "D", "E", "E" ] ]	"ABCCED"	true
+[ [ "A", "B", "C", "E" ], [ "S", "F", "C", "S" ], [ "A", "D", "E", "E" ] ]	"SEE"	true
+[ [ "A", "B", "C", "E" ], [ "S", "F", "C", "S" ], [ "A", "D", "E", "E" ] ]	"ABCB"	false
+[ [ "A", "B", "C" ], [ "D", "E", "F" ], [ "G", "H", "I" ] ]	"BEDGH"	true

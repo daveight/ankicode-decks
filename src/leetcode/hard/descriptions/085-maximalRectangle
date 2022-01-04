@@ -1,0 +1,9 @@
+Time : O(n^4); Space: O(n^3)
+ 
+Description: 
+Given a 2D binary matrix filled with 0's and 1's, find the largest 
+rectangle containing all ones and return its area.
+ 
+{@link https://leetcode.com/problems/maximal-rectangle/ }
+P.S. : can be improved to O(N^3) using stack, see SolutionStack.java
+		'board' dp problem, how to iterate

@@ -1,0 +1,2998 @@
+"Median Of Two Sorted Arrays"	"Time : O(log(m + n)) ; Space: O(1)
+ 
+Description:
+There are two sorted arrays nums1 and nums2 of size m and n respectively. 
+Find the median of the two sorted arrays. The overall run time complexity 
+should be O(log (m+n)). 
+ 
+{@link https://leetcode.com/problems/median-of-two-sorted-arrays/ }"	"findMedianSortedArrays"	"### Java
+```java
+public class Solution {
+
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int len = nums1.length + nums2.length;
+        if (len % 2 == 0) {
+            return (findKth(nums1, 0, nums2, 0, len / 2) + 
+                    findKth(nums1, 0, nums2, 0, len / 2 + 1)) / 2.0;
+        } else {
+            return findKth(nums1, 0, nums2, 0, len / 2 + 1);
+        }
+
+    }
+
+    // find the Kth number in sorted array of (nums1 + nums2)
+    private double findKth(int[] nums1, int s1, int[] nums2, int s2, int k) {
+        if (s1 >= nums1.length) {
+            return nums2[s2 + k - 1];
+        } else if (s2 >= nums2.length) {
+            return nums1[s1 + k - 1];
+        } else if (k == 1) {
+            return Math.min(nums1[s1], nums2[s2]);
+        }
+        int k1 = s1 + k / 2 - 1 < nums1.length ? nums1[s1 + k / 2 - 1] : Integer.MAX_VALUE;
+        int k2 = s2 + k / 2 - 1 < nums2.length ? nums2[s2 + k / 2 - 1] : Integer.MAX_VALUE;
+        // cut impossible k/2 part
+        if (k1 < k2) {
+            // [s1 : s1 + k/2] cannot have the Kth number
+            return findKth(nums1, s1 + k / 2, nums2, s2, k - k / 2);
+        } else {
+            // [s2 : s2 + k/2] cannot have the Kth number
+            return findKth(nums1, s1, nums2, s2 + k / 2, k - k / 2);
+        }
+    }
+}
+```"	"array(int)[nums1];array(int)[nums2];float
+[1, 2, 3, 4, 5, 6];[2, 3, 4, 5];3.5
+[1, 2];[2];2
+[1, 2];[3, 4, 5];3
+[1, 2];[3, 4];2.5
+[1, 3, 5];[2, 4, 6];3.5
+[2, 4, 6, 8];[1, 3, 5];4
+[];[1];1.0
+"
+"Regular Expression Matching"	"Time : O(); Space : O()
+ 
+Description: 
+Implement regular expression matching with support for '.' and ''. 
+'.' Matches any single character. 
+'' Matches zero or more of the preceding element. 
+The matching should cover the entire input string (not partial). 
+The function prototype should be: 
+bool isMatch(const char s, const char p) 
+Some examples: 
+isMatch(""aa"",""a"") → false 
+isMatch(""aa"",""aa"") → true 
+isMatch(""aaa"",""aa"") → false 
+isMatch(""aa"", ""a"") → true 
+isMatch(""aa"", ""."") → true 
+isMatch(""ab"", ""."") → true 
+isMatch(""aab"", ""cab"") → true
+ 
+{@link https://leetcode.com/problems/regular-expression-matching/ }"	"isMatch"	"### Java
+```java
+public class Solution {
+
+    public boolean isMatch(String s, String p) {
+        int sLen = s.length();
+        int pLen = p.length();
+
+        boolean[][] dp = new boolean[sLen + 1][pLen + 1];
+
+        for (int i = sLen; i >= 0; i--) {
+            for (int j = pLen; j >= 0; j--) {
+                boolean matched = false;
+                if (i == sLen && j == pLen) {
+                    matched = true;
+                } else if (i < sLen && j == pLen) {
+                    matched = false;
+                } else if ((j + 1) < pLen && p.charAt(j + 1) == '*') {
+                    if (i < sLen && (p.charAt(j) == s.charAt(i) || p.charAt(j) == '.')) {
+                        // if equals or met with '.', then move on to the next state
+                        matched = dp[i][j + 2]
+                               || dp[i + 1][j + 2] 
+                               || dp[i + 1][j];
+                    } else {
+                        // ignore '*'
+                        matched = dp[i][j + 2];
+                    }
+                } else if (i < sLen && j < pLen && (s.charAt(i) == p.charAt(j) || (p.charAt(j) == '.' ))) {
+                    matched = dp[i + 1][j + 1];
+                }
+                dp[i][j] = matched;
+            }
+        }
+        return dp[0][0];
+    }
+}
+```"	"string[a];string[b];bool
+""aa"";""a"";false
+""aa"";""aa"";true
+""aaa"";""aa"";false
+""aa"";""a*"";true
+""aa"";"".*"";true
+""aab"";""c*a*b"";true
+""aaa"";""a.a"";true
+""aaa"";""ab*ac*a"";true
+""aaa"";""aa.a"";false
+""aaa"";""ab*a"";false
+""aaa"";""*a"";false
+""ab"";"".*c"";false
+"""";"".*"";true
+""baccbbcbcacacbbc"";""c*.*b*c*ba*b*b*.a*"";true
+"
+"Merge K Sorted Lists"	"Time : O(NlgN) ; Space: O(N)
+ 
+Description:
+ 
+Merge k sorted linked lists and return it as one sorted list. Analyze 
+and describe its complexity.
+ 
+{@link https://leetcode.com/problems/merge-k-sorted-lists/ }"	"mergeKLists"	"### Java
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+    public ListNode<Integer> mergeKLists(ListNode<Integer>[] lists) {
+        ListNode<Integer> dummy = new ListNode();
+        ListNode<Integer> node = dummy;
+
+        // stores head node of k merging lists
+        Queue<ListNode<Integer>> queue = new PriorityQueue<>(new Comparator<ListNode<Integer>>() {
+            @Override
+            public int compare(ListNode<Integer> o1, ListNode<Integer> o2) {
+                return o1.data - o2.data;
+            }
+        });
+
+        // push all heads into queue
+        for (ListNode<Integer> head : lists) {
+            if (head != null) {
+                queue.add(head);
+            }
+        }
+
+        // choose next node from k candidates
+        while (!queue.isEmpty()) {
+            ListNode cur = queue.poll();
+            node.next = cur;
+            if (cur.next != null) {
+                queue.add(cur.next);
+            }
+            node = node.next;
+        }
+        return dummy.next;
+    }
+}
+```"	"array(linked_list(int))[lists];linked_list(int)
+[];[]
+[[1,1,3,2,5],[2,1,4,2,6]];[1, 2, 3, 4, 5, 6]
+[[-2,1,-1,2,-1,3,-1], null];[-2, -1, -1, -1]
+[[3],[1]];[1, 3]
+[[3]];[3]
+"
+"Substring With Concatenation Of All Words"	"Time : O(); Space: O()
+ 
+Description: 
+You are given a string, s, and a list of words, words, that are all of 
+the same length. Find all starting indices of substring(s) in s that 
+is a concatenation of each word in words exactly once and without any 
+intervening characters. 
+For example, given: 
+s: ""barfoothefoobarman"" words: [""foo"", ""bar""] 
+You should return the indices: [0,9]. (order does not matter).
+ 
+{@link https://leetcode.com/problems/substring-with-concatenation-of-all-words/ }"	"findSubstring"	"### Java
+```java
+public class Solution {
+
+    public List<Integer> findSubstring(String s, String[] words) {
+        List<Integer> result = new ArrayList<Integer>();
+        if (s.length() == 0 || words.length == 0) {
+            return result;
+        }
+
+        // count the word counts in words
+        Map<String, Integer> wordCountMap = new HashMap<String, Integer>();
+        int wordsCount = words.length;
+        for (String word : words) {
+            int count = wordCountMap.containsKey(word) ? wordCountMap.get(word)
+                    : 0;
+            wordCountMap.put(word, count + 1);
+        }
+
+        int wordLen = words[0].length();
+        int wordsLen = words.length * wordLen;
+
+        // try all possible starting index
+        for (int startIndex = 0; startIndex <= s.length() - wordLen
+                && startIndex <= s.length() - wordsLen; startIndex++) {
+
+            String window = s.substring(startIndex, startIndex + wordsLen);
+            Map<String, Integer> foundMap = new HashMap<String, Integer>();
+            int wordFoundCount = 0;
+            int checkingIndex = 0;
+
+            if (findSubstring(window, checkingIndex, wordFoundCount,
+                    wordsCount, foundMap, wordCountMap)) {
+                result.add(startIndex);
+            }
+        }
+
+        return result;
+    }
+
+    public boolean findSubstring(String window, int checkingIndex,
+            int wordFoundCount, int wordsCount, Map<String, Integer> foundMap,
+            Map<String, Integer> wordCountMap) {
+
+        if (checkingIndex == window.length()) {
+            // one valid starting index found
+            return true;
+        }
+
+        int wordLen = window.length() / wordsCount;
+
+        // parse word from window
+        String word = window.substring(checkingIndex, checkingIndex + wordLen);
+
+        if (checkingIndex < window.length() && wordCountMap.containsKey(word)) {
+            int count = foundMap.containsKey(word) ? foundMap.get(word) : 0;
+            // go on checking
+            if (count < wordCountMap.get(word)) {
+                foundMap.put(word, count + 1);
+                return findSubstring(window, checkingIndex + wordLen,
+                        wordFoundCount + 1, wordsCount, foundMap, wordCountMap);
+            }
+
+        }
+        return false;
+    }
+}
+```"	"string[s];array(string)[words];list(int)
+""ejwwmybnorgshugzmoxopwuvshlcwasclobxmckcvtxfndeztdqiakfusswqsovdfwatanwxgtctyjvsmlcoxijrahivwfybbbudosawnfpmomgczirzscqvlaqhfqkithlhbodptvdhjljltckogcjsdbbktotnxgwyuapnxuwgfirbmdrvgapldsvwgqjfxggtixjhshnzphcemtzsvodygbxpriwqockyavfscvtsewyqpxlnnqnvrkmjtjbjllilinflkbfoxdhocsbpirmcbznuioevcojkdqvoraeqdlhffkwqbjsdkfxstdpxryixrdligpzldgtiqryuasxmxwgtcwsvwasngdwovxzafuixmjrobqbbnhwpdokcpfpxinlfmkfrfqrtzkhabidqszhxorzfypcjcnopzwigmbznmjnpttflsmjifknezrneedvgzfmnhoavxqksjreddpmibbodtbhzfehgluuukupjmbbvshzxyniaowdjamlfssndojyyephstlonsplrettspwepipwcjmfyvfybxiuqtkdlzqedjxxbvdsfurhedneauccrkyjfiptjfxmpxlssrkyldfriuvjranikluqtjjcoiqffdxaukagphzycvjtvwdhhxzagkevvuccxccuoccdkbboymjtimdrmerspxpktsmrwrlkvpnhqrvpdekmtpdfuxzjwpvqjjhfaupylefbvbsbhdncsshmrhxoyuejenqgjheulkxjnqkwvzznriclrbzryfaeuqkfxrbldyusoeoldpbwadhrgijeplijcvqbormrqglgmzsprtmryvkeevlthvflsvognbxfjilwkdndyzwwxgdbeqwlldyezmkopktzugxgkklimhhjqkmuaifnodtpredhqygmedtqpezboimeuyyujfjxkdmbjpizpqltvgknnlodtbhnbhjkmuhwxvzgmkhbcvvadhnssbvneecglnqxhavhvxpkjxlluilzpysjcnwguyofnhfvhaceztoiscumkhociglkvispihvyoatxcxbeqsmluixgsliatukrecgoldmzfhwkgaqzsckonjuhxdhqztjfxstjvikdrhpyjfxbjjryslfpqoiphrwfjqqhaamrjbrsiovrxmqsyxhqmritjeauwqbwtpqcqhvyyssvfknfhxvtodpzipueixdbntdfcaeatyyainfpkclbgaaqrwwzwbcjwiqzkwzfuxfclmsxpdyvfbnwxjytnaejivivriamhgqsskqhnqeurttrfrmstrbeokzhuzvbfmwywohmgogyhzpmsdemugqkspsmoppwbnwabdmiruibwznqcuczculujfiavzwynsyqxmarjkshjhxobandwyzggjibjgzyaaqxorqxbkenscbveqbaociwmqxxyzvyblypeongzrttvwqzmrccwkzidyfbxcaypyquodcpwxkstbthuvjqgialhfmgjohzoxvdaxuywfqrgmyahhtpqtazbphmfoluliznftodyguesshcacrsvutylalqrykehjuofisdookjhrljvedsywrlyccpaowjaqyfaqioesxnlkwgpbznzszyudpwrlgrdgwdyhucztsneqttsuirmjriohhgunzatyfrfzvgvptbgpwajgtysligupoqeoqxoyqtzozufvvlktnvahvsseymtpeyfvxttqosgpplkmxwgmsgtpantazppgnubmpwcdqkvhwfuvcahwibniohiqyywnuzzmxeppokxksrfwrpuzqhjgqryorwboxdauhrkxehiwaputeouwxdfoudcoagcxjcuqvenznxxnprgvhasffxtzaxpcfrcovwgrcwqptoekhmgpoywtxruxokcubekzcrqengviwbtgnzvdzrwwkqvacxwgdhffyvjldgvchoiwnfzoyvkiogisdfyjmfomcazigukqlumyzmnzjzhzfpslwsukykwckvktswjdqxdrlsqvsxwxpqkljeyjpulbswwmuhplfueqnvnhukgjarxlxvwmriqjgmxawmndhsvwnjdjvjtxcsjapfogpesxtpypenunfpjuyoevzztctecilqqbxkaqcyhiobvtqgqruumvvhxolbyzsqcrdchhdqprtkkjsccowrjtyjjmkhleanvfpemuublnnyzfabtxsestncfalqenfcswgerbfcqsapzdtscnzugmwlmidtxkvqhbuaecevwhmwkfqmvpgbefpqpsjmdecmixmmbsjxzwvjdmxydechlraajjmoqpcyoqmrjwoiumuzatydzcnktnkeyztoqvogodxxznhvzduzxudwwqhpftwdspuimioanlzobhjakgajafgzxpqckmhdbbnqmcszpuoqbztnftzgahhxwxbgkilnmzfydyxusnnvngksbjabqjaohdvrniezhmxmkxhemwbbclwdxwgngicplzgajmaryzfkyoqlkrmmfirchzrphveuwmvgaxzbwenvteifxuuefnimnadwxhruvoavlzyhfmeasmgrjawongccgfbgoualiaivbhcgvjjnxpggrewglalthmzvgziobrjeanlvyukwlscexbkibvdjhdgnepdiimmkcxhattwglbkicvsfswocbvphmtpwhcgjbnmxgidtlqcnnwtfujhvgzdussqbwynylzvtjapvqtidpdjkpshvrmqlhindhabubyokzdfrwqvnvgzkyhistydagsgnujiviyijdnabfxqbdqnexvwsvzvcsbrmkbkuzsdehghndyqjodnnblfwmaygdstotfkvxozgwhtbhlkvrzismnozqpfthajafuxekzlgigjpsukjvsdihrjzgovnreqwapdkoqswyclqyvbvpedzyoyedvuuamscbxnqnfmmjyehvidnoimmxmtcinwkbqmcobubjjpshucechrqrffqsyscnqoohcsxenypyqhfklloudgmklcejvgynwouzhtfwuuukdbwpmkjrqxeeaipxrokncholathupdetgaktmvmftqjvzyssocftjwemroghrncynmtchhhcaqxbqpthuaafwgrouaxonzocljeuslzsdwvuoodipdpnlhdihaywzmymxdjrqikughquwtenyucjdgrmipiidiwclhuepgyynoslhzahtdqwliktzsddaahohbszhqxxgripqlwlomjbwtuynydoakejmwkvojuwbfltqjfgxqhwkduzbxpdhtpvrzrfjndmsqfizmqxdxtpbpoemekvxzrrakwjxcxqsdasptruqmjtbaapgmkfnbwnlvzlxwdpzfjryanrmzmpzoefapmnsjdgecrdywsabctaegttffigupnwgakylngrrxurtotxqmzxvsqazajvrwsxyeyjteakeudzjxwbjvagnsjntskmocmpgkybqbnwvrwgoskzqkgffpsyhfmxhymqinrbohxlytsmoeleqrjvievpjipsgdkrqeuglrsjnmvdsihicsgkybcjltcswolpsfxdypmlbjotuxewskisnmczfgreuevnjssjifvlqlhkllifxrxkdbjlhcpegmtrelbosyajljvwwedtxbdccpnmreqaqjrxwulpunagwxesbilalrdniqbzxrbpcvmzpyqklsskpwctgqtrjwhrpisocwderqfiqxsdpkphjsapkvhvsqojyixaechvuoemmyqdlfkuzmlliugckuljfkljoshjhlvvlnywvjswvekfyqhjnsusefdtakejxbejrchoncklguqgnyrcslwztbstmycjziuskegagtlonducdogwbevugppsptdqbajmepmmizaycwcgmjeopbivsyphtvxvvgjbyxpgwpganjiaumojpyhhywosrmnouwpstgbrvhtlqcnmqbygbfnabesvshjmdbhyhirfrkqkmfwdgujhzyjdcbyuijjnkqluaczrnrbbwaeeupnwqzbsazplkyaxqorqsshhlljjlpphhedxdepgfgrqerpuhgmaawhnhqwsgnznrfmxjbdrkwjopylxezxgvetcvrwdewsxdeumhzfrvoilmvksuhyqltuimrnsphqslmgvmmojawwptghonigbdclqtbikiacwpjrbxhmzejozpypfixglatdvuogdoizdtsgsztsfcihtgwyqugeuahpuvvzmgarbsyuutmbxuisdfrvbxzxzhmuektssuktoknkfbmcwwubbnwenybmfqglaceuyqnoadzfenjcjfdlvcpiatuhjdujhaffqsvqvuxchgerokejovrqonxxstibunikiedfyahijobxyhimebctobsjudkqstbcxgixgrhpfiofpwruzvpqyjzvollheoldutddnksutjakhtghpxxnjykxjwgqmsvhnykclexepxqxqzghwfxfdhfmflesfabvanxlrurjtigkjotftqnwyskffpxlragrnfffawqtgyfpmzxfpkdpenxlewyxxgrkmwrmshhzfnorolyfxbvdrspxqnxnuoygkruczddgssygfymdcjgvdxutlrhffhnpyjuxmxefrelxezcgikdliyhvpocvvpkvagvmezrxffujeysplvavtjqjxsgujqsjznxforctwzecxyrkwufpdxadrgzczrnyelfschnagucguuqqqwitviynrypsrdswqxqsegulcwrwsjnihxedfcqychqumiscfkwmqqxunqrfbgqjdwmkyelbldxympctbzfupeocwhkypchuyvhybsbmvymjppfrqmlfrbkpjwpyyytytawuuyjrwxboogfessmltwdcssdqtwomymjskujjtmxiueopwacrwfuqazitvyhvlspvoaeipdsjhgyfjbxhityisidnhlksfznubucqxwaheamndjxmcxwufajmnveuwuoyosqnoqwvtjkwuhkzghvmjhawcfszbhzrbpgsidnbmxxihihnrfbamcyojqpkzodbejtmmipahojoysepzhpljpaugrghgjimtdahnpivdtlcnptnxjyiaafislqavamqgmxtdfoiaakorebqpbbpegawrqymqkewycsdjglkiwaacdqterkixkgraedtqirqmjtvsfhadhafktyrmkzmvidxmisfskvevpcnujqxrqedleuyowkjgphsxzzqlvujkwwgiodbfjesnbsbzcnftuzrvzjjudsgcqmmfpnmyrenuxotbbyvxyovzxgtcyzgqnsvcfhczoptnfnojnlinbfmylhdlijcvcxzjhdixuckaralemvsnbgooorayceuedtomzyjtctvtwgyiesxhynvogxnjdjphcftbefxgasawzagfugmuthjahylkhatlgpnkuksuesrduxkodwjzgubpsmzzmvkskzeglxaqrrvmrgcwcnvkhwzbibaxwnriowoavosminabvfxastkcrkdclgzjvqrjofjjvbyfragofeoazzeqljuypthkmywaffmcjkickqqsuhsviyovhitxeajqahshpejaqtcdkuvgdpclnsguabtgbfwdmrmbvydorfrbcokfdmtsgboidkpgpnmdeyhawkqqshtwxdbarwuxykgduxjlkxppwyruihkcqgynjcpbylayvgdqfpbqmshksyfbhrfxxemhgbkgmkhjtkzyzdqmxxwqvdtevyducpdksntgyaqtkrrkwiyuhukfadjvdnrievszilfinxbyrvknfihmetreydbcstkwoexwsfhfekfvfplmxszcosgovisnbemrjlndqwkvhqsofdbdychmupcsxvhazvrihhnxfyumonbvqeyoghccxfuwacxzxqkezxefxarnnujgyjugrzjoefmghjfhcrnbrtgouaehwnnxwkdplodpuqxdbemfwahptpfppjzowoltyqijfoabgzejerpatwponuefgdtcrgxswiddygeeflpjeelzccnsztxfyqhqyhkuppapvgvdtkmxraytcolbhkiiasaazkvqzvfxbaaxkoudovxrjkusxdazxaawmvoostlvvnsfbpjqkijvudpriqrfsrdfortimgdhtypunakzituezjyhbrpuksbamuiycngvlvpyvczfxvlwhjgicvempfobbwadkiavdswyuxdttoqaaykctprkwfmyeodowglzyjzuhencufcwdobydslazxadnftllhmjslfbrtdlahkgwlebdpdeofidldoymakfnpgekmsltcrrnxvspywfggjrmxryybdltmsfykstmlnzjitaipfoyohkmzimcozxardydxtpjgquoluzbznzqvlewtqyhryjldjoadgjlyfckzbnbootlzxhupieggntjxilcqxnocpyesnhjbauaxcvmkzusmodlyonoldequfunsbwudquaurogsiyhydswsimflrvfwruouskxjfzfynmrymyyqsvkajpnanvyepnzixyteyafnmwnbwmtojdpsucthxtopgpxgnsmnsrdhpskledapiricvdmtwaifrhnebzuttzckroywranbrvgmashxurelyrrbslxnmzyeowchwpjplrdnjlkfcoqdhheavbnhdlltjpahflwscafnnsspikuqszqpcdyfrkaabdigogatgiitadlinfyhgowjuvqlhrniuvrketfmboibttkgakohbmsvhigqztbvrsgxlnjndrqwmcdnntwofojpyrhamivfcdcotodwhvtuyyjlthbaxmrvfzxrhvzkydartfqbalxyjilepmemawjfxhzecyqcdswxxmaaxxyifmouauibstgpcfwgfmjlfhketkeshfcorqirmssfnbuqiqwqfhbmol"";[ ""toiscumkhociglkvispihvyoatxcx"", ""ndojyyephstlonsplrettspwepipw"", ""yzfkyoqlkrmmfirchzrphveuwmvga"", ""mxxihihnrfbamcyojqpkzodbejtmm"", ""fenjcjfdlvcpiatuhjdujhaffqsvq"", ""ehghndyqjodnnblfwmaygdstotfkv"", ""heoldutddnksutjakhtghpxxnjykx"", ""cvrwdewsxdeumhzfrvoilmvksuhyq"", ""ftqjvzyssocftjwemroghrncynmtc"", ""idiwclhuepgyynoslhzahtdqwlikt"", ""eurttrfrmstrbeokzhuzvbfmwywoh"", ""jxlluilzpysjcnwguyofnhfvhacez"", ""uskegagtlonducdogwbevugppsptd"", ""xmcxwufajmnveuwuoyosqnoqwvtjk"", ""wolpsfxdypmlbjotuxewskisnmczf"", ""fjryanrmzmpzoefapmnsjdgecrdyw"", ""jgmxawmndhsvwnjdjvjtxcsjapfog"", ""wuhkzghvmjhawcfszbhzrbpgsidnb"", ""yelbldxympctbzfupeocwhkypchuy"", ""vzduzxudwwqhpftwdspuimioanlzo"", ""bdpdeofidldoymakfnpgekmsltcrr"", ""fmyeodowglzyjzuhencufcwdobyds"", ""dhtypunakzituezjyhbrpuksbamui"", ""bdmiruibwznqcuczculujfiavzwyn"", ""eudzjxwbjvagnsjntskmocmpgkybq"", ""tuynydoakejmwkvojuwbfltqjfgxq"", ""psrdswqxqsegulcwrwsjnihxedfcq"", ""cokfdmtsgboidkpgpnmdeyhawkqqs"", ""fujhvgzdussqbwynylzvtjapvqtid"", ""rqeuglrsjnmvdsihicsgkybcjltcs"", ""vhybsbmvymjppfrqmlfrbkpjwpyyy"", ""aukagphzycvjtvwdhhxzagkevvucc"", ""hwkduzbxpdhtpvrzrfjndmsqfizmq"", ""ywnuzzmxeppokxksrfwrpuzqhjgqr"", ""qbajmepmmizaycwcgmjeopbivsyph"", ""uamscbxnqnfmmjyehvidnoimmxmtc"", ""nxvspywfggjrmxryybdltmsfykstm"", ""amrjbrsiovrxmqsyxhqmritjeauwq"", ""yorwboxdauhrkxehiwaputeouwxdf"", ""qkewycsdjglkiwaacdqterkixkgra"", ""ycngvlvpyvczfxvlwhjgicvempfob"", ""jgphsxzzqlvujkwwgiodbfjesnbsb"", ""mkxhemwbbclwdxwgngicplzgajmar"", ""mryvkeevlthvflsvognbxfjilwkdn"", ""mezrxffujeysplvavtjqjxsgujqsj"", ""rtotxqmzxvsqazajvrwsxyeyjteak"", ""sabctaegttffigupnwgakylngrrxu"", ""xccuoccdkbboymjtimdrmerspxpkt"", ""xusnnvngksbjabqjaohdvrniezhmx"", ""oyuejenqgjheulkxjnqkwvzznricl"", ""mxszcosgovisnbemrjlndqwkvhqso"", ""wsgnznrfmxjbdrkwjopylxezxgvet"", ""dxmisfskvevpcnujqxrqedleuyowk"", ""dhrgijeplijcvqbormrqglgmzsprt"", ""vuxchgerokejovrqonxxstibuniki"", ""lumyzmnzjzhzfpslwsukykwckvkts"", ""inwkbqmcobubjjpshucechrqrffqs"", ""ywtxruxokcubekzcrqengviwbtgnz"", ""ccpnmreqaqjrxwulpunagwxesbila"", ""pesxtpypenunfpjuyoevzztctecil"", ""sygfymdcjgvdxutlrhffhnpyjuxmx"", ""uisdfrvbxzxzhmuektssuktoknkfb"", ""cejvgynwouzhtfwuuukdbwpmkjrqx"", ""oudcoagcxjcuqvenznxxnprgvhasf"", ""sxnlkwgpbznzszyudpwrlgrdgwdyh"", ""qqbxkaqcyhiobvtqgqruumvvhxolb"", ""mkhleanvfpemuublnnyzfabtxsest"", ""bibaxwnriowoavosminabvfxastkc"", ""bcxgixgrhpfiofpwruzvpqyjzvoll"", ""lzccnsztxfyqhqyhkuppapvgvdtkm"", ""pdjkpshvrmqlhindhabubyokzdfrw"", ""qbbnhwpdokcpfpxinlfmkfrfqrtzk"", ""rnyelfschnagucguuqqqwitviynry"", ""qtrjwhrpisocwderqfiqxsdpkphjs"", ""vxttqosgpplkmxwgmsgtpantazppg"", ""tyisidnhlksfznubucqxwaheamndj"", ""kgaqzsckonjuhxdhqztjfxstjvikd"", ""jeuslzsdwvuoodipdpnlhdihaywzm"", ""vdzrwwkqvacxwgdhffyvjldgvchoi"", ""cftbefxgasawzagfugmuthjahylkh"", ""xraytcolbhkiiasaazkvqzvfxbaax"", ""oyqtzozufvvlktnvahvsseymtpeyf"", ""rnnujgyjugrzjoefmghjfhcrnbrtg"", ""rfzvgvptbgpwajgtysligupoqeoqx"", ""igbdclqtbikiacwpjrbxhmzejozpy"", ""dyzwwxgdbeqwlldyezmkopktzugxg"", ""hmetreydbcstkwoexwsfhfekfvfpl"", ""zcnftuzrvzjjudsgcqmmfpnmyrenu"", ""zzmvkskzeglxaqrrvmrgcwcnvkhwz"", ""vjswvekfyqhjnsusefdtakejxbejr"", ""rwwzwbcjwiqzkwzfuxfclmsxpdyvf"", ""fdbdychmupcsxvhazvrihhnxfyumo"", ""vdtevyducpdksntgyaqtkrrkwiyuh"", ""nbvqeyoghccxfuwacxzxqkezxefxa"", ""vpgbefpqpsjmdecmixmmbsjxzwvjd"", ""jwgqmsvhnykclexepxqxqzghwfxfd"", ""olyfxbvdrspxqnxnuoygkruczddgs"", ""qgmxtdfoiaakorebqpbbpegawrqym"", ""liaivbhcgvjjnxpggrewglalthmzv"", ""choncklguqgnyrcslwztbstmycjzi"", ""fpkdpenxlewyxxgrkmwrmshhzfnor"", ""hhhcaqxbqpthuaafwgrouaxonzocl"", ""ipahojoysepzhpljpaugrghgjimtd"", ""wosrmnouwpstgbrvhtlqcnmqbygbf"", ""nwyskffpxlragrnfffawqtgyfpmzx"", ""bcvvadhnssbvneecglnqxhavhvxpk"", ""hoavxqksjreddpmibbodtbhzfehgl"", ""lazxadnftllhmjslfbrtdlahkgwle"", ""uuukupjmbbvshzxyniaowdjamlfss"", ""tpqtazbphmfoluliznftodyguessh"", ""ychqumiscfkwmqqxunqrfbgqjdwmk"", ""rkdclgzjvqrjofjjvbyfragofeoaz"", ""pphhedxdepgfgrqerpuhgmaawhnhq"", ""cacrsvutylalqrykehjuofisdookj"", ""kyldfriuvjranikluqtjjcoiqffdx"", ""bnwvrwgoskzqkgffpsyhfmxhymqin"", ""uzmlliugckuljfkljoshjhlvvlnyw"", ""abfxqbdqnexvwsvzvcsbrmkbkuzsd"", ""xotbbyvxyovzxgtcyzgqnsvcfhczo"", ""bwtpqcqhvyyssvfknfhxvtodpzipu"", ""nsfbpjqkijvudpriqrfsrdfortimg"", ""tgwyqugeuahpuvvzmgarbsyuutmbx"", ""upnwqzbsazplkyaxqorqsshhlljjl"", ""edfyahijobxyhimebctobsjudkqst"", ""ialhfmgjohzoxvdaxuywfqrgmyahh"", ""jlhcpegmtrelbosyajljvwwedtxbd"", ""tpfppjzowoltyqijfoabgzejerpat"", ""mgogyhzpmsdemugqkspsmoppwbnwa"", ""nubmpwcdqkvhwfuvcahwibniohiqy"", ""ukfadjvdnrievszilfinxbyrvknfi"", ""dgnepdiimmkcxhattwglbkicvsfsw"", ""syqxmarjkshjhxobandwyzggjibjg"", ""bnwxjytnaejivivriamhgqsskqhnq"", ""hzyjdcbyuijjnkqluaczrnrbbwaee"", ""yscnqoohcsxenypyqhfklloudgmkl"", ""habidqszhxorzfypcjcnopzwigmbz"", ""wjdqxdrlsqvsxwxpqkljeyjpulbsw"", ""tytawuuyjrwxboogfessmltwdcssd"", ""pfixglatdvuogdoizdtsgsztsfcih"", ""apkvhvsqojyixaechvuoemmyqdlfk"", ""ouaehwnnxwkdplodpuqxdbemfwahp"", ""ixuckaralemvsnbgooorayceuedto"", ""ymxdjrqikughquwtenyucjdgrmipi"", ""smrwrlkvpnhqrvpdekmtpdfuxzjwp"", ""bhjakgajafgzxpqckmhdbbnqmcszp"", ""beqsmluixgsliatukrecgoldmzfhw"", ""greuevnjssjifvlqlhkllifxrxkdb"", ""yzsqcrdchhdqprtkkjsccowrjtyjj"", ""sviyovhitxeajqahshpejaqtcdkuv"", ""qtwomymjskujjtmxiueopwacrwfuq"", ""mzyjtctvtwgyiesxhynvogxnjdjph"", ""dyfbxcaypyquodcpwxkstbthuvjqg"", ""hfmflesfabvanxlrurjtigkjotftq"", ""mxydechlraajjmoqpcyoqmrjwoium"", ""nabesvshjmdbhyhirfrkqkmfwdguj"", ""bhrfxxemhgbkgmkhjtkzyzdqmxxwq"", ""gziobrjeanlvyukwlscexbkibvdjh"", ""mcwwubbnwenybmfqglaceuyqnoadz"", ""xyzvyblypeongzrttvwqzmrccwkzi"", ""ncfalqenfcswgerbfcqsapzdtscnz"", ""dtqpezboimeuyyujfjxkdmbjpizpq"", ""wmuhplfueqnvnhukgjarxlxvwmriq"", ""qwapdkoqswyclqyvbvpedzyoyedvu"", ""uoqbztnftzgahhxwxbgkilnmzfydy"", ""zsddaahohbszhqxxgripqlwlomjbw"", ""bwadkiavdswyuxdttoqaaykctprkw"", ""eixdbntdfcaeatyyainfpkclbgaaq"", ""nmjnpttflsmjifknezrneedvgzfmn"", ""avlzyhfmeasmgrjawongccgfbgoua"", ""kklimhhjqkmuaifnodtpredhqygme"", ""xzbwenvteifxuuefnimnadwxhruvo"", ""ugmwlmidtxkvqhbuaecevwhmwkfqm"", ""rhpyjfxbjjryslfpqoiphrwfjqqha"", ""eeaipxrokncholathupdetgaktmvm"", ""ltuimrnsphqslmgvmmojawwptghon"", ""azitvyhvlspvoaeipdsjhgyfjbxhi"", ""efrelxezcgikdliyhvpocvvpkvagv"", ""znxforctwzecxyrkwufpdxadrgzcz"", ""kcqgynjcpbylayvgdqfpbqmshksyf"", ""hrljvedsywrlyccpaowjaqyfaqioe"", ""cjmfyvfybxiuqtkdlzqedjxxbvdsf"", ""zeqljuypthkmywaffmcjkickqqsuh"", ""wnfzoyvkiogisdfyjmfomcazigukq"", ""zyaaqxorqxbkenscbveqbaociwmqx"", ""ahnpivdtlcnptnxjyiaafislqavam"", ""edtqirqmjtvsfhadhafktyrmkzmvi"", ""wponuefgdtcrgxswiddygeeflpjee"", ""xozgwhtbhlkvrzismnozqpfthajaf"", ""ptnfnojnlinbfmylhdlijcvcxzjhd"", ""uxekzlgigjpsukjvsdihrjzgovnre"", ""rbohxlytsmoeleqrjvievpjipsgdk"", ""fxtzaxpcfrcovwgrcwqptoekhmgpo"", ""tvxvvgjbyxpgwpganjiaumojpyhhy"", ""vqjjhfaupylefbvbsbhdncsshmrhx"", ""urhedneauccrkyjfiptjfxmpxlssr"", ""ltvgknnlodtbhnbhjkmuhwxvzgmkh"", ""ucztsneqttsuirmjriohhgunzatyf"", ""rbzryfaeuqkfxrbldyusoeoldpbwa"", ""atlgpnkuksuesrduxkodwjzgubpsm"", ""lrdniqbzxrbpcvmzpyqklsskpwctg"", ""qvnvgzkyhistydagsgnujiviyijdn"", ""uzatydzcnktnkeyztoqvogodxxznh"", ""ocbvphmtpwhcgjbnmxgidtlqcnnwt"", ""koudovxrjkusxdazxaawmvoostlvv"", ""ptruqmjtbaapgmkfnbwnlvzlxwdpz"", ""xdxtpbpoemekvxzrrakwjxcxqsdas"", ""gdpclnsguabtgbfwdmrmbvydorfrb"", ""htwxdbarwuxykgduxjlkxppwyruih"" ];[373]
+""a"";[""a""];[0]
+""aaaaa"";[""aa""];[0, 1, 2, 3]
+"""";[""aa""];[]
+""aaa"";[];[]
+""cabba"";[""a"", ""b""];[3, 1]
+"
+"Longest Valid Parentheses"	"Time : O(N); Space: O(N)
+ 
+Description: 
+Given a string containing just the characters '(' and ')', find the 
+length of the longest valid (well-formed) parentheses substring. 
+For ""(()"", the longest valid parentheses substring is ""()"", 
+which has length = 2. 
+Another example is "")()())"", where the longest valid parentheses 
+substring is ""()()"", which has length = 4.
+ 
+{@link https://leetcode.com/problems/longest-valid-parentheses/ }"	"longestValidParentheses"	"### Java
+```java
+public class Solution {
+
+    // dynamic programming version
+    public int longestValidParentheses(String s) {
+        int len = s.length();
+        if (len <= 1) {
+            return 0;
+        }
+        int result = 0;
+        int local = 0;
+
+        // longest[i] = longest valid parentheses ending at s[i - 1]
+        int[] longest = new int[len + 1];
+        longest[0] = 0;
+
+        int lefts = 0;
+
+        for (int i = 0; i < len; i++) {
+            if (s.charAt(i) == '(') {
+                lefts++;
+                local = 0;
+                longest[i + 1] = 0;
+            } else if (lefts > 0) {
+                // ch == ')' and has open bracket for matching
+                lefts--;
+                // 2 for matching
+                local = 2 + local + longest[i + 1 - local - 2];
+                longest[i + 1] = local;
+
+                // update global optimization
+                result = Math.max(result, local);
+            }
+        }
+
+        return result;
+    }
+}
+```"	"string[s];int
+"""";0
+""(()"";2
+"")()())"";4
+""(())()"";6
+""()(()"";2
+"
+"Search In Rotated Sorted Array"	"Time : O(lgN); Space: O(1)
+ 
+Description: 
+Suppose a sorted array is rotated at some pivot unknown to you beforehand. 
+(i.e., 0 1 2 4 5 6 7 might become 4 5 6 7 0 1 2). 
+You are given a target value to search. If found in the array return 
+its index, otherwise return -1. 
+You may assume no duplicate exists in the array.
+ 
+{@link https://leetcode.com/problems/search-in-rotated-sorted-array/ }"	"search"	"### Java
+```java
+public class Solution {
+
+    public int search(int[] nums, int target) {
+        int len = nums.length;
+        if (len == 0) {
+            return -1;
+        }
+        int left = 0;
+        int right = len - 1;
+        while (left <= right) {
+            int mid = (right - left) / 2 + left;
+            if (nums[mid] == target) {
+                // found target
+                return mid;
+            } else if (nums[mid] < nums[right]) {
+                // nums[mid : right] is sorted
+                if (nums[mid] < target && target <= nums[right]) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            } else {
+                // find part target in nums[left : mid] is sorted
+                if (nums[left] <= target && target < nums[mid]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            }
+        }
+        return -1;
+    }
+}
+```"	"array(int)[nums];int[target];int
+[4, 5, 6, 7, 0, 1, 2];2;6
+[4, 5, 6, 7, 0, 1, 2];0;4
+[4, 5, 6, 7, 0, 1, 2];4;0
+[4, 5, 6, 7, 0, 1, 2];7;3
+[4, 5, 6, 7, 0, 1, 2];1;5
+[1, 2, 3];1;0
+[1, 2, 3];2;1
+[1, 2, 3];3;2
+[6, 4, 5];6;0
+[6, 4, 5];4;1
+[6, 4, 5];5;2
+[6, 4, 5];8;-1
+[6, 4, 5];3;-1
+[180, 181, 182, 183, 184, 187, 188, 189, 191, 192, 193, 194, 195, 196, 201, 202, 203, 204, 3, 4, 5, 6, 7, 8, 9, 10, 14, 16, 17, 18, 19, 23, 26, 27, 28, 29, 32, 33, 36, 37, 38, 39, 41, 42, 43, 45, 48, 51, 52, 53, 54, 56, 62, 63, 64, 67, 69, 72, 73, 75, 77, 78, 79, 83, 85, 87, 90, 91, 92, 93, 96, 98, 99, 101, 102, 104, 105, 106, 107, 108, 109, 111, 113, 115, 116, 118, 119, 120, 122, 123, 124, 126, 127, 129, 130, 135, 137, 138, 139, 143, 144, 145, 147, 149, 152, 155, 156, 160, 162, 163, 164, 166, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177];42;43
+[101, 103, 106, 109, 158, 164, 182, 187, 202, 205, 2, 3, 32, 57, 69, 74, 81, 99, 100];202;8
+[4, 5, 6, 7, 8, 1, 2, 3];8;4
+"
+"Sudoku Solver"	"Time : O(); Space: O()
+ 
+Description: 
+Write a program to solve a Sudoku puzzle by filling the empty cells. 
+Empty cells are indicated by the character '.'. 
+You may assume that there will be only one unique solution.
+ 
+{@link https://leetcode.com/problems/sudoku-solver/ }"	"solveSudoku"	"### Java
+```java
+public class Solution {
+
+    private int[][] rows = new int[9][9];
+    private int[][] cols = new int[9][9];
+    private int[][] cells = new int[9][9];
+
+    public String[][] solveSudoku(String[][] board) {
+        // process current board
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                char ch = board[i][j].charAt(0);
+                if (ch != '.') {
+                    int digitIndex = ch - '1';
+                    rows[i][digitIndex] = 1;
+                    cols[j][digitIndex] = 1;
+                    cells[i / 3 * 3 + j / 3][digitIndex] = 1;
+                }
+            }
+        }
+        // solve sudoku
+        solveSudoku(board, 0);
+        return board;
+    }
+
+    public boolean solveSudoku(String[][] board, int pos) {
+        if (pos >= 81) {
+            // board slots are filled
+            return true;
+        }
+        int row = pos / 9;
+        int col = pos % 9;
+        if (!board[row][col].equals(""."")) {
+            // try next position
+            return solveSudoku(board, pos + 1);
+        } else {
+            // try to fill a number here
+            for (char digit = '1'; digit <= '9'; digit++) {
+                if (isBoardOk(board, row, col, digit)) {
+                    int digitIndex = digit - '1';
+
+                    // fill this number and update
+                    board[row][col] = String.valueOf(digit);
+                    rows[row][digitIndex] = 1;
+                    cols[col][digitIndex] = 1;
+                    cells[row / 3 * 3 + col / 3][digitIndex] = 1;
+
+                    // try next position
+                    if (solveSudoku(board, pos + 1)) {
+                        return true;
+                    }
+
+                    // restore
+                    board[row][col] = ""."";
+                    rows[row][digitIndex] = 0;
+                    cols[col][digitIndex] = 0;
+                    cells[row / 3 * 3 + col / 3][digitIndex] = 0;
+
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isBoardOk(String[][] board, int row, int col, char digit) {
+        int digitIndex = digit - '1';
+        return rows[row][digitIndex] == 0 && cols[col][digitIndex] == 0
+                && cells[row / 3 * 3 + col / 3][digitIndex] == 0;
+    }
+}
+```"	"array(array(string))[board];array(array(string))
+[[""5"", ""3"", ""."", ""."", ""7"", ""."", ""."", ""."", "".""], [""6"", ""."", ""."", ""1"", ""9"", ""5"", ""."", ""."", "".""], [""."", ""9"", ""8"", ""."", ""."", ""."", ""."", ""6"", "".""], [""8"", ""."", ""."", ""."", ""6"", ""."", ""."", ""."", ""3""], [""4"", ""."", ""."", ""8"", ""."", ""3"", ""."", ""."", ""1""], [""7"", ""."", ""."", ""."", ""2"", ""."", ""."", ""."", ""6""], [""."", ""6"", ""."", ""."", ""."", ""."", ""2"", ""8"", "".""], [""."", ""."", ""."", ""4"", ""1"", ""9"", ""."", ""."", ""5""], [""."", ""."", ""."", ""."", ""8"", ""."", ""."", ""7"", ""9""]];[[""5"", ""3"", ""4"", ""6"", ""7"", ""8"", ""9"", ""1"", ""2""], [""6"", ""7"", ""2"", ""1"", ""9"", ""5"", ""3"", ""4"", ""8""], [""1"", ""9"", ""8"", ""3"", ""4"", ""2"", ""5"", ""6"", ""7""], [""8"", ""5"", ""9"", ""7"", ""6"", ""1"", ""4"", ""2"", ""3""], [""4"", ""2"", ""6"", ""8"", ""5"", ""3"", ""7"", ""9"", ""1""], [""7"", ""1"", ""3"", ""9"", ""2"", ""4"", ""8"", ""5"", ""6""], [""9"", ""6"", ""1"", ""5"", ""3"", ""7"", ""2"", ""8"", ""4""], [""2"", ""8"", ""7"", ""4"", ""1"", ""9"", ""6"", ""3"", ""5""], [""3"", ""4"", ""5"", ""2"", ""8"", ""6"", ""1"", ""7"", ""9""]]
+"
+"First Missing Positive"	"Time : O(N) ; Space: O(1)
+ 
+Description: 
+Given an unsorted integer array, find the first missing positive integer. 
+For example, Given [1,2,0] return 3, 
+and [3,4,-1,1] return 2. 
+Your algorithm should run in O(n) time and uses constant space.
+ 
+{@link https://leetcode.com/problems/first-missing-positive/ }"	"firstMissingPositive"	"### Java
+```java
+public class Solution {
+
+    public int firstMissingPositive(int[] nums) {
+        for (int i = 0; i < nums.length; i++) {
+            // TODO: make sure index within boundary
+            while (nums[i] >= 1 && nums[i] - 1 < nums.length && i < nums.length
+                    && nums[nums[i] - 1] != nums[i]) {
+                int n = nums[nums[i] - 1];
+                nums[nums[i] - 1] = nums[i];
+                nums[i] = n;
+            }
+        }
+        // find first missing number
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return nums.length + 1;
+    }
+}
+```"	"array(int)[nums];int
+[ 1, 2, 0 ];3
+[ 3, 4, -1, 1 ];2
+[ -1, -3 ];1
+[ 5, 4, 3, 2 ];1
+[ 2 ];1
+[ 1 ];2
+[ 417, 929, 845, 462, 675, 175, 73, 867, 14, 201, 777, 407, 80, 882, 785, 563, 209, 261, 776, 362, 730, 74, 649, 465, 353, 801, 503, 154, 998, 286, 520, 692, 68, 805, 835, 210, 819, 341, 564, 215, 984, 643, 381, 793, 726, 213, 866, 706, 97, 538, 308, 797, 883, 59, 328, 743, 694, 607, 729, 821, 32, 672, 130, 13, 76, 724, 384, 444, 884, 192, 917, 75, 551, 96, 418, 840, 235, 433, 290, 954, 549, 950, 21, 711, 781, 132, 296, 44, 439, 164, 401, 505, 923, 136, 317, 548, 787, 224, 23, 185, 6, 350, 822, 457, 489, 133, 31, 830, 386, 671, 999, 255, 222, 944, 952, 637, 523, 494, 916, 95, 734, 908, 90, 541, 470, 941, 876, 264, 880, 761, 535, 738, 128, 772, 39, 553, 656, 603, 868, 292, 117, 966, 259, 619, 836, 818, 493, 592, 380, 500, 599, 839, 268, 67, 591, 126, 773, 635, 800, 842, 536, 668, 896, 260, 664, 506, 280, 435, 618, 398, 533, 647, 373, 713, 745, 478, 129, 844, 640, 886, 972, 62, 636, 79, 600, 263, 52, 719, 665, 376, 351, 623, 276, 66, 316, 813, 663, 831, 160, 237, 567, 928, 543, 508, 638, 487, 234, 997, 307, 480, 620, 890, 216, 147, 271, 989, 872, 994, 488, 291, 331, 8, 769, 481, 924, 166, 89, 824, -4, 590, 416, 17, 814, 728, 18, 673, 662, 410, 727, 667, 631, 660, 625, 683, 33, 436, 930, 91, 141, 948, 138, 113, 253, 56, 432, 744, 302, 211, 262, 968, 945, 396, 240, 594, 684, 958, 343, 879, 155, 395, 288, 550, 482, 557, 826, 598, 795, 914, 892, 690, 964, 981, 150, 179, 515, 205, 265, 823, 799, 190, 236, 24, 498, 229, 420, 753, 936, 191, 366, 935, 434, 311, 920, 167, 817, 220, 219, 741, -2, 674, 330, 909, 162, 443, 412, 974, 294, 864, 971, 760, 225, 681, 689, 608, 931, 427, 687, 466, 894, 303, 390, 242, 339, 252, 20, 218, 499, 232, 184, 490, 4, 957, 597, 477, 354, 677, 691, 25, 580, 897, 542, 186, 359, 346, 409, 655, 979, 853, 411, 344, 358, 559, 765, 383, 484, 181, 82, 514, 582, 593, 77, 228, 921, 348, 453, 274, 449, 106, 657, 783, 782, 811, 333, 305, 784, 581, 746, 858, 249, 479, 652, 270, 429, 614, 903, 102, 378, 575, 119, 196, 12, 990, 356, 277, 169, 70, 518, 282, 676, 137, 622, 616, 357, 913, 161, 3, 589, 327 ];1
+[1, 2, 1];3
+"
+"Trapping Rain Water"	"Time : O(N); Space: O(1)
+ 
+Description: 
+Given n non-negative integers representing an elevation map where the 
+width of each bar is 1, compute how much water it is able to trap after raining. 
+For example, 
+Given [0,1,0,2,1,0,1,3,2,1,2,1], return 6.
+ 
+{@link https://leetcode.com/problems/trapping-rain-water/ }"	"trap"	"### Java
+```java
+public class Solution {
+
+    public int trap(int[] height) {
+
+        int left = 0;
+        int right = height.length - 1;
+
+        int leftBarrier = 0;
+        int rightBarrier = 0;
+        int result = 0;
+
+        while (left <= right) {
+            if (leftBarrier <= rightBarrier) {
+                // there could be a basin between leftBarrier and rightBarrier
+                // and left side is lower one
+                if (height[left] > leftBarrier) {
+                    // update left barrier
+                    leftBarrier = height[left];
+                } else {
+                    result += leftBarrier - height[left];
+                }
+                left++;
+            } else {
+                if (height[right] > rightBarrier) {
+                    // update right barrier
+                    rightBarrier = height[right];
+                } else {
+                    result += rightBarrier - height[right];
+                }
+                right--;
+            }
+        }
+        return result;
+    }
+}
+```"	"array(int)[height];int
+[ 0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1 ];6
+[ 0, 1, 3, 4, 5 ];0
+[ 5, 4, 3, 2, 1 ];0
+[ 5, 2, 3, 2, 4 ];5
+[ 8, 71, 58, 31, 89, 18, 67, 35, 53, 100, 42, 11, 64, 98, 55, 4, 8, 62, 75, 15, 65, 90, 0, 94, 53, 46, 38, 47, 41, 54, 36, 93, 60, 77, 72, 35, 96, 100, 94, 53, 12, 57, 41, 83, 12, 9, 72, 66, 90, 19, 12, 8, 14, 41, 89, 84, 31, 28, 95, 11, 99, 44, 89, 68, 60, 73, 55, 87, 25, 61, 30, 65, 71, 5, 9, 14, 74, 23, 58, 69, 36, 14, 84, 82, 36, 11, 83, 50, 61, 45, 84, 30, 40, 0, 99, 42, 85, 7, 63, 96, 62, 44, 92, 73, 0, 40, 96, 24, 82, 95, 83, 72, 51, 13, 53, 25, 90, 33, 51, 22, 38, 43, 25, 10, 36, 87, 74, 84, 79, 11, 47, 75, 11, 47, 34, 30, 89, 55, 42, 82, 71, 50, 89, 27, 64, 52, 59, 5, 35, 88, 0, 62, 15, 39, 34, 17, 87, 55, 44, 82, 85, 100, 19, 85, 61, 10, 75, 38, 6, 26, 66, 29, 26, 63, 58, 84, 91, 45, 86, 28, 85, 63, 10, 56, 70, 97, 57, 64, 3, 2, 41, 98, 5, 6, 3, 93, 3, 21, 64, 49, 93, 18, 68, 63, 63, 81, 58, 20, 26, 32, 12, 31, 14, 100, 7, 80, 15, 47, 95, 53, 86, 57, 74, 11, 30, 86, 87, 76, 15, 9, 94, 20, 31, 56, 79, 82, 55, 99, 22, 64, 56, 85, 32, 38, 97, 23, 80, 94, 45, 90, 62, 92, 37, 29, 6, 65, 45, 21, 26, 45, 37, 0, 95, 76, 81, 13, 63, 42, 36, 77, 78, 68, 64, 14, 10, 43, 21, 69, 23, 22, 55, 88, 16, 4, 55, 2, 36, 31, 32, 6, 15, 21, 53, 70, 44, 42, 56, 92, 37, 94, 89, 40, 57, 27, 63, 47, 74, 4, 13, 53, 97, 50, 49, 12, 56, 83, 29, 91, 48, 89, 20, 39, 85, 59, 58, 35, 51, 9, 62, 41, 5, 3, 47, 7, 78, 34, 5, 69, 66, 17, 27, 5, 59, 10, 39, 21, 7, 97, 50, 71, 73, 90, 59, 43, 71, 71, 19, 11, 79, 20, 96, 25, 15, 24, 94, 81, 20, 52, 72, 96, 57, 55, 11, 73, 39, 55, 18, 6, 86, 40, 89, 80, 85, 99, 66, 64, 73, 0, 79, 57, 16, 32, 10, 32, 12, 7, 90, 70, 92, 95, 6, 39, 46, 52, 11, 94, 3, 37, 47, 33, 81, 78, 40, 83, 84, 26, 5, 16, 0, 39, 95, 61, 4, 61, 63, 49, 71, 47, 30, 21, 53, 13, 63, 55, 24, 0, 45, 90, 6, 37, 34, 62, 6, 53, 79, 51, 30, 98, 0, 30, 74, 26, 16, 65, 79, 80, 4, 78, 32, 43, 80, 39, 28, 95, 84, 55, 73, 55, 84, 96, 34, 100, 14, 48, 61, 59, 32, 31, 27, 31, 57, 82, 3, 1, 72, 19, 64, 30, 89, 31, 88, 32, 44, 5, 20, 38, 29, 81, 60, 53, 14, 22, 14, 14, 94, 16, 76, 57, 31, 59, 85, 71, 90, 36, 88, 75, 37, 46, 66, 2, 12, 70, 88, 93, 96, 99, 37, 61, 53, 93, 50, 89, 11 ];26197
+"
+"Wildcard Matching"	"Time : O(N); Space : O(1)
+ 
+Description: 
+Implement wildcard pattern matching with support for '?' and ''. 
+'?' Matches any single character. 
+'' Matches any sequence of characters (including the empty sequence). 
+The matching should cover the entire input string (not partial). 
+The function prototype should be: 
+bool isMatch(const char s, const char p) 
+Some examples: 
+ isMatch(""aa"",""a"") → false 
+ isMatch(""aa"",""aa"") → true 
+ isMatch(""aaa"",""aa"") → false 
+ isMatch(""aa"", """") → true 
+ isMatch(""aa"", ""a"") → true 
+ isMatch(""ab"", ""?"") → true 
+ isMatch(""aab"", ""cab"") → false
+ 
+{@link https://leetcode.com/problems/wildcard-matching/ }"	"isMatch"	"### Java
+```java
+public class Solution {
+    
+    public boolean isMatch(String s, String p) {
+        int sLen = s.length();
+        int pLen = p.length();
+        int sIndex = 0;
+        int pIndex = 0;
+        int index = 0;
+        int startIndex = -1;
+        while (sIndex < sLen) {
+            if (pIndex < pLen && (p.charAt(pIndex) == '?' || s.charAt(sIndex) == p.charAt(pIndex))) {
+                // advance index on s and p together
+                sIndex++;
+                pIndex++;
+            } else if (pIndex < pLen && p.charAt(pIndex) == '*') {
+                // 
+                startIndex = pIndex;
+                index = sIndex;
+                pIndex++;
+            } else if (startIndex != -1) {
+                // 
+                pIndex = startIndex + 1;
+                index++;
+                sIndex = index;
+            } else {
+                return false;
+            }
+        }
+        while (pIndex < pLen && p.charAt(pIndex) == '*') {
+            pIndex++;
+        }
+        return pIndex == pLen;
+    }
+}
+```"	"string[a];string[b];bool
+""aa"";""a"";false
+""aa"";""aa"";true
+""aaa"";""aa"";false
+""aa"";""a*"";true
+""aa"";""?*"";true
+""ab"";""?*"";true
+""aab"";""c*a*b"";false
+""aaa"";""a?a"";true
+""aaa"";""ab*ac*a"";false
+""aab"";""a*b"";true
+""adcab"";""*a*b"";true
+"""";""*"";true
+""b"";""?*?"";false
+"""";""*?"";false
+"""";""?"";false
+""abbabbbaabaaabbbbbabbabbabbbabbaaabbbababbabaaabbab"";""*aabb***aa**a******aa*"";true
+""aaabbbaabaaaaababaabaaabbabbbbbbbbaabababbabbbaaaaba"";""a*******b"";false
+""aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"";""aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"";false
+"
+"Jump Game I I"	"Time : O(N) ; Space: O(1)
+ 
+Description:
+Given an array of non-negative integers, you are initially positioned 
+at the first index of the array. 
+Each element in the array represents your maximum jump length at that position. 
+Your goal is to reach the last index in the minimum number of jumps. 
+For example: Given array A = [2,3,1,1,4] 
+The minimum number of jumps to reach the last index is 2. (Jump 1 step 
+from index 0 to 1, then 3 steps to the last index.)
+ 
+{@link https://leetcode.com/problems/jump-game-ii/ }"	"jump"	"### Java
+```java
+public class Solution {
+
+    public int jump(int[] A) {
+        if (A == null || A.length == 0) {
+            return -1;
+        }
+        int start = 0, end = 0, jumps = 0;
+        while (end < A.length - 1) {
+            jumps++;
+            int farthest = end;
+            for (int i = start; i <= end; i++) {
+                if (A[i] + i > farthest) {
+                    farthest = A[i] + i;
+                }
+            }
+            start = end + 1;
+            end = farthest;
+        }
+        return jumps;
+    }
+}
+```"	"array(int)[A];int
+[2, 3, 1, 1, 4];2
+[2, 1];1
+"
+"Permutations I I"	"Time : O(N!); Space: O(N!)
+ 
+Description: 
+Given a collection of numbers that might contain duplicates, return all 
+possible unique subs. 
+For example, 
+[1,1,2] have the following unique subs: 
+[1,1,2], [1,2,1], and [2,1,1].
+ 
+{@link https://leetcode.com/problems/subs-ii/ }
+P.S.: cannot skip duplicates using while (nums[i] == duplicate) because
+after swapping, duplicates may be separated (one duplicate is swapped with
+and goes to somewhere else disconnected with other duplicates)"	"permuteUnique"	"### Java
+```java
+public class Solution {
+
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        List<List<Integer>> result = new ArrayList<List<Integer>>();
+        if (nums.length == 0) {
+            return result;
+        }
+        Arrays.sort(nums);
+        int index = 0;
+        List<Integer> sub = new ArrayList<Integer>();
+        permuteUnique(nums, index, sub, result);
+        return result;
+    }
+
+    private void permuteUnique(int[] nums, int index, List<Integer> sub,
+            List<List<Integer>> result) {
+        // base case
+        if (index == nums.length) {
+            // one valid sub found
+            result.add(sub);
+            return;
+        }
+
+        // recursive case
+        // either use set or sort nums[index]:nums[end] to avoid duplicates
+        Set<Integer> appearred = new HashSet<Integer>();
+        for (int i = index; i < nums.length; i++) {
+            if (appearred.contains(nums[i])) {
+                // duplicates appear
+                continue;
+            }
+            appearred.add(nums[i]);
+            // swap nums[i] with nums[index]
+            swap(nums, i, index);
+
+            // go on searching
+            List<Integer> copy = new ArrayList<Integer>(sub);
+            copy.add(nums[index]);
+            permuteUnique(nums, index + 1, copy, result);
+
+            // swap back nums[i] with nums[index]
+            swap(nums, index, i);
+
+        }
+    }
+
+    // swap two numbers in an array
+    private void swap(int[] nums, int i, int index) {
+        if (i < nums.length && index < nums.length) {
+            int temp = nums[i];
+            nums[i] = nums[index];
+            nums[index] = temp;
+        }
+    }
+}
+```"	"array(int)[nums];list(list(int))
+[1, 1, 2];[[1, 1, 2], [1, 2, 1], [2, 1, 1]]
+[1, 2, 3];[[1, 2, 3], [1, 3, 2], [2, 1, 3], [2, 3, 1], [3, 1, 2], [3, 2, 1]]
+[1];[[1]]
+[1, 1, 1, 1];[[1, 1, 1, 1]]
+[1, 2, 1];[[1, 1, 2], [1, 2, 1], [2, 1, 1]]
+[];[]
+[0, 1, 0, 9];[[0, 0, 1, 9], [0, 0, 9, 1], [0, 1, 0, 9], [0, 1, 9, 0], [0, 9, 0, 1], [0, 9, 1, 0], [1, 0, 0, 9], [1, 0, 9, 0], [1, 9, 0, 0], [9, 0, 0, 1], [9, 0, 1, 0], [9, 1, 0, 0]]
+[0, 1, 0, 0, 9];[[0, 0, 0, 1, 9], [0, 0, 0, 9, 1], [0, 0, 1, 0, 9], [0, 0, 1, 9, 0], [0, 0, 9, 1, 0], [0, 0, 9, 0, 1], [0, 1, 0, 0, 9], [0, 1, 0, 9, 0], [0, 1, 9, 0, 0], [0, 9, 0, 0, 1], [0, 9, 0, 1, 0], [0, 9, 1, 0, 0], [1, 0, 0, 0, 9], [1, 0, 0, 9, 0], [1, 0, 9, 0, 0], [1, 9, 0, 0, 0], [9, 0, 0, 0, 1], [9, 0, 0, 1, 0], [9, 0, 1, 0, 0], [9, 1, 0, 0, 0]]
+[2, 2, 1, 1];[[1, 1, 2, 2], [1, 2, 1, 2], [1, 2, 2, 1], [2, 1, 1, 2], [2, 1, 2, 1], [2, 2, 1, 1]]
+"
+"N Queens"	"Time : O(); Space: O()
+ 
+Description: 
+A queen can attack other queen in the same row, 
+same column and diagonal line.
+ 
+{@link https://leetcode.com/problems/n-queens/ }"	"solveNQueens"	"### Java
+```java
+public class Solution {
+
+    public List<String[]> solveNQueens(int n) {
+        List<String[]> result = new ArrayList<String[]>();
+        if (n <= 0) {
+            return result;
+        }
+        int iQueen = 0;
+        // queenPos[i] = j means placing the ith Queen at board[i][j]
+        int[] queenPos = new int[n];
+        solveNQueens(iQueen, n, queenPos, result);
+        return result;
+    }
+
+    private void solveNQueens(int iQueen, int nQueen, int[] queenPos,
+            List<String[]> result) {
+        if (iQueen == nQueen) {
+            // construct board
+            String[] board = new String[nQueen];
+            for (int i = 0; i < board.length; i++) {
+                StringBuilder row = new StringBuilder();
+                for (int j = 0; j < nQueen; j++) {
+                    if (queenPos[i] == j) {
+                        row.append(""Q"");
+                    } else {
+                        row.append(""."");
+                    }
+                }
+                board[i] = row.toString();
+            }
+            result.add(board);
+            return;
+        }
+
+        int row = iQueen;
+        for (int col = 0; col < nQueen; col++) {
+            // try to put the ith Queen at board[row][col]
+            queenPos[row] = col;
+            if (isBoardOk(row, queenPos)) {
+                solveNQueens(iQueen + 1, nQueen, queenPos, result);
+            }
+        }
+    }
+
+    private boolean isBoardOk(int row, int[] queenPos) {
+        for (int i = 0; i < row; i++) {
+            if (queenPos[i] == queenPos[row] // queens in the same column
+                    || Math.abs(queenPos[row] - queenPos[i]) == row - i) // diagonal
+                                                                         // line
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+```"	"int[n];list(array(string))
+0;[]
+1;[[""Q""]]
+4;[["".Q.."", ""...Q"", ""Q..."", ""..Q.""], [""..Q."", ""Q..."", ""...Q"", "".Q..""]]
+"
+"N Queens I I"	"Time : O(); Space: O()
+ 
+Description: 
+Follow up for N-Queens problem. 
+Now, instead outputting board configurations, return the total number of 
+distinct solutions.
+ 
+{@link https://leetcode.com/problems/n-queens-ii/ }"	"totalNQueens"	"### Java
+```java
+public class Solution {
+
+    public int totalNQueens(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+
+        int iQueen = 0;
+        int[] queenPos = new int[n];
+        int result = 0;
+        return totalNQueens(iQueen, n, queenPos, result);
+    }
+
+    private int totalNQueens(int iQueen, int nQueens, int[] queenPos, int result) {
+        if (iQueen == nQueens) {
+            // one valid solution found
+            result++;
+            return result;
+        }
+        int row = iQueen;
+        for (int col = 0; col < nQueens; col++) {
+            // try to put ith Queen at board[row][col]
+            queenPos[row] = col;
+            if (isBoardOK(row, queenPos)) {
+                result = totalNQueens(iQueen + 1, nQueens, queenPos, result);
+            }
+        }
+        return result;
+    }
+
+    private boolean isBoardOK(int row, int[] queenPos) {
+        for (int i = 0; i < row; i++) {
+            if (queenPos[row] == queenPos[i] || // same column?
+                    Math.abs(queenPos[row] - queenPos[i]) == row - i) // diagonal
+                                                                      // line>?
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+```"	"int[n];int
+0;0
+1;1
+4;2
+8;92
+"
+"Merge Intervals"	"Time : O(); Space: O()
+ 
+Description: 
+Given a collection of intervals, merge all overlapping intervals. 
+For example, 
+Given [1,3],[2,6],[8,10],[15,18], 
+return [1,6],[8,10],[15,18].
+ 
+{@link https://leetcode.com/problems/merge-intervals/ }"	"merge"	"### Java
+```java
+class Interval {
+    int start;
+    int end;
+}
+
+public class Solution {
+    public List<Interval> merge(List<Interval> intervals) {
+        // sort interval by interval's start
+        Collections.sort(intervals, new Comparator<Interval>() {
+            @Override
+            public int compare(Interval o1, Interval o2) {
+                if (o1.start != o2.start) {
+                    return o1.start - o2.start;
+                } else {
+                    return o1.end - o2.end;
+                }
+            }
+        });
+        
+        for (int i = 0; i < intervals.size() - 1; i++) {
+            Interval i1 = intervals.get(i);
+            Interval i2 = intervals.get(i + 1);
+            int s2 = i2.start;
+            int s1 = i1.start;
+            int e1 = i1.end;
+            int e2 = i2.end;
+            // i1 starts before i2
+            if (s2 <= e1) {
+                // i1 and i2 are overlapping
+                if (s2 <= e1 && e1 <= e2) {
+                    // i2 ends after i1 ends
+                    i2.start = s1;
+                    i2.end = e2;
+                } else if (s2 <= e2 && e2 <= e1) {
+                    // i2 ends before i1 ends
+                    i2.start = s1;
+                    i2.end = e1;
+                }
+                intervals.remove(i);
+                i--;
+            }
+        }
+        
+        return intervals;
+    }
+}
+```"	"list(object(int[start], int[end])<Interval>)[intervals];list(object(int[start], int[end])<Interval>)
+[[1, 3], [2, 6], [8, 10], [15, 18]];[[1, 6], [8, 10], [15, 18]]
+[[1, 10], [2, 6], [1, 2], [3, 5], [6, 9]];[[1, 10]]
+[[1, 2], [3, 5], [6, 9]];[[1, 2], [3, 5], [6, 9]]
+[[1, 2], [2, 6]];[[1, 6]]
+"
+"Insert Interval"	"Time : O(); Space : O()
+ 
+Description: 
+Given a set of non-overlapping intervals, insert a new interval into 
+the intervals (merge if necessary). 
+You may assume that the intervals were initially sorted according to 
+their start times. 
+Example 1: 
+Given intervals [1,3],[6,9], insert and merge [2,5] in as [1,5],[6,9]. 
+Example 2: 
+Given [1,2],[3,5],[6,7],[8,10],[12,16],
+insert and merge [4,9] in as [1,2],[3,10],[12,16]. 
+This is because the new interval [4,9] overlaps with [3,5],[6,7],[8,10].
+ 
+{@link https://leetcode.com/problems/insert-interval/ }"	"insert"	"### Java
+```java
+class Interval {
+    int start;
+    int end;
+}
+
+public class Solution {
+
+    public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
+        if (intervals.size() == 0) {
+            intervals.add(newInterval);
+            return intervals;
+        }
+        // find the interval overlaps with newInterval
+        int index = -1;
+        for (int i = 0; i < intervals.size(); i++) {
+            Interval interval = intervals.get(i);
+            int is = interval.start;
+            int ie = interval.end;
+            int ns = newInterval.start;
+            int ne = newInterval.end;
+            if (ne < is) {
+                // ns  ne   is  ie
+                // [    ] |
+                //        | [    ]
+                // insert newInterval before current interval 
+                intervals.add(i, newInterval);
+                return intervals;
+            } else if (ns <= is) {
+                // ns  is    ne  ie      ns  is  ie  ne
+                // [      |  ]       or  [     |     ]
+                //      [ |       ]          [ |  ]
+                if (is <= ne &&  ne <= ie) {
+                    interval.start = ns;
+                    interval.end = ie;
+                } else if (is <= ie && ie <= ne) {
+                    interval.start = ns;
+                    interval.end = ne;
+                }
+                index = i;
+                break;
+            } else if (ie >= ns) {
+                // is  ns   ne  ie       is  ns   ie   ne
+                // [      |      ]  or   [      |  ]
+                //     [  |  ]                [ |      ]
+                if (ne <= ie) {
+                    // newInterval is included by this interval
+                    return intervals;
+                } else {
+                    interval.end = newInterval.end;
+                    index = i;
+                    break;
+                }
+            }
+        }
+        if (index != -1) {
+            // merge overlapping intervals from index
+            for (int i = index; i < intervals.size() - 1; i++) {
+                Interval i1 = intervals.get(i);
+                Interval i2 = intervals.get(i + 1);
+                if (i2.start > i1.end) {
+                    // no overlapping any more
+                    break;
+                } else {
+                    // overlapping
+                    if (i2.end > i1.end) {
+                        // i2 ends after i1 ends
+                        i1.end = i2.end;
+                    }
+                    intervals.remove(i + 1);
+                    i--;
+                }
+            }
+        } else {
+            // insert newInterval at the end of list
+            intervals.add(newInterval);
+        }
+        return intervals;
+    }
+}
+```"	"list(object(int[start], int[end])<Interval>)[intervals];object(int[start], int[end])<Interval>[newInterval];list(object(int[start], int[end])<Interval>)
+[[1, 3], [6, 9]];[2, 5];[[1, 5], [6, 9]]
+[[1, 2], [3, 5], [6, 7], [8, 10], [12, 16]];[4, 9];[[1, 2], [3, 10], [12, 16]]
+[];[2, 5];[[2, 5]]
+[[1, 2], [3, 4]];[5, 6];[[1, 2], [3, 4], [5, 6]]
+[[3, 4], [5, 6]];[1, 2];[[1, 2], [3, 4], [5, 6]]
+[[3, 6], [8, 10]];[4, 5];[[3, 6], [8, 10]]
+[[1, 5]];[0, 3];[[0, 5]]
+[[3, 5], [12, 15]];[6, 6];[[3, 5], [6, 6], [12, 15]]
+"
+"Valid Number"	"Time : O(N); Space: O(1)
+ 
+Description: 
+Validate if a given string is numeric. 
+Some examples: 
+""0"" => true "" 0.1 "" => true ""abc"" => false ""1 a"" => false ""2e10"" => true 
+Note: It is intended for the problem statement to be ambiguous. You 
+should gather all requirements up front before implementing one.
+ 
+{@link https://leetcode.com/problems/valid-number/ }"	"isNumber"	"### Java
+```java
+/** 
+ * Q1: leading/trailing spaces ok?
+ * Q2: '+'/'-' ok?
+ * Q3: 1. ok? 
+ * Q4: spaces between characters ok?
+ * Q5: 3e ok?
+ * Q6: -.e ok?
+ * Q7: -e ok?
+ */
+public class Solution {
+
+    /**
+     * valid number format: 
+     * [sign] [digit may include dot] [e|E[sign]digit+] 
+     * | p1 | |          p2         | |      p3       |
+     * p1: optional
+     * p2: there must be at least one digit, dot is allowed to appear
+     * p3: if 'e' or 'E' appears, then there must be at least one digit after e sign
+     * P.S.: also check for duplicated '.' and 'e|E' and 'e|E' cannot be before '.'
+     */
+    public boolean isNumber(String s) {
+        s = s.trim();
+        int eSignIndex = -1;
+        boolean digitsBeforeESign = false;
+        boolean digitsAfterESign = false;
+        boolean dotSign = false;
+
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            if (ch == '+' || ch == '-') {
+                // sign should be the beginning char or right after the e|E sign
+                if (!(i == 0 || eSignIndex != -1 && i == eSignIndex + 1)) {
+                    return false;
+                }
+            } else if (ch == '.') {
+                // cannot have duplicated '.' and '.' must before e sign
+                if (dotSign || eSignIndex != -1) {
+                    return false;
+                }
+                dotSign = true;
+            } else if (ch == 'e' || ch == 'E') {
+                // cannot have duplicated e sign and there should be at least
+                // one digit before e sign
+                if (eSignIndex != -1 || !digitsBeforeESign) {
+                    return false;
+                }
+                eSignIndex = i;
+            } else if (Character.isDigit(ch)) {
+                if (eSignIndex != -1) {
+                    digitsAfterESign = true;
+                } else {
+                    digitsBeforeESign = true;
+                }
+            } else {
+                // unexpected character in string
+                return false;
+            }
+        }
+        // p2 should not be empty and p3 part is optional
+        return (digitsBeforeESign) && (eSignIndex != -1 ? digitsAfterESign : true);
+    }
+}
+```"	"string[s];bool
+""0"";true
+""0.1"";true
+""abc"";false
+""1 a"";false
+""2e10"";true
+""-2e10"";true
+""-2.1"";true
+""-2.10"";true
+""01"";true
+""00"";true
+""46.e3"";true
+""256523.e02"";true
+""256523.e+02"";true
+""-.1"";true
+""-e"";false
+""."";false
+""-."";false
+""e9"";false
+""1e9.4"";false
+""1.0.0"";false
+""1 "";true
+"" 1 "";true
+"" "";false
+"". 1"";false
+"" 1 3 "";false
+""0.e"";false
+"".2e81"";true
+"
+"Text Justification"	"Time : O(); Space: O()
+ 
+Description: 
+Given an array of words and a length L, format the text such that each 
+line has exactly L characters and is fully (left and right) justified. 
+You should pack your words in a greedy approach; that is, pack as many 
+words as you can in each line. Pad extra spaces ' ' when necessary 
+so that each line has exactly L characters. 
+Extra spaces between words should be distributed as evenly as possible. 
+If the number of spaces on a line do not divide evenly between words, 
+the empty slots on the left will be assigned more spaces than the slots on the right. 
+For the last line of text, it should be left justified and no extra 
+space is inserted between words. 
+For example,
+ words: [""This"", ""is"", ""an"", ""example"", ""of"", ""text"", ""justification.""]
+ L: 16. 
+ Return the formatted lines as: 
+ [ 
+     ""This    is    an"", 
+     ""example  of text"", 
+     ""justification.  "" 
+ ] 
+Note: Each word is guaranteed not to exceed L in length.
+ 
+{@link https://leetcode.com/problems/text-justification/ }"	"fullJustify"	"### Java
+```java
+public class Solution {
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        List<String> result = new ArrayList<String>();
+        if (words.length == 0) {
+            return result;
+        }
+        int lenOfLine = 0;
+        int lenOfWords = 0;
+        int wordCt = 0;
+        int index = 0;
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            if (word.length() + lenOfLine > maxWidth) {
+                // one line found, deal with this line
+                result.add(processOneLine(words, index, maxWidth, lenOfWords,
+                        wordCt));
+                // a new line
+                index = i;
+                lenOfLine = word.length() + 1;
+                lenOfWords = word.length();
+                wordCt = 1;
+            } else {
+                // appending to current line
+                lenOfLine += word.length() + 1;
+                lenOfWords += word.length();
+                wordCt += 1;
+            }
+        }
+
+        // last line: left-justified and no extra spaces between words
+        String line = words[index];
+        for (int i = index + 1; i < words.length; i++) {
+            line += "" "" + words[i];
+        }
+        line += getPadding(maxWidth - line.length());
+        result.add(line);
+
+        return result;
+    }
+
+    public String getPadding(int n) {
+        String padding = """";
+        for (int i = 0; i < n; i++) {
+            padding += "" "";
+        }
+        return padding;
+    }
+
+    public String processOneLine(String[] words, int index, int maxWidth,
+            int lenOfWords, int wordCt) {
+        int emptySpaces = maxWidth - lenOfWords;
+        int paddingCt = wordCt == 1 ? 0 : emptySpaces / (wordCt - 1);
+        int extras = emptySpaces - paddingCt * (wordCt - 1);
+        String padding = getPadding(paddingCt);
+        // construct one line
+        String line = """";
+        for (int j = 0; j < wordCt; j++) {
+            if (j == 0) {
+                // first word in line
+                line = words[index];
+                // extra padding added to left part
+                if (wordCt == 1) {
+                    line += getPadding(maxWidth - line.length());
+                } else {
+                    line += padding;
+                }
+            } else if (j > 0 && j == wordCt - 1) {
+                // last word in line
+                line += words[index + j];
+            } else {
+                line += words[index + j] + padding;
+            }
+            // try to use extra spaces as even as possible
+            if (j != wordCt - 1 && extras > 0) {
+                line += "" "";
+                extras--;
+            }
+        }
+        return line;
+    }
+}
+```"	"array(string)[words];int[maxWidth];list(string)
+[""This"", ""is"", ""an"", ""example"", ""of"", ""text"", ""justification.""];16;[""This    is    an"", ""example  of text"", ""justification.  ""]
+[""This"", ""is"", ""an"", ""example""];7;[""This is"", ""an     "", ""example""]
+[""This"", ""is"", ""a"", ""good"", ""example""];7;[""This is"", ""a  good"", ""example""]
+[""""];3;[""   ""]
+[""very"", ""good""];4;[""very"", ""good""]
+[""What"", ""must"", ""be"", ""shall"", ""be.""];12;[""What must be"", ""shall be.   ""]
+[""Don't"", ""go"", ""around"", ""saying"", ""the"", ""world"", ""owes"", ""you"", ""a"", ""living"", ""the"", ""world"", ""owes"", ""you"", ""nothing"", ""it"", ""was"", ""here"", ""first.""];30;[""Don't  go  around  saying  the"", ""world  owes  you  a living the"", ""world  owes you nothing it was"", ""here first.                   ""]
+"
+"Edit Distance"	"Time : O(N^2); Space: O(N^2)
+ 
+Description:
+Given two words word1 and word2, find the minimum number of steps 
+required to convert word1 to word2. (each operation is counted as 1 step.) 
+You have the following 3 operations permitted on a word: 
+ a) Insert a character 
+ b) Delete a character 
+ c) Replace a character
+ 
+{@link https://leetcode.com/problems/edit-distance/ }"	"minDistance"	"### Java
+```java
+public class Solution {
+
+    public int minDistance(String word1, String word2) {
+        int len1 = word1.length();
+        int len2 = word2.length();
+        int[] memo = new int[len2 + 1];
+
+        // initialize the memo
+        for (int j = 1; j <= len2; j++) {
+            // cost for converting from """" to word2.substring(j)
+            memo[j] = j;
+        }
+
+        for (int i = 1; i <= len1; i++) {
+            int prev = i;
+            for (int j = 1; j <= len2; j++) {
+                int cur = 0;
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    // if chars are equal, no cost for converting
+                    cur = memo[j - 1];
+                } else {
+                    cur = 1 + Math.min(memo[j - 1], Math.min(memo[j], prev));
+                }
+                memo[j - 1] = prev;
+                prev = cur;
+            }
+            memo[len2] = prev;
+        }
+        return memo[len2];
+    }
+}
+```"	"string[word1];string[word2];int
+"""";"""";0
+""a"";"""";1
+"""";""b"";1
+""a"";""b"";1
+""aaa"";""aaa"";0
+""bbb"";""aaa"";3
+"
+"Minimum Window Substring"	"Time : O(N); Space: O(N)
+ 
+Description: 
+Given a string S and a string T, find the minimum window in S which will 
+contain all the characters in T in complexity O(n). 
+For example, 
+ S = ""ADOBECODEBANC"",  T = ""ABC"" 
+ Minimum window is ""BANC"". 
+ 
+Note: 
+If there is no such window in S that covers all characters in T, 
+return the emtpy string """". 
+If there are multiple such windows, you are guaranteed that there will
+always be only one unique minimum window in S.
+ 
+{@link https://leetcode.com/problems/minimum-window-substring/ }
+1. create and update hash map.
+2. two pointers to maintain a window"	"minWindow"	"### Java
+```java
+public class Solution {
+
+    /**
+     * First expand window until we find a qualified window, 
+     * then minimize this window until window is not qualified any more.
+     */
+    public String minWindow(String s, String t) {
+        if (s.length() < t.length()) {
+            return """";
+        }
+        if (t.isEmpty()) {
+            return """";
+        }
+
+        // count characters in string t
+        int nums = t.length();
+        Map<Character, Integer> tMap = new HashMap<>();
+        for (char ch : t.toCharArray()) {
+            int count = 1;
+            if (tMap.containsKey(ch)) {
+                count += tMap.get(ch);
+            }
+            tMap.put(ch, count);
+        }
+
+        // only stores characters that exist in both s and t
+        Map<Character, Integer> sMap = new HashMap<>();
+        int start = 0; // start index for global maximal solution
+        int end = Integer.MAX_VALUE; // end index for global maximal solution
+        int num = 0; // number of characters from string t in current window
+
+        // [i : j] is current window
+        for (int j = 0, i = 0; j < s.length(); j++) {
+            char ch = s.charAt(j);
+            if (tMap.containsKey(ch)) {
+                // update s map and number
+                int count = 1;
+                if (sMap.containsKey(ch)) {
+                    count += sMap.get(ch);
+                }
+                sMap.put(ch, count);
+
+                if (count <= tMap.get(ch)) {
+                    num++;
+                }
+            }
+
+            // minimize window
+            while (i <= j && num >= nums) {
+                // update global result
+                if (j - i < end - start) {
+                    start = i;
+                    end = j;
+                }
+                char h = s.charAt(i);
+                if (!tMap.containsKey(h)) {  // irrelevant character
+                    i++;
+                } else if (tMap.get(h) < sMap.get(h)) { // more than enough
+                    sMap.put(h, sMap.get(h) - 1);
+                    i++;
+                } else {  // key character in window
+                    sMap.put(h, sMap.get(h) - 1);
+                    num--;
+                    i++;
+                }
+            }
+        }
+
+        return end == Integer.MAX_VALUE ? """" : s.substring(start, end + 1);
+    }
+}
+```"	"string[s];string[t];string
+""ADOBECODEBANC"";""ABC"";""BANC""
+""ABDC"";""D"";""D""
+""aa"";""aa"";""aa""
+""ABDC"";""DSDF"";""""
+""ADOBECDEBAN"";""ABC"";""CDEBA""
+""aaaaaaaaaaaabbbbbcdd"";""abcdd"";""abbbbbcdd""
+""aaaaaaaaaaaabbbbbcdd"";"""";""""
+"""";""abcdd"";""""
+"
+"Largest Rectangle In Histogram"	"Time : O(N); Space: O(N)
+ 
+Description: 
+Given n non-negative integers representing the histogram's bar height 
+where the width of each bar is 1, find the area of largest rectangle in 
+the histogram.
+ 
+{@link https://leetcode.com/problems/largest-rectangle-in-histogram/ }"	"largestRectangleArea"	"### Java
+```java
+public class Solution {
+
+    public int largestRectangleArea(int[] height) {
+        int len = height.length;
+        int result = 0;
+        // stack of indices whose values are in non-descending order
+        Stack<Integer> indices = new Stack<>();
+        for (int i = 0; i <= len; i++) {
+            int num = i == len ? -1 : height[i];
+            while (!indices.isEmpty() && num <= height[indices.peek()]) {
+                int h = height[indices.pop()];
+                int w = indices.isEmpty() ? i : i - indices.peek() - 1;
+                result = Math.max(result, h * w);
+            }
+            indices.push(i);
+        }
+        return result;
+    }
+}
+```"	"array(int)[height];int
+[ 2, 1, 5, 6, 2, 3 ];10
+[ 6, 2, 5, 4, 5, 1, 6 ];12
+"
+"Maximal Rectangle"	"Time : O(n^4); Space: O(n^3)
+ 
+Description: 
+Given a 2D binary matrix filled with 0's and 1's, find the largest 
+rectangle containing all ones and return its area.
+ 
+{@link https://leetcode.com/problems/maximal-rectangle/ }
+P.S. : can be improved to O(N^3) using stack, see SolutionStack.java
+		'board' dp problem, how to iterate"	"maximalRectangle"	"### Java
+```java
+public class Solution {
+
+    public int maximalRectangle(String[][] matrix) {
+        if (matrix.length == 0 || matrix[0].length == 0) {
+            return 0;
+        }
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+
+        boolean[][] dp = new boolean[rows][cols];
+
+        int result = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                // rectangle starts from (i,j)
+                dp[i][j] = matrix[i][j].equals(""1"");
+                for (int r = i; r < rows; r++) {
+                    // whether zero has shown
+                    boolean zero = false;
+                    for (int c = j; c < cols; c++) {
+                        // rectangle ends at (r, c)
+                        dp[r][c] = matrix[r][c].equals(""1"");
+                        if (r == i && c == j) {
+                            // only one cell
+                            if (!dp[r][c]) {
+                                // no need to check rest columns and rest rows
+                                zero = true;
+                                break;
+                            }
+                            result = Math.max(result, 1);
+                        } else if (r == i) {
+                            // 1st row
+                            dp[r][c] &= dp[r][c - 1];
+                        } else if (c == j) {
+                            // 1st column
+                            dp[r][c] &= dp[r - 1][c];
+                        } else {
+                            // all 1s in rectangle from (i, j) to (r,c) ?
+                            dp[r][c] = dp[r - 1][c] && dp[r][c - 1] && dp[r][c];
+                        }
+
+                        if (!dp[r][c]) {
+                            // no need to check rest columns
+                            break;
+                        }
+                        int area = (r - i + 1) * (c - j + 1);
+                        result = Math.max(result, area);
+                    }
+                    if (zero) {
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+}
+```"	"array(array(string))[matrix];int
+[ [ ""1"", ""1"", ""1"", ""1"" ], [ ""1"", ""1"", ""1"", ""1"" ], [ ""1"", ""1"", ""1"", ""1"" ], [ ""1"", ""1"", ""1"", ""1"" ] ];16
+[ [ ""1"", ""1"", ""1"", ""0"" ], [ ""1"", ""0"", ""1"", ""1"" ], [ ""1"", ""1"", ""0"", ""1"" ], [ ""1"", ""0"", ""1"", ""1"" ] ];4
+[ [ ""1"", ""1"", ""1"", ""1"" ], [ ""1"", ""1"", ""1"", ""1"" ], [ ""1"", ""1"", ""0"", ""1"" ], [ ""1"", ""0"", ""1"", ""1"" ] ];8
+"
+"Scramble String"	"Time : O(N^4); Space: O(N^3)
+ 
+Description: 
+Given a string s1, we may represent it as a binary tree by partitioning 
+it to two non-empty substrings recursively. 
+Below is one possible representation of s1 = ""great"":
+    great
+   /    \
+  gr     eat
+ / \     /  \
+g   r   e   at
+            / \
+           a   t
+To scramble the string, we may choose any non-leaf node and swap its two children. 
+For example, if we choose the node ""gr"" and swap its two children, it produces a scrambled string ""rgeat"". 
+     rgeat
+    /    \
+  rg    eat
+ / \    /  \
+r   g  e   at
+           / \
+          a   t 
+We say that ""rgeat"" is a scrambled string of ""great"". 
+Similarly, if we continue to swap the children of nodes ""eat"" and ""at"", it produces a scrambled string ""rgtae"". 
+     rgtae
+    /    \
+  rg     tae
+  / \    /  \
+ r   g  ta   e
+        / \
+       t   a
+We say that ""rgtae"" is a scrambled string of ""great"". 
+Given two strings s1 and s2 of the same length, determine if s2 is a scrambled string of s1.
+ 
+{@link https://leetcode.com/problems/scramble-string/ }"	"isScramble"	"### Java
+```java
+public class Solution {
+
+    public boolean isScramble(String s1, String s2) {
+        // corner case: different lengths of two string
+        if (s1.length() != s2.length()) {
+            return false;
+        }
+
+        int len = s1.length();
+        // memo[i][j][l] =
+        // isScramble(s1.substring(i, i + l), s2.substring(j, j + l));
+        boolean[][][] memo = new boolean[len + 1][len + 1][len + 1];
+        for (int l = 1; l <= len; l++) {
+            for (int i = len - l; i >= 0; i--) {
+                for (int j = len - l; j >= 0; j--) {
+                    if (l == 1) {
+                        // base case: only one character
+                        memo[i][j][l] = s1.charAt(i) == s2.charAt(j);
+                    } else {
+                        for (int ll = 1; ll < l; ll++) {
+                            // partition s1 and s2, and compare
+                            if ((memo[i][j][ll] && memo[i + ll][j + ll][l - ll])
+                                    || (memo[i][j + l - ll][ll] && memo[i + ll][j][l
+                                            - ll])) {
+                                memo[i][j][l] = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return memo[0][0][len];
+    }
+}
+```"	"string[s1];string[s2];bool
+""great"";""rgeat"";true
+""great"";""rgtae"";true
+""dbdac"";""abcdd"";false
+""great"";""great"";true
+""great"";""greata"";false
+""abbbcbaaccacaacc"";""acaaaccabcabcbcb"";true
+"
+"Interleaving String"	"Time : O(mn); Space: O(min(m, n))
+ 
+Description: 
+Given s1, s2, s3, find whether s3 is formed by the interleaving of s1 and s2. 
+For example, 
+Given: 
+s1 = ""aabcc"", s2 = ""dbbca"", 
+When s3 = ""aadbbcbcac"", return true. 
+When s3 = ""aadbbbaccc"", return false.
+ 
+{@link https://leetcode.com/problems/interleaving-string/ }"	"isInterleave"	"### Java
+```java
+/**
+ * Summary:
+ * <p>
+ * 1. classic String DP problem (suffix/prefix type)
+ * 
+ * <p>
+ * 2. optimization flow Time Space Space DFS ---> Memo version DP ---> Bottom-up
+ * DP ---> 1D Bottom-up DP save time for rearrange order save space by deleting
+ * overlapping subproblem of subproblems result that have fully used
+ * 
+ * <p>
+ * 3. see {@link _097_InterleavingString.SolutionDFS DFS} see
+ * {@link _097_InterleavingString.SolutionMemo memo version} see
+ * {@link _097_InterleavingString.SolutionBottomUp originally bottom-up} see
+ * test {@link _097_InterleavingString.SolutionTest }
+ */
+public class Solution {
+
+    public boolean isInterleave(String s1, String s2, String s3) {
+        int len1 = s1.length();
+        int len2 = s2.length();
+        int len3 = s3.length();
+        if (len1 + len2 != len3) {
+            return false;
+        }
+        if (len1 < len2) {
+            // to save space for dp array
+            return isInterleave(s2, s1, s3);
+        }
+        boolean[] dp = new boolean[len2 + 1];
+        for (int i = len1; i >= 0; i--) {
+            for (int j = len2; j >= 0; j--) {
+                int k = i + j;
+                if (k == len3) {
+                    dp[j] = true;
+                } else {
+                    dp[j] = (i < len1 && s1.charAt(i) == s3.charAt(k) && dp[j])
+                    // able to match s3[k] using s1[i] ?
+                            || (j < len2 && s2.charAt(j) == s3.charAt(k) && dp[j + 1]);
+                    // able to match s3[k] using s2[j] ?
+                }
+            }
+        }
+        return dp[0];
+    }
+}
+```"	"string[s1];string[s2];string[s3];bool
+""aabcc"";""dbbca"";""aadbbcbcac"";true
+""aabcc"";""dbbca"";""aadbbbaccc"";false
+""bbbbbabbbbabaababaaaabbababbaaabbabbaaabaaaaababbbababbbbbabbbbababbabaabababbbaabababababbbaaababaa"";""babaaaabbababbbabbbbaabaabbaabbbbaabaaabaababaaaabaaabbaaabaaaabaabaabbbbbbbbbbbabaaabbababbabbabaab"";""babbbabbbaaabbababbbbababaabbabaabaaabbbbabbbaaabbbaaaaabbbbaabbaaabababbaaaaaabababbababaababbababbbababbbbaaaabaabbabbaaaaabbabbaaaabbbaabaaabaababaababbaaabbbbbabbbbaabbabaabbbbabaaabbababbabbabbab"";false
+"""";""dbbca"";""dbbca"";true
+""aabc"";"""";""aabd"";false
+""a"";""bc"";""bac"";true
+""ab"";""bc"";""bcab"";true
+""aa"";""ab"";""aaab"";true
+""aa"";""ab"";""aaab"";true
+""bab"";""abbbcba"";""babbbabcba"";true
+"
+"Recover Binary Search Tree"	"Time : O(); Space: O()
+ 
+Description:
+Two elements of a binary search tree (BST) are swapped by mistake. 
+Recover the tree without changing its structure. 
+Note: 
+A solution using O(n) space is pretty straight forward. Could you devise 
+a constant space solution?
+ 
+{@link https://leetcode.com/problems/recover-binary-search-tree/ }"	"recoverTree"	"### Java
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    public BinaryTreeNode<Integer> recoverTree(BinaryTreeNode<Integer> root) {
+        List<BinaryTreeNode<Integer>> in = new ArrayList<>();
+        inorder(root, in);
+        BinaryTreeNode<Integer> first = null;
+        BinaryTreeNode<Integer> second = null;
+        for (int i = 0; i < in.size() - 1; i++) {
+            if (first == null && in.get(i).data > in.get(i + 1).data) {
+                first = in.get(i);
+            }
+            if (first != null && in.get(i).data > in.get(i + 1).data) {
+                second = in.get(i + 1);
+            }
+        }
+        if (first != null && second != null) {
+            int temp = first.data;
+            first.data = second.data;
+            second.data = temp;
+        }
+        return root;
+    }
+
+    private void inorder(BinaryTreeNode<Integer> root, List<BinaryTreeNode<Integer>> in) {
+        if (root == null) {
+            return;
+        }
+        inorder(root.left, in);
+        in.add(root);
+        inorder(root.right, in);
+    }
+}
+```"	"binary_tree(int)[root];binary_tree(int)
+[5, 2, null, 3, null, 4, null, 1];[5, 4, null, 3, null, 2, null, 1]
+[1, null, 4, null, 3, null, 2, null, 5];[1, null, 2, null, 3, null, 4, null, 5]
+[3, 4, 2, 1, null, null, 5];[3, 2, 4, 1, null, null, 5]
+[2, 3, 4, 1, null, null, 5];[3, 2, 4, 1, null, null, 5]
+[3, 1, 2];[2, 1, 3]
+[3, null, 1, 2];[1, null, 3, null, 2]
+[2, null, 3, 1];[1, null, 3, null, 2]
+[3, 2, 0, 1, null, 6, 7, 4];[3, 2, 4, 1, null, 6, 7, 0]
+"
+"Distinct Subsequences"	"Time : O(N^2); Space: O(N^2)
+ 
+Description:
+Given a string S and a string T, count the number of distinct subsequences 
+of T in S. 
+A subsequence of a string is a new string which is formed from the original 
+string by deleting some (can be none) of the characters without disturbing 
+the relative positions of the remaining characters. (ie, ""ACE"" is a 
+subsequence of ""ABCDE"" while ""AEC"" is not). 
+Here is an example: S = ""rabbbit"", T = ""rabbit"" 
+Return 3.
+ 
+{@link https://leetcode.com/problems/distinct-subsequences/ }"	"numDistinct"	"### Java
+```java
+public class Solution {
+
+    public int numDistinct(String s, String t) {
+        int[][] dp = new int[s.length() + 1][t.length() + 1];
+        for (int i = s.length(); i >= 0; i--) {
+            for (int j = t.length(); j >= 0; j--) {
+                int count = 0;
+                if (i == s.length() && j == t.length()) {
+                    count = 1;
+                } else if (i == s.length()) {
+                    count = 0;
+                } else if (j == t.length()) {
+                    count = 1;
+                } else if (s.charAt(i) != t.charAt(j)) {
+                    count = dp[i + 1][j];
+                } else {
+                    count = dp[i + 1][j] + dp[i + 1][j + 1];
+                }
+                dp[i][j] = count;
+            }
+        }
+        return dp[0][0];
+    }
+
+    public int numDistinct2(String s, String t) {
+        int[][] dp = new int[s.length() + 1][t.length() + 1];
+        for (int i = s.length(); i >= 0; i--) {
+            for (int j = t.length(); j >= 0; j--) {
+                int count = 0;
+                if (i == s.length() && j == t.length()) {
+                    count = 1;
+                } else if (i == s.length()) {
+                    count = 0;
+                } else if (j == t.length()) {
+                    count = 1;
+                } else if (s.charAt(i) != t.charAt(j)) {
+                    count = dp[i + 1][j];
+                } else {
+                    count = dp[i + 1][j] + dp[i + 1][j + 1];
+                }
+                dp[i][j] = count;
+            }
+        }
+        return dp[0][0];
+    }
+}
+```"	"string[s];string[t];int
+""rabbbit"";""rabbit"";3
+""a"";"""";1
+""ababab"";""ab"";6
+""abcb"";""abcb"";1
+""adbdadeecadeadeccaeaabdabdbcdabddddabcaaadbabaaedeeddeaeebcdeabcaaaeeaeeabcddcebddebeebedaecccbdcbcedbdaeaedcdebeecdaaedaacadbdccabddaddacdddc"";""bcddceeeebecbc"";700531452
+""anacondastreetracecar"";""contra"";6
+""daacaedaceacabbaabdccdaaeaebacddadcaeaacadbceaecddecdeedcebcdacdaebccdeebcbdeaccabcecbeeaadbccbaeccbbdaeadecabbbedceaddcdeabbcdaeadcddedddcececbeeabcbecaeadddeddccbdbcdcbceabcacddbbcedebbcaccac"";""ceadbaa"";8556153
+""xslledayhxhadmctrliaxqpokyezcfhzaskeykchkmhpyjipxtsuljkwkovmvelvwxzwieeuqnjozrfwmzsylcwvsthnxujvrkszqwtglewkycikdaiocglwzukwovsghkhyidevhbgffoqkpabthmqihcfxxzdejletqjoxmwftlxfcxgxgvpperwbqvhxgsbbkmphyomtbjzdjhcrcsggleiczpbfjcgtpycpmrjnckslrwduqlccqmgrdhxolfjafmsrfdghnatexyanldrdpxvvgujsztuffoymrfteholgonuaqndinadtumnuhkboyzaqguwqijwxxszngextfcozpetyownmyneehdwqmtpjloztswmzzdzqhuoxrblppqvyvsqhnhryvqsqogpnlqfulurexdtovqpqkfxxnqykgscxaskmksivoazlducanrqxynxlgvwonalpsyddqmaemcrrwvrjmjjnygyebwtqxehrclwsxzylbqexnxjcgspeynlbmetlkacnnbhmaizbadynajpibepbuacggxrqavfnwpcwxbzxfymhjcslghmajrirqzjqxpgtgisfjreqrqabssobbadmtmdknmakdigjqyqcruujlwmfoagrckdwyiglviyyrekjealvvigiesnvuumxgsveadrxlpwetioxibtdjblowblqvzpbrmhupyrdophjxvhgzclidzybajuxllacyhyphssvhcffxonysahvzhzbttyeeyiefhunbokiqrpqfcoxdxvefugapeevdoakxwzykmhbdytjbhigffkmbqmqxsoaiomgmmgwapzdosorcxxhejvgajyzdmzlcntqbapbpofdjtulstuzdrffafedufqwsknumcxbschdybosxkrabyfdejgyozwillcxpcaiehlelczioskqtptzaczobvyojdlyflilvwqgyrqmjaeepydrcchfyftjighntqzoo"";""rwmimatmhydhbujebqehjprrwfkoebcxxqfktayaaeheys"";543744000
+""abcb"";"""";1
+"
+"Best Time To Buy And Sell Stock I I I"	"Time : O(); Space: O()
+ 
+ Say you have an array for which the ith element is the price of    
+ a given stock on day i.                                            
+ Design an algorithm to find the maximum profit.                    
+ You may complete at most two transactions.                         
+ 
+ Note:                                                              
+ You may not engage in multiple transactions at the same time       
+ (ie, you must sell the stock before you buy again).                
+ 
+{@link https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/ }"	"maxProfit"	"### Java
+```java
+public class Solution {
+
+    /** {@reference https://leetcode.com/discuss/18330/is-it-best-solution-with-o-n-o-1 } */
+    public int maxProfit(int[] prices) {
+        int hold1 = Integer.MIN_VALUE;
+        int hold2 = Integer.MIN_VALUE;
+        int release1 = 0;
+        int release2 = 0;
+        for (int price : prices) {
+            release2 = Math.max(release2, hold2 + price);
+            hold2 = Math.max(hold2, release1 - price);
+            release1 = Math.max(release1, hold1 + price);
+            hold1 = Math.max(hold1, -price);
+        }
+        return release2;
+    }
+}
+```"	"array(int)[prices];int
+[ 1, 2, 3 ];2
+[ 1, 3, 1, 2, 1, 6 ];7
+[ 1, 3, 2, 1, 2, 1, 6 ];7
+[ 4, 2, 1 ];0
+[ 4, 2, 1, 2 ];1
+[ 1, 2, 4, 3, 2, 1, 2, 1, 10 ];12
+[ 1, 2, 4, 2, 5, 7, 2, 4, 9, 0 ];13
+"
+"Binary Tree Maximum Path Sum"	"Time : O(); Space: O()
+ 
+Description:
+Given a binary tree, find the maximum path sum. 
+The path may start and end at any node in the tree. 
+For example: Given the below binary tree, 
+  1 
+ / \ 
+2   3 
+Return 6.
+ 
+{@link https://leetcode.com/problems/binary-tree-maximum-path-sum/ }"	"maxPathSum"	"### Java
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    private int globalMax;
+
+    public int maxPathSum(BinaryTreeNode<Integer> root) {
+        if (root == null) {
+            return 0;
+        }
+        globalMax = Integer.MIN_VALUE;
+        maxPathSumDown(root);
+        return globalMax;
+    }
+
+    // return the max path that starts from root node
+    // while updating potential global max
+    private int maxPathSumDown(BinaryTreeNode<Integer> root) {
+        // base case
+        if (root == null) {
+            return 0;
+        }
+        // recursive case
+        int leftMaxPathSum = Math.max(0, maxPathSumDown(root.left));
+        int rightMaxPathSum = Math.max(0, maxPathSumDown(root.right));
+        globalMax = Math.max(globalMax, leftMaxPathSum + rightMaxPathSum + root.data);
+        return root.data + Math.max(leftMaxPathSum, rightMaxPathSum);
+    }
+}
+```"	"binary_tree(int)[root];int
+null;0
+[1, 2, 3];6
+[2, -1, 3];5
+[-1, 2, 3, -8];4
+[-1, null];-1
+[-1, 3];3
+[-2, 3, null, -1, null, 2, null, -8];4
+[5, 4, 8, 11, null, 13, 4, 7, 2];48
+"
+"Word Ladder I I"	"Time : O(); Space: O()
+ 
+Given two words (start and end), and a dictionary, find all shortest 
+transformation sequence(s) from start to end, such that: 
+ 1. Only one letter can be changed at a time 
+ 2. Each intermediate word must exist in the dictionary 
+For example, 
+Given: 
+start = ""hit"" 
+end = ""cog"" 
+dict = [""hot"",""dot"",""dog"",""lot"",""log""] 
+Return 
+[ 
+ [""hit"",""hot"",""dot"",""dog"",""cog""], 
+ [""hit"",""hot"",""lot"",""log"",""cog""] 
+] 
+Note: 
+All words have the same length. 
+All words contain only lowercase alphabetic characters.
+ 
+{@link https://leetcode.com/problems/word-ladder-ii/ }"	"findLadders"	"### Java
+```java
+public class Solution {
+
+    /**
+     * Traverse level by level. In each level, construct possible words
+     * 
+     * keys: 1. when constructing words for next level, iterate through 'a' to 'z'
+     *       2. each word is allowed duplicates in the same level but not the previous levels
+     *       3. use father map to avoid calculating the ladder for the duplicated word in the same level
+     */
+    public List<List<String>> findLadders(String start, String end, List<String> dict) {
+
+        List<List<String>> result = new ArrayList<>();
+
+        // use set for current level instead of queue to avoid calculating ladder for duplicated word
+        Set<String> cur = new HashSet<>();
+        Set<String> visited = new HashSet<>();
+        // word, and all words that can direct lead to this word in path
+        Map<String, List<String>> fatherMap = new HashMap<>();
+        cur.add(start);
+
+        boolean found = false;
+        int wordLen = start.length();
+
+        while (!cur.isEmpty() && !found) {
+
+            Set<String> next = new HashSet<>();
+
+            for (String str : cur) {
+                for (int i = 0; i < wordLen; i++) {
+                    StringBuilder sb = new StringBuilder(str);
+                    for (char ch = 'a'; ch <= 'z'; ch++) {
+                        sb.setCharAt(i, ch);
+                        String word = sb.toString();
+                        if (word.equals(end)) {
+                            found = true;
+                        }
+                        if (dict.contains(word) && !visited.contains(word)
+                                || word.equals(end)) {
+                            next.add(word);
+                            if (!fatherMap.containsKey(word)) {
+                                fatherMap.put(word, new ArrayList<>());
+                            }
+                            fatherMap.get(word).add(str);
+                        }
+                    }
+                }
+            }
+
+            cur = next;
+            visited.addAll(cur);
+        }
+        if (found) {
+            List<String> path = new ArrayList<>();
+            dfs(start, end, path, fatherMap, result);
+        }
+        return result;
+    }
+
+    // construct paths based father map
+    private void dfs(String start, String end, List<String> path, Map<String, List<String>> fatherMap, List<List<String>> result) {
+        path.add(end);
+        if (end.equals(start)) {
+            if (path.size() == 1) {
+                path.add(start);
+            }
+            result.add(new ArrayList<>(path));
+            Collections.reverse(result.get(result.size() - 1));
+        } else {
+            List<String> que = fatherMap.get(end);
+            for (String word : que) {
+                dfs(start, word, path, fatherMap, result);
+            }
+        }
+        path.remove(path.size() - 1);
+    }
+}
+```"	"string[start];string[end];list(string)[dict];list(list(string))
+""hit"";""cog"";[""hot"",""dot"",""dog"",""lot"",""log""];[[""hit"",""hot"",""dot"",""dog"",""cog""],[""hit"",""hot"",""lot"",""log"",""cog""]]
+""hit"";""hit"";[""hot"",""dot"",""dog"",""lot"",""log""];[[""hit"",""hit""]]
+""a"";""c"";[""a"",""b""];[[""a"", ""c""]]
+"
+"Longest Consecutive Sequence"	"Time : O(N); Space: O(N)
+ 
+Description:
+Given an unsorted array of integers, find the length of the longest 
+consecutive elements sequence. 
+For example, Given [100, 4, 200, 1, 3, 2], 
+The longest consecutive elements sequence is [1, 2, 3, 4]. Return its 
+length: 4. 
+Your algorithm should run in O(n) complexity.
+ 
+{@link https://leetcode.com/problems/longest-consecutive-sequence/ }"	"longestConsecutive"	"### Java
+```java
+public class Solution {
+
+    /** @see _124_BinaryTreeMaximumPathSum.Solution */
+    public int longestConsecutive(int[] nums) {
+        int result = 0;
+        Map<Integer, Bound> rangeMap = new HashMap<Integer, Bound>();
+
+        for (int i = 0; i < nums.length; i++) {
+            int num = nums[i];
+            if (!rangeMap.containsKey(num)) {
+                int maxRangeToThisNumber = 1;
+                int maxRangeFromThisNumber = 1;
+                // can this number be a right boundary of a range ?
+                if (rangeMap.containsKey(num - 1)) {
+                    maxRangeToThisNumber += rangeMap.get(num - 1).maxRangeAsRightBound;
+                }
+                // can this number be a left boundary of a range?
+                if (rangeMap.containsKey(num + 1)) {
+                    maxRangeFromThisNumber += rangeMap.get(num + 1).maxRangeAsLeftBound;
+                }
+                int maxRangeIncludeThisNumber = maxRangeToThisNumber
+                        + maxRangeFromThisNumber - 1;
+
+                // update range map
+                Bound bound = new Bound(maxRangeFromThisNumber,
+                        maxRangeToThisNumber);
+                rangeMap.put(num, bound);
+
+                // num is not the right boundary of max range including num
+                if (maxRangeFromThisNumber != 1) {
+                    // update the range of number at the right bound
+                    int rightEnd = maxRangeFromThisNumber + num - 1;
+                    Bound boundRight = rangeMap.get(rightEnd);
+                    boundRight.maxRangeAsRightBound = maxRangeIncludeThisNumber;
+                    rangeMap.put(rightEnd, boundRight);
+                }
+                if (maxRangeToThisNumber != 1) {
+                    int leftEnd = num - maxRangeToThisNumber + 1;
+                    Bound boundLeft = rangeMap.get(leftEnd);
+                    boundLeft.maxRangeAsLeftBound = maxRangeIncludeThisNumber;
+                    rangeMap.put(leftEnd, boundLeft);
+                }
+
+                // update global max
+                result = Math.max(result, maxRangeIncludeThisNumber);
+            }
+        }
+
+        return result;
+    }
+
+    public class Bound {
+        public int maxRangeAsRightBound = 0;
+        public int maxRangeAsLeftBound = 0;
+
+        public Bound(int _maxRangeAsLeftBound, int _maxRangeAsRightBound) {
+            maxRangeAsLeftBound = _maxRangeAsLeftBound;
+            maxRangeAsRightBound = _maxRangeAsRightBound;
+        }
+    }
+}
+```"	"array(int)[nums];int
+[ 4, 1, 3, 2 ];4
+[];0
+[ 1, 2, 3, 1000, 1001, 1002, 1003 ];4
+[ 5, 3, 2, 1 ];3
+"
+"Palindrome Partitioning I I"	"Time : O(n^2); Space: O(n^2)
+ 
+ Given a string s, partition s such that every substring of the       
+ partition is a palindrome.                                           
+ Return the minimum cuts needed for a palindrome partitioning of s.   
+ 
+{@link https://leetcode.com/problems/palindrome-partitioning-ii/ }"	"minCut"	"### Java
+```java
+public class Solution {
+    
+    public int minCut(String s) {
+        int len = s.length();
+        // marking palindrome
+        boolean[][] palin = new boolean[len + 1][len + 1];
+        for (int l = 0; l <= len; l++) {
+            for (int i = 0; i <= len - l; i++) {
+                // is s[i, i + l] palindrome?
+                if (l == 0 || l == 1) {
+                    palin[i][l] = true;
+                } else if (l == 2) {
+                    palin[i][l] = s.charAt(i) == s.charAt(i + 1);
+                } else {
+                    palin[i][l] = s.charAt(i) == s.charAt(i + l - 1) 
+                            && palin[i + 1][l - 2];
+                }
+            }
+        }
+        // dp[i] = minCut for s.substring(i)
+        int[] dp = new int[len + 1];
+        for (int i = len; i >= 0; i--) {
+            if (palin[i][len - i]) {
+                dp[i] = 0;
+            } else {
+                // max possible cuts for s.substring(i) if no palindrome
+                // exists in substring
+                int cuts = len - 1 - i;
+                for (int j = i; j < len; j++) {
+                    // only palindrome can make cuts smaller
+                    if (palin[i][j - i + 1]) {
+                        cuts = Math.min(cuts, 1 + dp[j + 1]);
+                    }
+                }
+                dp[i] = cuts;
+            }
+        }
+        return dp[0];
+    }
+}
+```"	"string[s];int
+""aab"";1
+""abcd"";3
+""abba"";0
+""ltsqjodzeriqdtyewsrpfscozbyrpidadvsmlylqrviuqiynbscgmhulkvdzdicgdwvquigoepiwxjlydogpxdahyfhdnljshgjeprsvgctgnfgqtnfsqizonirdtcvblehcwbzedsmrxtjsipkyxk"";143
+""adabdcaebdcebdcacaaaadbbcadabcbeabaadcbcaaddebdbddcbdacdbbaedbdaaecabdceddccbdeeddccdaabbabbdedaaabcdadbdabeacbeadbaddcbaacdbabcccbaceedbcccedbeecbccaecadccbdbdccbcbaacccbddcccbaedbacdbcaccdcaadcbaebebcceabbdcdeaabdbabadeaaaaedbdbcebcbddebccacacddebecabccbbdcbecbaeedcdacdcbdbebbacddddaabaedabbaaabaddcdaadcccdeebcabacdadbaacdccbeceddeebbbdbaaaaabaeecccaebdeabddacbedededebdebabdbcbdcbadbeeceecdcdbbdcbdbeeebcdcabdeeacabdeaedebbcaacdadaecbccbededceceabdcabdeabbcdecdedadcaebaababeedcaacdbdacbccdbcece"";273
+""aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"";1
+""apjesgpsxoeiokmqmfgvjslcjukbqxpsobyhjpbgdfruqdkeiszrlmtwgfxyfostpqczidfljwfbbrflkgdvtytbgqalguewnhvvmcgxboycffopmtmhtfizxkmeftcucxpobxmelmjtuzigsxnncxpaibgpuijwhankxbplpyejxmrrjgeoevqozwdtgospohznkoyzocjlracchjqnggbfeebmuvbicbvmpuleywrpzwsihivnrwtxcukwplgtobhgxukwrdlszfaiqxwjvrgxnsveedxseeyeykarqnjrtlaliyudpacctzizcftjlunlgnfwcqqxcqikocqffsjyurzwysfjmswvhbrmshjuzsgpwyubtfbnwajuvrfhlccvfwhxfqthkcwhatktymgxostjlztwdxritygbrbibdgkezvzajizxasjnrcjwzdfvdnwwqeyumkamhzoqhnqjfzwzbixclcxqrtniznemxeahfozp"";452
+"
+"Candy"	"Time : O(); Space: O()
+ 
+Description:
+ There are N children standing in a line. Each child is assigned 
+ a rating value. You are giving candies to these children subjected 
+ to the following requirements: 
+ 
+ Each child must have at least one candy. Children with a higher 
+ rating get more candies than their neighbors. 
+ 
+ What is the minimum candies you must give?
+ 
+{@link https://leetcode.com/problems/candy/ }"	"candy"	"### Java
+```java
+public class Solution {
+    public int candy(int[] ratings) {
+        if (ratings == null || ratings.length == 0) return 0;
+        int total = 1, prev = 1, countDown = 0;
+        for (int i = 1; i < ratings.length; i++) {
+            if (ratings[i] >= ratings[i-1]) {
+                if (countDown > 0) {
+                    total += countDown*(countDown+1)/2; // arithmetic progression
+                    if (countDown >= prev) total += countDown - prev + 1;
+                    countDown = 0;
+                    prev = 1;
+                }
+                prev = ratings[i] == ratings[i-1] ? 1 : prev+1;
+                total += prev;
+            } else countDown++;
+        }
+        if (countDown > 0) { // if we were descending at the end
+            total += countDown*(countDown+1)/2;
+            if (countDown >= prev) total += countDown - prev + 1;
+        }
+        return total;
+    }
+}
+```"	"array(int)[ratings];int
+[1, 3, 5, 4, 2];9
+[1, 3, 1, 2, 3];9
+[1, 2, 3, 4, 5];15
+[5, 4, 3, 2, 1];15
+[1, 2, 2, 3, 3];7
+[3, 1, 1, 2, 2];7
+[1, 2, 1, 3, 2];7
+[1, 2, 2];4
+[2, 2, 1];4
+[1, 3, 4, 3, 2, 1];13
+"
+"Word Break I I"	"Time : O(); Space: O()
+ 
+Description:
+Given a string s and a dictionary of words dict, add spaces in s to 
+construct a sentence where each word is a valid dictionary word. 
+Return all such possible sentences. 
+For example, given s = ""catsanddog"", 
+dict = [""cat"", ""cats"", ""and"", ""sand"", ""dog""]. 
+A solution is [""cats and dog"", ""cat sand dog""].
+ 
+{@link https://leetcode.com/problems/word-break-ii/ }"	"wordBreak"	"### Java
+```java
+public class Solution {
+    
+    // memo[word] = list of word break
+    private Map<String, List<String>> memo = new HashMap<>();
+
+    public List<String> wordBreak(String s, List<String> wordDict) {
+        List<String> res = new ArrayList<>();
+        int len = s.length();
+        for (int i = 1; i <= len; i++) {
+            String prefix = s.substring(0, i);
+            if (wordDict.contains(prefix)) {
+                if (i == len) {
+                    res.add(prefix);
+                } else {
+                    String remain = s.substring(i);
+                    List<String> remainSet = memo.containsKey(remain) ? memo.get(remain) : wordBreak(remain, wordDict);
+                    for (String str : remainSet) {
+                        StringBuilder sb = new StringBuilder(prefix);
+                        sb.append("" "").append(str);
+                        res.add(sb.toString());
+                    }
+                }
+            }
+        }
+        memo.put(s, res);
+        return res;
+    }
+}
+```"	"string[s];list(string)[wordDict];list(string)
+""catsanddog"";[""cat"",""cats"",""and"",""sand"",""dog""];[""cats and dog"",""cat sand dog""]
+""haha"";[""cat"",""cats"",""and"",""sand"",""dog""];[]
+""catscatanddog"";[""cat"",""cats"",""and"",""sand"",""dog""];[""cats cat and dog""]
+""dogcat"";[""cat"",""dog"",""dogcat""];[""dogcat"",""dog cat""]
+""baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"";[""a"", ""aa"", ""aaa"", ""aaaa"", ""aaaaa"", ""aaaaaa"", ""aaaaaaa"", ""aaaaaaaa"", ""aaaaaaaaa"", ""aaaaaaaaaa""];[]
+""baab"";[""a"", ""aa"", ""ab"", ""b"", ""ba""];[""b a a b"", ""b a ab"", ""b aa b"", ""ba a b"", ""ba ab""]
+"
+"Binary Tree Postorder Traversal"	"Time : O(N); Space: O(N)
+ 
+Description: 
+Given a binary tree, return the postorder traversal of its nodes' values.
+ 
+{@link https://leetcode.com/problems/binary-tree-postorder-traversal/ }"	"postorderTraversal"	"### Java
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    public List<Integer> postorderTraversal(BinaryTreeNode<Integer> root) {
+        List<Integer> result = new ArrayList<>();
+        Stack<BinaryTreeNode<Integer>> children = new Stack<>();
+        children.push(root);
+        while (!children.isEmpty()) {
+            BinaryTreeNode<Integer> node = children.pop();
+            if (node != null) {
+                // insert node's value at the beginning of list
+                result.add(0, node.data);
+                children.push(node.left);
+                children.push(node.right);
+            }
+        }
+        return result;
+    }
+}
+```"	"binary_tree(int)[root];list(int)
+[1, null, 2, 3];[3, 2, 1]
+[1, 2, 3, 4, 5, 6, 7];[4, 5, 2, 6, 7, 3, 1]
+[1, null];[1]
+[1, 2, null, 3];[3, 2, 1]
+[1, null, 2, null, 3];[3, 2, 1]
+[5, 4, 8, 11, null, 13, 4, 7, 2, null, null, 5, 1];[7, 2, 11, 4, 13, 5, 1, 4, 8, 5]
+[10, 5, 12, 4, 7];[4, 7, 5, 12, 10]
+null;[]
+"
+"Max Points On A Line"	"Time : O(N^2); Space : O(N)
+ 
+Description: 
+Given n points on a 2D plane, find the maximum number of points that 
+lie on the same straight line.
+ 
+{@link https://leetcode.com/problems/max-points-on-a-line/ }"	"maxPoints"	"### Java
+```java
+class Point {
+    int x;
+    int y;
+}
+
+public class Solution {
+
+    public int maxPoints(Point[] points) {
+        int res = 0;
+        for (int i = 0; i < points.length; i++) {
+            // slope, count of points in this slop except those overlapping points with points[i]
+            Map<Double, Integer> slopeMap = new HashMap<>();
+            int samePoint = 1; // points at the same position
+            int sameX = 0; // points share the same x value except points at the
+                           // same position as points[i]
+            for (int j = 0; j < points.length; j++) {
+                if (i != j) {
+                    if (points[i].x == points[j].x
+                            && points[i].y == points[j].y) {
+                        samePoint++;
+                    } else if (points[i].x == points[j].x) {
+                        sameX++;
+                    } else {
+                        double k = (double) (points[j].y - points[i].y)
+                                / (points[j].x - points[i].x);
+                        int counts = 1;
+                        if (slopeMap.containsKey(k)) {
+                            counts += slopeMap.get(k);
+                        }
+                        slopeMap.put(k, counts);
+                        res = Math.max(res, counts + samePoint);
+                    }
+                }
+            }
+            res = Math.max(res, samePoint + sameX);
+        }
+        return res;
+    }
+}
+```"	"array(object(int[x],int[y])<Point>)[points];int
+[[0, 0], [0, 0] ];2
+[ [1, 1], [1, 1] ];2
+[ [1, 1], [2, 2], [3, 3], [5, 10] ];3
+[ [0, 0], [1, 1], [0, 0] ];3
+[[0,0],[0,1],[0,3]];3
+[[1,1],[1,1],[2,3]];3
+[[1,1],[1,1],[1,1]];3
+[[1,1],[1,1],[1,1],[2,5],[2,5],[2,5],[2,5],[2,5]];8
+[[0,9],[138,429],[115,359],[115,359],[-30,-102],[230,709],[-150,686],[-135,-613],[-60,-248],[-161,-481],[207,639],[23,79],[-230,-691],[-115,-341],[92,289],[60,336],[-105,-467],[135,701],[-90,-394],[-184,-551],[150,774]];12
+[[84,250],[0,0],[1,0],[0,-70],[0,-70],[1,-1],[21,-10],[42,90],[-42,-230]];5
+"
+"Find Minimum In Rotated Sorted Array I I"	"Time : O(N) ; Space: O()
+ 
+Description:
+Follow up for ""Find Minimum in Rotated Sorted Array"": 
+What if duplicates are allowed? 
+Would this affect the run-time complexity? How and why? 
+Suppose a sorted array is rotated at some pivot unknown to you beforehand. 
+(i.e., 0 1 2 4 5 6 7 might become 4 5 6 7 0 1 2). 
+Find the minimum element. The array may contain duplicates.
+ 
+{@link https://leetcode.com/problems/find-minimum-in-rotated-sorted-array-ii/ }"	"findMin"	"### Java
+```java
+public class Solution {
+
+    public int findMin(int[] nums) {
+        if (nums.length == 0) {
+            return 0;
+        }
+        int left = 0;
+        int right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] > nums[right]) {
+                left = mid + 1;
+            } else if (nums[mid] < nums[right]) {
+                // nums[mid] < nums[right], so mid might be the result
+                right = mid;
+            } else {
+                // nums[mid] == nums[right]
+                right--;
+            }
+        }
+        return nums[left];
+    }
+}
+```"	"array(int)[nums];int
+[ 3, 3, 1, 3 ];1
+[ 1, 3, 3 ];1
+[ 3, 1, 1 ];1
+[ 2, 2, 2, 0, 2, 2 ];0
+[ 3, 3, 3, 3, 3, 3, 3, 3, 1, 3 ];1
+[ 3, 1, 3, 3, 3, 3, 3, 3, 3, 3 ];1
+[ 3, 3, 3, 3, 3, 3, 3, 1, 3, 3 ];1
+[ 3, 3, 1, 3, 3, 3, 3, 3, 3, 3 ];1
+"
+"Maximum Gap"	"Time : O(); Space : O()
+ 
+Description: 
+Given an unsorted array, find the maximum difference between the 
+successive elements in its sorted form. 
+Try to solve it in linear time/space. 
+Return 0 if the array contains less than 2 elements. 
+You may assume all elements in the array are non-negative integers and 
+fit in the 32-bit signed integer range.
+ 
+{@link https://leetcode.com/problems/maximum-gap/ }"	"maximumGap"	"### Java
+```java
+public class Solution {
+    public int maximumGap(int[] num) {
+        if (num == null || num.length < 2)
+            return 0;
+        // get the max and min value of the array
+        int min = num[0];
+        int max = num[0];
+        for (int i:num) {
+            min = Math.min(min, i);
+            max = Math.max(max, i);
+        }
+        // the minimum possibale gap, ceiling of the integer division
+        int gap = (int)Math.ceil((double)(max - min)/(num.length - 1));
+        int[] bucketsMIN = new int[num.length - 1]; // store the min value in that bucket
+        int[] bucketsMAX = new int[num.length - 1]; // store the max value in that bucket
+        Arrays.fill(bucketsMIN, Integer.MAX_VALUE);
+        Arrays.fill(bucketsMAX, Integer.MIN_VALUE);
+        // put numbers into buckets
+        for (int i:num) {
+            if (i == min || i == max)
+                continue;
+            int idx = (i - min) / gap; // index of the right position in the buckets
+            bucketsMIN[idx] = Math.min(i, bucketsMIN[idx]);
+            bucketsMAX[idx] = Math.max(i, bucketsMAX[idx]);
+        }
+        // scan the buckets for the max gap
+        int maxGap = Integer.MIN_VALUE;
+        int previous = min;
+        for (int i = 0; i < num.length - 1; i++) {
+            if (bucketsMIN[i] == Integer.MAX_VALUE && bucketsMAX[i] == Integer.MIN_VALUE)
+                // empty bucket
+                continue;
+            // min value minus the previous value is the current gap
+            maxGap = Math.max(maxGap, bucketsMIN[i] - previous);
+            // update previous bucket value
+            previous = bucketsMAX[i];
+        }
+        maxGap = Math.max(maxGap, max - previous); // updata the final max value gap
+        return maxGap;
+    }
+}
+```"	"array(int)[nums];int
+[1, 10000000];9999999
+[3, 6, 9, 1];3
+"
+"Dungeon Game"	"Time : O() ; Space: O()
+ 
+Description:
+The demons had captured the princess (P) and imprisoned her in the 
+bottom-right corner of a dungeon. The dungeon consists of M x N rooms 
+laid out in a 2D grid. Our valiant knight (K) was initially positioned 
+in the top-left room and must fight his way through the dungeon to rescue 
+the princess. 
+The knight has an initial health point represented by a positive integer. 
+If at any point his health point drops to 0 or below, he dies immediately. 
+Some of the rooms are guarded by demons, so the knight loses health 
+(negative integers) upon entering these rooms; other rooms are either empty
+(0's) or contain magic orbs that increase the knight's health (positive integers). 
+In order to reach the princess as quickly as possible, the knight decides 
+to move only rightward or downward in each step. 
+Write a function to determine the knight's minimum initial health so that 
+he is able to rescue the princess.
+Notes: 
+The knight's health has no upper bound. 
+Any room can contain threats or power-ups, even the first room the knight 
+enters and the bottom-right room where the princess is imprisoned.
+ 
+{@link https://leetcode.com/problems/dungeon-game/}"	"calculateMinimumHP"	"### Java
+```java
+public class Solution {
+    public int calculateMinimumHP(int[][] dungeon) {
+        if (dungeon == null || dungeon.length == 0 || dungeon[0].length == 0) return 0;
+
+        int m = dungeon.length;
+        int n = dungeon[0].length;
+
+        int[][] health = new int[m][n];
+
+        health[m - 1][n - 1] = Math.max(1 - dungeon[m - 1][n - 1], 1);
+
+        for (int i = m - 2; i >= 0; i--) {
+            health[i][n - 1] = Math.max(health[i + 1][n - 1] - dungeon[i][n - 1], 1);
+        }
+
+        for (int j = n - 2; j >= 0; j--) {
+            health[m - 1][j] = Math.max(health[m - 1][j + 1] - dungeon[m - 1][j], 1);
+        }
+
+        for (int i = m - 2; i >= 0; i--) {
+            for (int j = n - 2; j >= 0; j--) {
+                int down = Math.max(health[i + 1][j] - dungeon[i][j], 1);
+                int right = Math.max(health[i][j + 1] - dungeon[i][j], 1);
+                health[i][j] = Math.min(right, down);
+            }
+        }
+
+        return health[0][0];
+    }
+}
+```"	"array(array((int))[dungeon];int
+[ [ -2, -3, 3 ], [ -5, -10, 1 ], [ 10, 30, -5 ]];7
+[ [-5]];6
+"
+"Best Time To Buy And Sell Stock I V"	"Time : O() ; Space: O()
+ 
+Description:
+Say you have an array for which the ith element is the price of a given stock on day i. 
+Design an algorithm to find the maximum profit. You may complete at most k transactions. 
+Note: You may not engage in multiple transactions at the same time 
+(ie, you must sell the stock before you buy again).
+ 
+{@link https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/ }"	"maxProfit"	"### Java
+```java
+public class Solution {
+    public int maxProfit(int k, int[] prices) {
+        int n = prices.length;
+        if (n <= 1)
+            return 0;
+
+        //if k >= n/2, then you can make maximum number of transactions.
+        if (k >=  n/2) {
+            int maxPro = 0;
+            for (int i = 1; i < n; i++) {
+                if (prices[i] > prices[i-1])
+                    maxPro += prices[i] - prices[i-1];
+            }
+            return maxPro;
+        }
+
+        int[][] dp = new int[k+1][n];
+        for (int i = 1; i <= k; i++) {
+            int localMax = dp[i-1][0] - prices[0];
+            for (int j = 1; j < n; j++) {
+                dp[i][j] = Math.max(dp[i][j-1],  prices[j] + localMax);
+                localMax = Math.max(localMax, dp[i-1][j] - prices[j]);
+            }
+        }
+        return dp[k][n-1];
+    }
+}
+```"	"int[k];array(int)[prices];int
+2;[1, 3, 1, 2, 1, 6];7
+2;[1, 3, 2, 1, 2, 1, 6];7
+2;[4, 2, 1, 10];9
+3;[1, 2, 4, 3, 2, 1, 2, 1, 10];13
+4;[1, 2, 4, 2, 5, 7, 2, 4, 9, 0];15
+"
+"Word Search I I"	"Time : O(); Space : O()
+ 
+Description: 
+Given a 2D board and a list of words from the dictionary, find all 
+words in the board. 
+Each word must be constructed from letters of sequentially adjacent cell, 
+where ""adjacent"" cells are those horizontally or vertically neighboring. 
+The same letter cell may not be used more than once in a word. 
+For example, 
+Given words = [""oath"",""pea"",""eat"",""rain""] and board = 
+[ 
+ ['o','a','a','n'], 
+ ['e','t','a','e'], 
+ ['i','h','k','r'], 
+ ['i','f','l','v'] 
+] 
+Return [""eat"",""oath""]. 
+Note: You may assume that all inputs are consist of lowercase letters a-z.
+ 
+{@link https://leetcode.com/problems/word-search-ii/ }"	"findWords"	"### Java
+```java
+public class Solution {
+
+    public List<String> findWords(String[][] board, String[] words) {
+        List<String> result = new ArrayList<>();
+        if (board.length == 0 || board[0].length == 0) {
+            return result;
+        }
+
+        Trie trie = buildTrie(words);
+
+        Set<String> res = new HashSet<>();
+        int rows = board.length;
+        int cols = board[0].length;
+        boolean[][] visited = new boolean[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                StringBuilder prefix = new StringBuilder("""");
+                findWords(board, words, prefix, i, j, visited, res, trie);
+            }
+        }
+        return new ArrayList<String>(res);
+    }
+
+    // insert all words from dictionary into trie
+    private Trie buildTrie(String[] words) {
+        Trie trie = new Trie();
+        for (String word : words) {
+            trie.insert(word);
+        }
+        return trie;
+    }
+
+    // before: String word
+    // visit : board[i][j] and its children
+    // after : back to state `word`
+    private void findWords(String[][] board, String[] words, StringBuilder word,
+            int i, int j, boolean[][] visited, Set<String> res, Trie trie) {
+        int rows = board.length;
+        int cols = board[0].length;
+        // base case
+        if (!res.contains(word) && trie.contains(word)) {
+            res.add(word.toString());
+        }
+        // recursive case
+        if (i >= 0 && i < rows && j >= 0 && j < cols && !visited[i][j]) {
+            visited[i][j] = true;
+            StringBuilder prefix = new StringBuilder(word);
+            prefix.append(board[i][j]);
+            if (trie.startsWith(prefix)) {
+                findWords(board, words, prefix, i + 1, j, visited, res, trie);
+                findWords(board, words, prefix, i - 1, j, visited, res, trie);
+                findWords(board, words, prefix, i, j + 1, visited, res, trie);
+                findWords(board, words, prefix, i, j - 1, visited, res, trie);
+            }
+            visited[i][j] = false;
+        }
+
+    }
+
+    /**  same implementation as problem {@link _208_ImplementTriePrefixTree.Solution} */
+    private class Trie {
+
+        class TrieNode {
+            private TrieNode[] children = new TrieNode[26];
+            private boolean end = false;
+        }
+
+        TrieNode root;
+
+        public Trie() {
+            root = new TrieNode();
+        }
+
+        public void insert(String word) {
+            TrieNode node = root;
+            for (char ch : word.toCharArray()) {
+                int index = ch - 'a';
+                if (node.children[index] == null) {
+                    node.children[index] = new TrieNode();
+                }
+                node = node.children[index];
+            }
+            node.end = true;
+        }
+
+        public boolean contains(StringBuilder word) {
+            TrieNode node = root;
+            for (int i = 0; i < word.length(); i++) {
+                int index = word.charAt(i) - 'a';
+                if (node.children[index] == null) {
+                    return false;
+                }
+                node = node.children[index];
+            }
+            return node.end;
+        }
+
+        public boolean startsWith(StringBuilder prefix) {
+            TrieNode node = root;
+            for (int i = 0; i < prefix.length(); i++) {
+                int index = prefix.charAt(i) - 'a';
+                if (node.children[index] == null) {
+                    return false;
+                }
+                node = node.children[index];
+            }
+            return true;
+        }
+    }
+}
+```"	"array(array(string))[board];array(string)[words];list(string)
+[[""o"",""a"",""a"",""n""], [""e"",""t"",""a"",""e""], [""i"",""h"",""k"",""r""], [""i"",""f"",""l"",""v""]];[""oath"",""pea"",""eat"",""rain""];[""oath"",""eat""]
+[[""a"",""b""], [""a"",""a""]];[""aba"",""baa"",""bab"",""aaab"",""aaa"",""aaaa"",""aaba""];[""aaa"",""aaab"",""aaba"",""aba"",""baa""]
+"
+"The Skyline Problem"	"Time : O(NlgN) ; Space: O()
+ 
+Description:
+ 
+ 
+{@link https://leetcode.com/problems/the-skyline-problem/ }
+{@link http://www.geeksforgeeks.org/divide-and-conquer-set-7-the-skyline-problem/ }
+{@link https://leetcode.com/discuss/40963/share-my-divide-and-conquer-java-solution-464-ms }"	"getSkyline"	"### Java
+```java
+public class Solution {
+
+    // divide and conquer
+    public List<int[]> getSkyline(int[][] buildings) {
+        List<int[]> res = new ArrayList<>();
+        if (buildings.length == 0) {
+            return res;
+        }
+        int p = 0;
+        int q = buildings.length - 1;
+        return recurSkyline(buildings, p, q);
+    }
+
+    // construct sky line for buildings[p : q]
+    private LinkedList<int[]> recurSkyline(int[][] buildings, int p, int q) {
+        if (p == q) {
+            LinkedList<int[]> skyline = new LinkedList<>();
+            skyline.add(new int[] { buildings[p][0], buildings[p][2] });
+            skyline.add(new int[] { buildings[p][1], 0 });
+            return skyline;
+        } else {
+            int mid = p + (q - p) / 2;
+            return merge(recurSkyline(buildings, p, mid), recurSkyline(buildings, mid + 1, q));
+        }
+    }
+
+    // merge sky line 1 and sky line 2
+    private LinkedList<int[]> merge(LinkedList<int[]> s1, LinkedList<int[]> s2) {
+        LinkedList<int[]> res = new LinkedList<>();
+        int h1 = 0; // height from s1
+        int h2 = 0; // height from s2
+        while (s1.size() > 0 && s2.size() > 0) {
+            // key point is { x, h }
+            int x = 0; int h = 0;
+            if (s1.getFirst()[0] < s2.getFirst()[0]) {
+                x = s1.getFirst()[0];
+                h1 = s1.getFirst()[1];
+                h = Math.max(h1, h2);
+                s1.removeFirst();
+            } else if (s1.getFirst()[0] > s2.getFirst()[0]) {
+                x = s2.getFirst()[0]; 
+                h2 = s2.getFirst()[1];
+                h = Math.max(h1, h2);
+                s2.removeFirst();
+            } else {
+                x = s1.getFirst()[0];
+                h1 = s1.getFirst()[1];
+                h2 = s2.getFirst()[1];
+                h = Math.max(h1, h2);
+                s1.removeFirst();
+                s2.removeFirst();
+            }
+            if (res.size() == 0 || h != res.getLast()[1]) {
+                // ignore key points that at the same level
+                res.add(new int[] { x, h });
+            }
+        }
+        res.addAll(s1);
+        res.addAll(s2);
+        return res;
+    }
+}
+```"	"array(array(int))[buildings];list(array(int))
+[];[]
+[[ 2,  9, 10 ], [ 3,  7, 15 ], [ 5, 12, 12 ], [15, 20, 10 ], [19, 24,  8 ]];[[2,10],[3,15],[7,12],[12,0],[15,10],[20,8],[24,0]]
+[[ 2,  9, 10 ], [ 3,  4,  4], [ 4,  5,  4]];[[2,10],[9,0]]
+[[ 1,  4, 10 ], [ 2,  5,  18]];[[1,10],[2,18],[5,0]]
+
+"
+"Sliding Window Maximum"	"Time : O(N) ; Space: O(N)
+ 
+Description:
+Given an array nums, there is a sliding window of size k which is moving 
+from the very left of the array to the very right. You can only see the 
+k numbers in the window. Each time the sliding window moves right by 
+one position. 
+For example, Given nums = [1,3,-1,-3,5,3,6,7], and k = 3. 
+  Window position                Max
+  ---------------               -----
+  [1  3  -1] -3  5  3  6  7       3
+   1 [3  -1  -3] 5  3  6  7       3
+   1  3 [-1  -3  5] 3  6  7       5
+   1  3  -1 [-3  5  3] 6  7       5
+   1  3  -1  -3 [5  3  6] 7       6
+   1  3  -1  -3  5 [3  6  7]      7
+Therefore, return the max sliding window as [3,3,5,5,6,7]. 
+Note: 
+You may assume k is always valid, ie: 1 ≤ k ≤ input array's size for non-empty array. 
+Follow up: Could you solve it in linear time?
+ 
+{@link https://leetcode.com/problems/sliding-window-maximum/ }"	"maxSlidingWindow"	"### Java
+```java
+public class Solution {
+
+    /**
+     * Keep monotonic deque: containing index, and nums[index] is monotonic in
+     * deque peek element is the index of the max number in current sliding
+     * window and the numbers that indices in this deque represents are in
+     * non-ascending order
+     * */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int n = nums.length;
+        if (n == 0) {
+            return new int[]{};
+        }
+        int[] res = new int[n - k + 1];
+        // peek element is the index of the max number in current sliding window
+        // and the numbers that indices in this deque represents are in non-ascending order
+        Deque<Integer> descendIndices = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            int num = nums[i];
+            int window = i - k + 1;
+            // poll elements out of current window
+            while (!descendIndices.isEmpty() && descendIndices.peekFirst() < i - k + 1) {
+                descendIndices.removeFirst();
+            }
+            // build descending indices
+            while (!descendIndices.isEmpty() && nums[descendIndices.peekLast()] < num) {
+                descendIndices.removeLast();
+            }
+            descendIndices.addLast(i);
+            if (window >= 0) {
+                res[window] = nums[descendIndices.peekFirst()];
+            }
+        }
+        return res;
+    }
+}
+```"	"array(int)[nums];int[k];array(int)
+[1, 3, -1, -3, 5, 3, 6, 7];3;[3, 3, 5, 5, 6, 7]
+[3];1;[3]
+[1, -1];1;[1, -1]
+[1, 3, 1, 2, 0, 5];3;[3, 3, 2, 5]
+[1, 2, 5, 10, 3, 4];3;[5, 10, 10, 10]
+
+"
+"Paint House I I"	"Time : O(nk) ; Space: O()
+ 
+Description:
+There are a row of n houses, each house can be painted with one of the k colors. 
+The cost of painting each house with a certain color is different. 
+You have to paint all the houses such that no two adjacent houses have the same color. 
+The cost of painting each house with a certain color is represented by a n x k cost matrix. 
+For example, costs[0][0] is the cost of painting house 0 with color 0; 
+costs[1][2] is the cost of painting house 1 with color 2, and so on... 
+Find the minimum cost to paint all houses. 
+Note: All costs are positive integers. 
+Follow up: Could you solve it in O(nk) runtime?
+ 
+{@link https://leetcode.com/problems/paint-house-ii/ }"	"minCostII"	"### Java
+```java
+public class Solution {
+
+    public int minCostII(int[][] costs) {
+        int n = costs.length;
+        if (n == 0) {
+            return 0;
+        }
+        int k = costs[0].length;
+        int min1 = Integer.MAX_VALUE; // the smallest cost after paint i-th house
+        int min2 = Integer.MAX_VALUE; // second smallest cost
+        int color = -1; // color for min1 choice in last round
+        int[][] f = new int[n][k];
+        for (int i = n - 1; i >= 0; i--) {
+            int temp1 = Integer.MAX_VALUE;
+            int temp2 = Integer.MAX_VALUE;
+            int tempC = -1;
+            for (int c = k - 1; c >= 0; c--) {
+                int mincost = 0;
+                if (i == n - 1) {
+                    mincost = costs[i][c];
+                } else {
+                    if (f[i][c] != min1 && color != c) {
+                        mincost = min1 + costs[i][c];
+                    } else {
+                        mincost = min2 + costs[i][c];
+                    }
+                }
+                if (temp1 <= mincost) {
+                    temp2 = Math.min(temp2, mincost);
+                } else {
+                    temp2 = temp1;
+                    temp1 = mincost;
+                    tempC = c;
+                }
+                f[i][c] = mincost;
+            }
+            min1 = temp1;
+            min2 = temp2;
+            color = tempC;
+        }
+        return min1;
+    }
+}
+```"	"array(array(int))[costs];int
+[[ 10, 30, 20 ]];10
+[[ 1, 1, 1 ], [ 1, 1, 1 ], [ 1, 1, 1 ]];3
+[[ 1, 2, 3 ], [ 3, 2, 1 ], [ 2, 2, 2 ], [ 3, 1, 2 ]];5
+[[17,  2, 17 ], [16, 16,  5 ], [14,  3, 19 ]];10
+[[ 12,  1, 19 ], [ 15,  1, 10 ], [  3, 11, 10 ], [  9,  3, 10 ], [  4,  8,  7 ], [  4, 18,  2 ], [ 16,  6,  6 ], [  3,  3,  6 ], [ 10, 18, 16 ], [  5,  4,  8 ], [  5,  3, 16 ], [ 11,  8, 19 ], [ 18, 15, 18 ], [ 16,  4, 15 ], [ 10,  7, 13 ], [ 11, 10, 14 ], [  3,  9,  8 ], [  5,  2,  2 ], [  3,  2,  5 ], [  2, 19, 14 ], [ 17,  3,  6 ], [  6,  4, 17 ], [  5, 15, 19 ], [  2, 14, 14 ], [ 19,  4, 16 ]];143
+[[ 1, 5, 3 ], [ 2, 9, 4 ]];5
+[[ 8 ]];8
+"
+"Alien Dictionary"	"Time : O() ; Space: O()
+ 
+Description:
+are sorted lexicographically by the rules of this new language. 
+Derive the order of letters in this language. 
+For example, Given the following words in dictionary, 
+[ ""wrt"",
+  ""wrf"", 
+  ""er"", 
+  ""ett"", 
+  ""rftt"" 
+] 
+The correct order is: ""wertf"". 
+Note: 
+You may assume all letters are in lowercase. 
+If the order is invalid, return an empty string. 
+There may be multiple valid order of letters, return any one of them is fine.
+ 
+{@link https://leetcode.com/problems/alien-dictionary/ }"	"alienOrder"	"### Java
+```java
+public class Solution {
+
+    public String alienOrder(String[] words) {
+        // <Node, Number of edges pointing to this node>
+        Map<Character, Integer> in = new HashMap<>();
+        // <Node, All nodes that this node directly points to>
+        Map<Character, Set<Character>> out = new HashMap<>();
+
+        // collect all characters and initialize in and out map
+        collectChars(words, in, out);
+
+        // construct graph
+        for (int i = 1; i < words.length; i++) {
+            String pre = words[i - 1];
+            String cur = words[i];
+            int len = Math.min(pre.length(), cur.length());
+            int j = 0;
+            while (j < len && pre.charAt(j) == cur.charAt(j)) {
+                j++;
+            }
+            if (j < len) {
+                // find one topological order, update graph
+                char preCh = pre.charAt(j); 
+                char curCh = cur.charAt(j);
+                if (out.get(preCh).add(curCh)) {
+                    in.put(curCh, in.get(curCh) + 1);
+                }
+            }
+        }
+        
+        // push all nodes that have no incoming edge into queue
+        Queue<Character> zeros = new LinkedList<>();
+        for (char ch : in.keySet()) {
+            if (in.get(ch) == 0) {
+                zeros.offer(ch);
+            }
+        }
+        
+        int count = 0;  // how many nodes we collect
+        StringBuilder sb = new StringBuilder();
+        while (!zeros.isEmpty()) {
+            char ch = zeros.poll();
+            count++;
+            sb.append(ch);
+            for (char next : out.get(ch)) {
+                int degree = in.get(next) - 1;
+                if (degree >= 0) {
+                    in.put(next, degree);
+                }
+                if (degree == 0) {
+                    zeros.offer(next);
+                }
+            }
+        }
+        return count != in.size() ? """" : sb.toString();
+    }
+
+    // collect all characters and initialize in and out map
+    private void collectChars(String[] words, Map<Character, Integer> in,
+            Map<Character, Set<Character>> out) {
+        for (String word : words) {
+            for (char ch : word.toCharArray()) {
+                if (!in.containsKey(ch)) {
+                    in.put(ch, 0);
+                }
+                if (!out.containsKey(ch)) {
+                    out.put(ch, new HashSet<>());
+                }
+            }
+        }
+    }
+}
+```"	"array(string)[words];string
+[ ""wrt"", ""wrf"", ""er"", ""ett"", ""rftt""];""wertf""
+[ ""ri"", ""xz"", ""qxf"", ""jhsguaw"", ""dztqrbwbm"", ""dhdqfb"", ""jdv"", ""fcgfsilnb"", ""ooby"" ];""""
+"

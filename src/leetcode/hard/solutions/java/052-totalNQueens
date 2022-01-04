@@ -1,0 +1,44 @@
+```java
+public class Solution {
+
+    public int totalNQueens(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+
+        int iQueen = 0;
+        int[] queenPos = new int[n];
+        int result = 0;
+        return totalNQueens(iQueen, n, queenPos, result);
+    }
+
+    private int totalNQueens(int iQueen, int nQueens, int[] queenPos, int result) {
+        if (iQueen == nQueens) {
+            // one valid solution found
+            result++;
+            return result;
+        }
+        int row = iQueen;
+        for (int col = 0; col < nQueens; col++) {
+            // try to put ith Queen at board[row][col]
+            queenPos[row] = col;
+            if (isBoardOK(row, queenPos)) {
+                result = totalNQueens(iQueen + 1, nQueens, queenPos, result);
+            }
+        }
+        return result;
+    }
+
+    private boolean isBoardOK(int row, int[] queenPos) {
+        for (int i = 0; i < row; i++) {
+            if (queenPos[row] == queenPos[i] || // same column?
+                    Math.abs(queenPos[row] - queenPos[i]) == row - i) // diagonal
+                                                                      // line>?
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+```

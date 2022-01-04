@@ -1,0 +1,37 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+
+    /**
+     * Construct a map to memo expected value and its index. 
+     */
+   public ListNode addTwoNumbers(ListNode<Integer> l1, ListNode<Integer> l2) {
+        ListNode<Integer> dummy = new ListNode();
+        ListNode<Integer> node = dummy;
+        int carry = 0;
+        while (l1 != null || l2 != null || carry != 0) {
+            int n1 = l1 != null ? l1.data : 0;
+            int n2 = l2 != null ? l2.data : 0;
+            int sum = n1 + n2 + carry;
+            node.next = new ListNode();
+            node.next.data = sum % 10;
+            node = node.next;
+            carry = sum / 10;
+            l1 = l1 != null ? l1.next : null;
+            l2 = l2 != null ? l2.next : null;
+        }
+        return dummy.next;
+    }
+}
+```

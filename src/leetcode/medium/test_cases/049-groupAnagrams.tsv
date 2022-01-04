@@ -1,0 +1,5 @@
+array(string)[strs]	list(list(string))
+["eat", "tea", "tan", "ate", "nat", "bat"]	[["ate", "eat","tea"], ["nat", "tan"], ["bat"]]
+[ "", ""]	[["", ""]]
+[ "ant", "ant"]	[["ant", "ant"]]
+[ "", "", ""]	[["", "", ""]]

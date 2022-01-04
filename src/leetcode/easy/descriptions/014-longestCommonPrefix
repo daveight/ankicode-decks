@@ -1,0 +1,6 @@
+Time : O(N); Space : O(N)
+ 
+Description: 
+Write a function to find the longest common prefix string amongst an array of strings.
+ 
+{@link https://leetcode.com/problems/longest-common-prefix/ }

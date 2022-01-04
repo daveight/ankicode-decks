@@ -1,0 +1,7 @@
+Time : O(); Space: O()
+ 
+Description: 
+A queen can attack other queen in the same row, 
+same column and diagonal line.
+ 
+{@link https://leetcode.com/problems/n-queens/ }

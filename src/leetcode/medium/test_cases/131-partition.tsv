@@ -1,0 +1,4 @@
+string[s]	list(list(string))
+"aab"	[["aa","b"],["a","a","b"]]
+"a"	[["a"]]
+"abbab"	[["a","b","b","a","b"],["a","b","bab"],["a","bb","a","b"],["abba","b"]]

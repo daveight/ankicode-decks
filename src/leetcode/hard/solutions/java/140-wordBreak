@@ -1,0 +1,30 @@
+```java
+public class Solution {
+    
+    // memo[word] = list of word break
+    private Map<String, List<String>> memo = new HashMap<>();
+
+    public List<String> wordBreak(String s, List<String> wordDict) {
+        List<String> res = new ArrayList<>();
+        int len = s.length();
+        for (int i = 1; i <= len; i++) {
+            String prefix = s.substring(0, i);
+            if (wordDict.contains(prefix)) {
+                if (i == len) {
+                    res.add(prefix);
+                } else {
+                    String remain = s.substring(i);
+                    List<String> remainSet = memo.containsKey(remain) ? memo.get(remain) : wordBreak(remain, wordDict);
+                    for (String str : remainSet) {
+                        StringBuilder sb = new StringBuilder(prefix);
+                        sb.append(" ").append(str);
+                        res.add(sb.toString());
+                    }
+                }
+            }
+        }
+        memo.put(s, res);
+        return res;
+    }
+}
+```

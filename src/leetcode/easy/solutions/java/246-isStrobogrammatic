@@ -1,0 +1,24 @@
+```java
+public class Solution {
+    
+    private static final Map<Character, Character> map = new HashMap<Character, Character>() {
+        {
+            put('6', '9');
+            put('9', '6');
+            put('0', '0');
+            put('1', '1');
+            put('8', '8');
+        }
+    };
+
+    public boolean isStrobogrammatic(String num) {
+        for (int i = 0, j = num.length() - 1; i <= j ; i++, j--) {
+            char ch = num.charAt(i);
+            if (!map.containsKey(ch) || map.get(ch) != num.charAt(j)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+```

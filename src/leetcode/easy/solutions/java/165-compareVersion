@@ -1,0 +1,38 @@
+```java
+public class Solution {
+
+    public int compareVersion(String version1, String version2) {
+        // trim two strings
+        String[] str1 = version1.split("\\.");
+        String[] str2 = version2.split("\\.");
+        int len1 = str1.length;
+        int len2 = str2.length;
+        int index = 0;
+        while (index < len1 && index < len2) {
+            int num1 = Integer.parseInt(str1[index]);
+            int num2 = Integer.parseInt(str2[index]);
+            if (num1 != num2) {
+                return (num1 - num2) > 0 ? 1 : -1;
+            }
+            index++;
+        }
+        // checking the remaining part is all 0s
+        if (index < len1) {
+            return checkRemain(str1, index) ? 1 : 0;
+        } else {
+            return checkRemain(str2, index) ? -1 : 0;
+        }
+    }
+
+    // check from index to end
+    private boolean checkRemain(String[] str, int index) {
+        int len = str.length;
+        for (int i = index; i < len; i++) {
+            if (Integer.parseInt(str[i]) != 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+```

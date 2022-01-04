@@ -1,0 +1,46 @@
+```java
+public class Solution {
+
+    public int threeSumClosest(int[] nums, int target) {
+        int result = target;
+        int len = nums.length;
+        if (len < 3) {
+            return 0;
+        }
+        Arrays.sort(nums);
+        for (int i = 0; i < len; i++) {
+            int number = nums[i];
+
+            int leftIndex = i + 1;
+            int rightIndex = len - 1;
+            while (leftIndex < rightIndex) {
+                int threeSum = number + nums[leftIndex] + nums[rightIndex];
+                if (threeSum == target) {
+                    // best result found!
+                    return target;
+                } else {
+                    // update global result
+                    if (result == target
+                            || Math.abs(target - threeSum) < Math.abs(target - result)) {
+                        result = threeSum;
+                    }
+                    if (threeSum < target) {
+                        while (leftIndex < rightIndex
+                                && nums[leftIndex] == nums[leftIndex + 1]) {
+                            leftIndex++;
+                        }
+                        leftIndex++;
+                    } else {
+                        while (leftIndex < rightIndex
+                                && nums[rightIndex] == nums[rightIndex - 1]) {
+                            rightIndex--;
+                        }
+                        rightIndex--;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+}
+```

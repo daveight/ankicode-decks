@@ -1,0 +1,29 @@
+```java
+public class Solution {
+
+    public int minCost(int[][] costs) {
+        int n = costs.length;
+        if (n == 0) {
+            return 0;
+        }
+        // f[i][c] = min cost for paint[i : end] if we paint house i with color c
+        int f[][] = new int[n + 1][costs[0].length];
+        for (int i = n - 1; i >= 0; i--) {
+            for (int c = 2; c >= 0; c--) {
+                int mincost = Integer.MAX_VALUE;
+                for (int color = 0; color <= 2; color++) {
+                    if (color != c) {
+                        mincost = Math.min(mincost, f[i + 1][color]);
+                    }
+                }
+                f[i][c] = mincost + costs[i][c];
+            }
+        }
+        int res = Integer.MAX_VALUE;
+        for (int i = 0; i < f[0].length; i++) {
+            res = Math.min(res, f[0][i]);
+        }
+        return res;
+    }
+}
+```

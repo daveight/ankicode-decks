@@ -1,0 +1,32 @@
+```java
+public class Solution {
+    public String largestNumber(int[] nums) {
+        List<String> list = new ArrayList<>();
+        for (int number : nums) {
+            list.add("" + number);
+        }
+        
+        // sort list by combination of two numbers
+        Collections.sort(list, new Comparator<String>(){
+            @Override
+            public int compare(String num1, String num2) {
+                String s1 = num1 + num2;
+                String s2 = num2 + num1;
+                // not num1.compareTo(num2);
+                return s2.compareTo(s1); 
+            }
+        });
+        
+        StringBuilder strBuilder = new StringBuilder();
+        boolean allZeros = true;
+        for (String str: list) {
+            if (allZeros && !str.equals("0")) {
+                allZeros = false;
+            }
+            strBuilder.append(str);
+        }
+        // for corner case all 0s
+        return allZeros ? "0" : strBuilder.toString();
+    }
+}
+```

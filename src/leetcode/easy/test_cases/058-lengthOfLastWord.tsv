@@ -1,0 +1,9 @@
+string[s]	int
+"Hello World"	5
+"Hello World"	5
+"Hello World "	5
+"Hello"	5
+"Hello "	5
+"a "	1
+" "	0
+" "	0

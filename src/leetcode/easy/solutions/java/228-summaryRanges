@@ -1,0 +1,24 @@
+```java
+public class Solution {
+
+    public List<String> summaryRanges(int[] nums) {
+        List<String> result = new ArrayList<>();
+        // index of which number we are checking
+        int index = 0;
+        int len = nums.length;
+        while (index < len) {
+            int start = index;   // start index of current range
+            while (index + 1 < len && nums[index + 1] == nums[index] + 1) {
+                index++;         // range is enlarging
+            }
+            if (index > start) { // we meet a range
+                result.add(nums[start] + "->" + nums[index]);
+            } else {            // we meet a single number
+                result.add(nums[start] + "");
+            }
+            index++;
+        }
+        return result;
+    }
+}
+```

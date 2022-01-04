@@ -1,0 +1,28 @@
+string[s]	bool
+"0"	true
+"0.1"	true
+"abc"	false
+"1 a"	false
+"2e10"	true
+"-2e10"	true
+"-2.1"	true
+"-2.10"	true
+"01"	true
+"00"	true
+"46.e3"	true
+"256523.e02"	true
+"256523.e+02"	true
+"-.1"	true
+"-e"	false
+"."	false
+"-."	false
+"e9"	false
+"1e9.4"	false
+"1.0.0"	false
+"1 "	true
+" 1 "	true
+" "	false
+". 1"	false
+" 1 3 "	false
+"0.e"	false
+".2e81"	true

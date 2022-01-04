@@ -1,0 +1,25 @@
+```java
+public class Solution {
+
+    // x, x, x, 0, 0, 0, y  =>  x, x, x, y, 0, 0, 0
+    //          j        i                  j
+    // swap nums[i] with nums[j] 
+    public int[] moveZeroes(int[] nums) {
+        int j = -1; // index of first 0 in array
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == 0) {
+                if (j == -1) {
+                    j = i;
+                }
+            } else {
+                if (j != -1) {
+                    // swap with first 0 in array
+                    nums[j++] = nums[i];
+                    nums[i] = 0;
+                }
+            }
+        }
+        return nums;
+    }
+}
+```

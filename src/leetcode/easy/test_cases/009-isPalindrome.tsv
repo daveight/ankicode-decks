@@ -1,0 +1,9 @@
+int[x]	bool
+-2	false
+-101	false
+2	true
+202	true
+2021	false
+2147483647	false
+21477412	true
+0	true

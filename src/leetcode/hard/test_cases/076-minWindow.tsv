@@ -1,0 +1,9 @@
+string[s]	string[t]	string
+"ADOBECODEBANC"	"ABC"	"BANC"
+"ABDC"	"D"	"D"
+"aa"	"aa"	"aa"
+"ABDC"	"DSDF"	""
+"ADOBECDEBAN"	"ABC"	"CDEBA"
+"aaaaaaaaaaaabbbbbcdd"	"abcdd"	"abbbbbcdd"
+"aaaaaaaaaaaabbbbbcdd"	""	""
+""	"abcdd"	""

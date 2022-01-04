@@ -1,0 +1,6 @@
+Time : O(N); Space: O(N)
+--------------------------------------------------------------
+{@link https://leetcode.com/problems/simplify-path/ } 
+P.S. : 1.String.substring(beginIndex, endIndex)  //[beginIndex,endIndex)
+       2.String.indexOf(str, fromIndex)  // [fromIndex,],
+                                         // fromIndex=[0,len-1]

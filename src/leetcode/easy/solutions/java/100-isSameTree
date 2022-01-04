@@ -1,0 +1,31 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    public boolean isSameTree(BinaryTreeNode<Integer> p, BinaryTreeNode<Integer> q) {
+        if (p == null && q == null) {
+            return true;
+        } else if (p != null && q != null) {
+            // here should not be (p == q) which compares the reference value
+            // of two objects
+            return p.data == q.data && isSameTree(p.left, q.left)
+                    && isSameTree(p.right, q.right);
+        } else {
+            return false;
+        }
+    }
+}
+```

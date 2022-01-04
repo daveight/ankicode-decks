@@ -1,0 +1,28 @@
+```java
+public class Solution {
+
+    // DFS version
+    public List<Integer> grayCode(int n) {
+        List<Integer> result = new ArrayList<>();
+        int i = 0;
+        result.add(0);
+        grayCode(i, n, result);
+        return result;
+    }
+
+    private void grayCode(int i, int n, List<Integer> result) {
+        // base case
+        if (i == n) {
+            return;
+        }
+        // recursive case
+        int base = (int) Math.pow(2, i);
+        int len = result.size();
+        for (int j = len - 1; j >= 0; j--) {
+            result.add(base + result.get(j));
+        }
+        grayCode(i + 1, n, result);
+    }
+    
+}
+```

@@ -1,0 +1,49 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    public int sumNumbers(BinaryTreeNode<Integer> root) {
+        if (root == null) {
+            return 0;
+        }
+        List<StringBuilder> numStrs = sumNumbersList(root);
+        int result = 0;
+        for (StringBuilder numStr : numStrs) {
+            result += Integer.parseInt(numStr.toString());
+        }
+        return result;
+    }
+
+    List<StringBuilder> sumNumbersList (BinaryTreeNode<Integer> root) {
+        List<StringBuilder> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+        if (root.left == null && root.right == null) {
+            // reaching leaf node
+            result.add(new StringBuilder("" + root.data));
+            return result;
+        }
+        result.addAll(sumNumbersList(root.left));
+        result.addAll(sumNumbersList(root.right));
+        String digit = "" + root.data;
+        for (StringBuilder strBuilder : result) {
+            strBuilder.insert(0, digit);
+        }
+        return result;
+    }
+}
+```

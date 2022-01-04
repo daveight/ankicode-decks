@@ -1,0 +1,27 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+    // post-order traversal of DFS
+    public int maxDepth(BinaryTreeNode<Integer> rootNode) {
+        // base case
+        if (rootNode == null) {
+            return 0;
+        }
+        // recursive case
+        return 1 + Math.max(maxDepth(rootNode.left), maxDepth(rootNode.right));
+    }
+}
+```

@@ -1,0 +1,15 @@
+string[a]	string[b]	bool
+"aa"	"a"	false
+"aa"	"aa"	true
+"aaa"	"aa"	false
+"aa"	"a*"	true
+"aa"	".*"	true
+"aab"	"c*a*b"	true
+"aaa"	"a.a"	true
+"aaa"	"ab*ac*a"	true
+"aaa"	"aa.a"	false
+"aaa"	"ab*a"	false
+"aaa"	"*a"	false
+"ab"	".*c"	false
+""	".*"	true
+"baccbbcbcacacbbc"	"c*.*b*c*ba*b*b*.a*"	true

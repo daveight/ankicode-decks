@@ -1,0 +1,35 @@
+```java
+public class Solution {
+
+    private int[] nums = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> sub = new ArrayList<>();
+        int index = 0;
+        int cur = 0;
+        combine(k, index, n, cur, sub, res);
+        return res;
+    }
+
+    private void combine(final int k, int index, int target, int cursum,
+            List<Integer> sub, List<List<Integer>> res) {
+        // base case
+        if (sub.size() == k && cursum == target) {
+            res.add(sub);
+            return;
+        }
+        // recursive case
+        for (int i = index; i < nums.length; i++) {
+            int num = nums[i];
+            // pruning siblings
+            if (cursum + num > target || sub.size() >= k) {
+                break;
+            }
+            List<Integer> copy = new ArrayList<>(sub);
+            copy.add(num);
+            combine(k, i + 1, target, cursum + num, copy, res);
+        }
+    }
+}
+```

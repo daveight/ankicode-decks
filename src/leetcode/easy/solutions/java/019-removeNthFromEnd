@@ -1,0 +1,47 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        if (head == null || n <= 0) {
+            return null;
+        }
+        ListNode<Integer> dummyHead = new ListNode();
+        dummyHead.data = 0;
+        dummyHead.next = head;
+
+        ListNode<Integer> fast = dummyHead;
+        ListNode<Integer> slow = dummyHead;
+
+        // let fast point go n steps itself
+        for (int i = 0; i < n; i++) {
+            assert (fast != null);
+            fast = fast.next;
+        }
+
+        // fast and slow go together
+        // until fast reaches the end of list
+        while (fast.next != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+
+        // now slow should pointing to the node
+        // before which we want to remove
+        slow.next = slow.next.next;
+
+        return dummyHead.next;
+    }
+}
+```

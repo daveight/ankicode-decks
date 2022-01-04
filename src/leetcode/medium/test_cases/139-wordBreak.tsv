@@ -1,0 +1,7 @@
+string[s]	list(string)[wordDict]	list(string)
+"catsanddog"	["cat","cats","and","sand","dog"]	["cats and dog","cat sand dog"]
+"haha"	["cat","cats","and","sand","dog"]	[]
+"catscatanddog"	["cat","cats","and","sand","dog"]	["cats cat and dog"]
+"dogcat"	["cat","dog","dogcat"]	["dogcat","dog cat"]
+"baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"	["a", "aa", "aaa", "aaaa", "aaaaa", "aaaaaa", "aaaaaaa", "aaaaaaaa", "aaaaaaaaa", "aaaaaaaaaa"]	[]
+"baab"	["a", "aa", "ab", "b", "ba"]	["b a a b", "b a ab", "b aa b", "ba a b", "ba ab"]

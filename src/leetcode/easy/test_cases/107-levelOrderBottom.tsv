@@ -1,0 +1,5 @@
+binary_tree(int)[root]	list(list(int))
+[3, 9, 20, null, null, 15, 7]	[[15, 7], [9, 20], [3]]
+[3, 9, 20, null, null, 15]	[[15], [9, 20], [3]]
+[3, null, 20, 15]	[[15], [20], [3]]
+null	[]

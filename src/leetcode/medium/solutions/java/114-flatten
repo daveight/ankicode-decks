@@ -1,0 +1,42 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    public BinaryTreeNode<Integer> flatten(BinaryTreeNode<Integer> root) {
+        return flattenTree(root);
+    }
+
+    public BinaryTreeNode<Integer> flattenTree(BinaryTreeNode<Integer> root) {
+        if (root == null) {
+            return null;
+        }
+        BinaryTreeNode<Integer> left = root.left;
+        BinaryTreeNode<Integer> right = root.right;
+        // ! don't forget to remove the left child
+        root.left = null;
+        root.right = flattenTree(left);
+
+        BinaryTreeNode<Integer> node = root;
+        // find the last right node
+        while (node.right != null) {
+            node = node.right;
+        }
+
+        node.right = flattenTree(right);
+        return root;
+    }
+}
+```

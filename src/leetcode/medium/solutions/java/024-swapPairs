@@ -1,0 +1,35 @@
+```java
+class ListNode<T> {
+    T data;
+    ListNode<T> next;
+
+    public ListNode() { }
+
+    public ListNode(T data, ListNode<T> next) {
+        this.data = data;
+        this.next = next;
+    }
+}
+
+public class Solution {
+    public ListNode<Integer> swapPairs(ListNode<Integer> head) {
+        ListNode<Integer> dummy = new ListNode();
+        dummy.next = head;
+
+        ListNode<Integer> pre = dummy;
+        ListNode<Integer> cur = pre.next;
+        while (cur != null && cur.next != null) {
+            ListNode post = cur.next.next;
+
+            // swap cur and cur.next
+            pre.next = cur.next;
+            cur.next.next = cur;
+            cur.next = post;
+
+            pre = pre.next.next;
+            cur = post;
+        }
+        return dummy.next;
+    }
+}
+```

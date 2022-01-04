@@ -1,0 +1,26 @@
+```java
+public class Solution {
+    
+    public int hIndex(int[] nums) {
+        int n = nums.length;
+        int[] counts = new int[n + 1];
+        // count for each citations
+        for (int num : nums) {
+            if (num >= n) {
+                counts[n]++;
+            } else {
+                counts[num]++;
+            }
+        }
+        int sum = 0;
+        for (int i = n; i >= 0; i--) {
+            if (counts[i] + sum >= i) {
+                return i;
+            } else {
+                sum += counts[i];
+            }
+        }
+        return 0;
+    }
+}
+```

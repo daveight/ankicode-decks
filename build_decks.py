@@ -38,71 +38,73 @@ parser = ArgumentParser()
 parser.add_argument('--debug', dest='debug', action='store_true')
 args = parser.parse_args()
 
-for deck_name in [item for item in os.listdir('src')]:
-    out = ''
-    if deck_name.startswith('.') or deck_name in ['template']:
-        continue
-    for name in sorted(os.listdir(f'src/{deck_name}/test_cases')):
-        try:
-            if not name.endswith('.tsv'):
-                continue
-            file = open(f'src/{deck_name}/test_cases/' + name, 'r')
-            lines = file.readlines()
-
-            name = name.replace('.tsv', '')
-            description = get_file_content(f'src/{deck_name}/descriptions/' + name)
-            if description is None:
-                print('can\'t find description for ' + name)
-                continue
-
-            title = get_file_content(f'src/{deck_name}/titles/' + name)
-            if title is None:
-                print('can\'t find title for ' + name)
-                continue
-
-            func_name = get_file_content(f'src/{deck_name}/fn_names/' + name)
-            if not func_name:
-                print('can\'t find func name for ' + name)
-                continue
-
-            solution = ''
-            for section in SOLUTION_SECTIONS:
-                txt = get_file_content(f'src/{deck_name}/solutions/{section[0]}/{name}')
-                if txt is None:
-                    print(f'can\'t find {section[0]} solution for {name}')
+for deck_category in os.listdir('src'):
+    for deck_subcategory in os.listdir('src/' + deck_category):
+        out = ''
+        deck_name = deck_category + '/' + deck_subcategory
+        if deck_name.startswith('.') or deck_name in ['template']:
+            continue
+        for name in sorted(os.listdir(f'src/{deck_name}/test_cases')):
+            try:
+                if not name.endswith('.tsv'):
                     continue
-                if section[1]:
-                    solution += '### ' + section[1] + '\n'
-                solution += txt + '\n'
+                file = open(f'src/{deck_name}/test_cases/' + name, 'r')
+                lines = file.readlines()
 
-            out += '"' + encode_csv(title.strip()) + '"' + '\t'
-            out += '"' + encode_csv(description.strip()) + '"' + '\t'
-            out += '"' + func_name.strip() + '"' + '\t'
-            out += '"' + encode_csv(solution.strip()) + '"' + '\t'
-            out += '"'
+                name = name.replace('.tsv', '')
+                description = get_file_content(f'src/{deck_name}/descriptions/' + name)
+                if description is None:
+                    print('can\'t find description for ' + name)
+                    continue
 
-            for i, line in enumerate(lines):
-                items = line.strip().split('\t')
-                out += encode_csv(';'.join(items))
+                title = get_file_content(f'src/{deck_name}/titles/' + name)
+                if title is None:
+                    print('can\'t find title for ' + name)
+                    continue
+
+                func_name = get_file_content(f'src/{deck_name}/fn_names/' + name)
+                if not func_name:
+                    print('can\'t find func name for ' + name)
+                    continue
+
+                solution = ''
+                for section in SOLUTION_SECTIONS:
+                    txt = get_file_content(f'src/{deck_name}/solutions/{section[0]}/{name}')
+                    if txt is None:
+                        print(f'can\'t find {section[0]} solution for {name}')
+                        continue
+                    if section[1]:
+                        solution += '### ' + section[1] + '\n'
+                    solution += txt + '\n'
+
+                out += '"' + encode_csv(title.strip()) + '"' + '\t'
+                out += '"' + encode_csv(description.strip()) + '"' + '\t'
+                out += '"' + func_name.strip() + '"' + '\t'
+                out += '"' + encode_csv(solution.strip()) + '"' + '\t'
+                out += '"'
+
+                for i, line in enumerate(lines):
+                    items = line.strip().split('\t')
+                    out += encode_csv(';'.join(items))
+                    out += '\n'
+                out += '"'
                 out += '\n'
-            out += '"'
-            out += '\n'
-            if args.debug:
-                debug_csv_name = f'debug/{deck_name}/{name}.csv'
-                if not os.path.exists(os.path.dirname(debug_csv_name)):
-                    try:
-                        os.makedirs(os.path.dirname(debug_csv_name))
-                    except OSError as exc:  # Guard against race condition
-                        if exc.errno != errno.EEXIST:
-                            raise
-                result = open(debug_csv_name, "w+")
-                result.write(out)
-                result.close()
-                out = ''
+                if args.debug:
+                    debug_csv_name = f'debug/{deck_category}-{deck_subcategory}/{name}.csv'
+                    if not os.path.exists(os.path.dirname(debug_csv_name)):
+                        try:
+                            os.makedirs(os.path.dirname(debug_csv_name))
+                        except OSError as exc:  # Guard against race condition
+                            if exc.errno != errno.EEXIST:
+                                raise
+                    result = open(debug_csv_name, "w+")
+                    result.write(out)
+                    result.close()
+                    out = ''
 
-            if not args.debug:
-                result = open(f'dist/{deck_name}.csv', 'w+')
-                result.write(out)
-                result.close()
-        except FileNotFoundError:
-            pass
+                if not args.debug:
+                    result = open(f'dist/{deck_category}-{deck_subcategory}.csv', 'w+')
+                    result.write(out)
+                    result.close()
+            except FileNotFoundError:
+                pass

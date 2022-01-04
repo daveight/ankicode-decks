@@ -1,0 +1,56 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    public List<List<Integer>> zigzagLevelOrder(BinaryTreeNode<Integer> root) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+        Queue<BinaryTreeNode<Integer>> curLevel = new LinkedList<>();
+        curLevel.add(root);
+        boolean oddLevel = true;
+        while (!curLevel.isEmpty()) {
+            Queue<BinaryTreeNode<Integer>> nextLevel = new LinkedList<>();
+            int curLevelLen = curLevel.size();
+
+            // initialize list with current list's size
+            List<Integer> curList = new ArrayList<>(
+                    Arrays.asList(new Integer[curLevelLen]));
+
+            for (int i = 0; i < curLevelLen; i++) {
+                BinaryTreeNode<Integer> node = curLevel.poll();
+                // index to put current value
+                int index = oddLevel ? i : (curLevelLen - i - 1);
+                curList.set(index, node.data);
+
+                if (node.left != null) {
+                    nextLevel.add(node.left);
+                }
+                if (node.right != null) {
+                    nextLevel.add(node.right);
+                }
+
+            }
+            // for next level
+            result.add(curList);
+            oddLevel = !oddLevel;
+            curLevel = nextLevel;
+        }
+        return result;
+    }
+}
+```

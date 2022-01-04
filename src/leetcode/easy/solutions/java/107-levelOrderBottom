@@ -1,0 +1,45 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    public List<List<Integer>> levelOrderBottom(BinaryTreeNode<Integer> root) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+        Queue<BinaryTreeNode<Integer>> curLevel = new LinkedList<>();
+        curLevel.add(root);
+        while (!curLevel.isEmpty()) {
+            Queue<BinaryTreeNode<Integer>> nextLevel = new LinkedList<>();
+            List<Integer> curList = new ArrayList<>();
+            while (!curLevel.isEmpty()) {
+                BinaryTreeNode<Integer> node = curLevel.poll();
+                curList.add(node.data);
+                if (node.left != null) {
+                    nextLevel.add(node.left);
+                }
+                if (node.right != null) {
+                    nextLevel.add(node.right);
+                }
+            }
+            // next level
+            result.add(0, curList);
+            curLevel = nextLevel;
+        }
+        return result;
+    }
+}
+```

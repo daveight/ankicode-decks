@@ -1,0 +1,37 @@
+```java
+public class Solution {
+    /**
+     * add a global set to contain characters that should be skipped
+     */
+    private Set<String> skipSet = new HashSet<String>() {
+        {
+            add("/");
+            add(".");
+            add("");
+        }
+    };
+
+    /**
+     * Split the input string into array by delimiter "/". 
+     * Since each ".." will cause path to move back to its parent directory, 
+     * we pop out the latest path from stack whenever we meet with a "..".
+     * ! pay attention to empty path case
+     */
+    public String simplifyPath(String path) {
+        Stack<String> paths = new Stack<String>();
+        String[] tokens = path.split("/");
+        for (String token : tokens) {
+            if (skipSet.contains(token) == false) {
+                if (token.equals("..") && paths.isEmpty() == false) {
+                    // go back to parent directory
+                    paths.pop();
+                } else if (!token.equals("..")) {
+                    // for valid directory other than ".."
+                    paths.push(token);
+                }
+            }
+        }
+        return "/" + String.join("/", paths);
+    }
+}
+```

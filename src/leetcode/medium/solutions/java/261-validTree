@@ -1,0 +1,36 @@
+```java
+public class Solution {
+
+    private int[] id;
+
+    public boolean validTree(int n, int[][] edges) {
+        id = new int[n];
+        Arrays.fill(id, -1);
+
+        // union-find
+        for (int[] edge : edges) {
+            int parent = edge[0];
+            int child = edge[1];
+            if (isConnected(parent, child)) {
+                return false;
+            }
+            // union
+            id[child] = parent;
+        }
+
+        // because no duplicated edges exist
+        return edges.length == n - 1;
+    }
+
+    private boolean isConnected(int parent, int child) {
+        return root(parent) == root(child);
+    }
+
+    private int root(int node) {
+        if (id[node] == -1) {
+            return node;
+        }
+        return root(id[node]);
+    }
+}
+```

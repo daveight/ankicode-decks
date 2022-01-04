@@ -1,0 +1,45 @@
+```java
+class BinaryTreeNode<T> {
+    T data;
+    BinaryTreeNode<T> left;
+    BinaryTreeNode<T> right;
+
+    public BinaryTreeNode() { }
+
+    public BinaryTreeNode(T data, BinaryTreeNode<T> left, BinaryTreeNode<T> right) {
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class Solution {
+
+    public int kthSmallest(BinaryTreeNode<Integer> root, int k) {
+        List<Integer> list = convertBSTToList(root, k);
+        if (1 <= k && k <= list.size()) {
+            return list.get(k - 1);
+        } else {
+            return 0;
+        }
+    }
+
+    private List<Integer> convertBSTToList(BinaryTreeNode<Integer> root, int k) {
+        List<Integer> list = new ArrayList<>();
+        // base case
+        if (root == null) {
+            return list;
+        }
+        // recursive case: in-order traversal
+        list.addAll(convertBSTToList(root.left, k));
+        list.add(root.data);
+        if (list.size() >= k) {
+            // we don't need to check right subtree
+            return list;
+        } else {
+            list.addAll(convertBSTToList(root.right, k));
+        }
+        return list;
+    }
+}
+```

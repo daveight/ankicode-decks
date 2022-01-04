@@ -1,4 +1,5 @@
 # Collection of Programming Challenges for AnkiCode
+> https://github.com/daveight/ankicode
 
 ## Decks
   * Decks src code is located in the `src` folder
@@ -18,7 +19,4 @@
    - `solutions/java/<problem_name>` - markdown file containing Java solution of a problem
    - `solutions/js/<problem_name>` - markdown file containing JavaScript solution of a problem
    - `test_cases/<problem_name>` - a TSV (tab-separated) file with test-cases
-
-## Add a new deck
-   To add a new deck - simply copy the `template` folder
 

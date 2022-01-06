@@ -21,7 +21,6 @@
    - `test_cases/<problem_name>` - a TSV (tab-separated) file with test-cases
 
 ### Programming Challenge Decks
-> Source: [https://github.com/daveight/ankicode-decks](https://github.com/daveight/ankicode-decks)
 
 ## LeetCode
 Decks based on LeetCode problems [https://github.com/interviewcoder/leetcode](https://github.com/interviewcoder/leetcode).

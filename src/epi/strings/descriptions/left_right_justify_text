@@ -1,5 +1,5 @@
 if A = ("The", "quick", "brown", "fox", "jumped", "over", "the", "lazy", "dogs.") and the line length L is 11, then the
-returned re¬ sult should be "The quick" , "brown___fox” , “jumped_over” , “the____lazy” , “dogs.______". The symbol _
+returned result should be "The quick" , "brown___fox” , “jumped_over” , “the____lazy” , “dogs.______". The symbol _
 denotes a blank.
 Write a program which takes as input an array A of strings and a positive integer L, and computes the justification of
 the text specified by A.

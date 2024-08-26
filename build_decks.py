@@ -1,8 +1,8 @@
 # Copyright: Daveight and contributors
 # License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
-import argparse
 import errno
 import os
+from unidecode import unidecode
 from argparse import ArgumentParser
 
 
@@ -33,6 +33,12 @@ def get_file_content(path: str):
             f.close()
 
 
+def replace_non_utf_chars(description: str) -> str:
+    # Replace non-UTF-8 characters with their closest UTF-8 equivalent
+    clean_description = unidecode(description)
+    return clean_description
+
+
 SOLUTION_SECTIONS = [['header', ''], ['java', 'Java'], ['cpp', 'C++'], ['js', 'JavaScript'], ['python', 'Python']]
 parser = ArgumentParser()
 parser.add_argument('--debug', dest='debug', action='store_true')
@@ -53,6 +59,7 @@ for deck_category in os.listdir('src'):
 
                 name = name.replace('.tsv', '')
                 description = get_file_content(f'src/{deck_name}/descriptions/' + name)
+                description = replace_non_utf_chars(description)
                 if description is None:
                     print('can\'t find description for ' + name)
                     continue
@@ -71,7 +78,7 @@ for deck_category in os.listdir('src'):
                 for section in SOLUTION_SECTIONS:
                     txt = get_file_content(f'src/{deck_name}/solutions/{section[0]}/{name}')
                     if txt is None:
-                        print(f'can\'t find {section[0]} solution for {name}')
+                        # print(f'can\'t find {section[0]} solution for {name}')
                         continue
                     if section[1]:
                         solution += '### ' + section[1] + '\n'

@@ -9995,7 +9995,7 @@ def levenshtein_distance(A, B):
 ""A"";""TCAATA"";5
 ""TTGAGTACCGTTGTGTCCTCACCTACATTAACAGCGGCTTATTGCAAACTCCGACCTCGCCCACTTAAGTAG"";""CTCATCGGCTATACGTATGCGGGAAGGCAGTTACTTAAACAACACTTCCAGTGCACTGATCTCCGCGCCGACCCCACGTAGAATC"";40
 "
-"Find the longest nondecreasing subsequence"	"Write a program that takes as input an array of numbers and returns the length of a longest nondecreasing subsequence in
+"Find the longest nondecreasing subsequence"	"Write a program that takes as input an array of numbers and returns the length of a longest non-decreasing subsequence in
 the array."	"longestNondecreasingSubsequenceLength"	"-
 ### Java
 ```java
@@ -10359,7 +10359,7 @@ def matrix_multiplication_min_cost(p):
 [10, 20, 30, 40, 30];30000
 [10, 20, 30];6000
 "
-"Bootcamp: Dynamic Programming"	"Find the maximum sum over all subarrays of a given array of integer."	"findMaximumSubarray"	"-
+"Bootcamp: Dynamic Programming"	"Find the maximum sum over all sub-arrays of a given array of integer."	"findMaximumSubarray"	"-
 ### Java
 ```java
 import java.util.List;
@@ -11605,9 +11605,10 @@ def minimum_path_total(triangle):
 "Count the number of score combinations"	"In an American football game, a play can lead to 2 points (safety), 3 points (field goal), or 7 points (touchdown,
 assuming the extra point). Many different combinations of 2, 3, and 7 point plays can make up a final score. For
 example, four combinations of plays yield a score of 12:
-• 6 safeties (2x6=12),
-• 3 safeties and 2 field goals (2x3+3x2=12), •1safety,1fieldgoaland1touchdown(2x1+3x1+7x1 =12),a nd
-• 4 field goals (3x4=12).
+* 6 safeties (2x6=12),
+* 3 safeties and 2 field goals (2x3+3x2=12),
+* 1 safety, 1 field goal and 1 touchdown (2x1+3x1+7x1=12)
+* 4 field goals (3x4=12).
 Write a program that takes a final score and scores for individual plays, and returns the number of combinations of
 plays that result in the final score."	"numCombinationsForFinalScore"	"-
 ### Java
@@ -14529,10 +14530,10 @@ def number_of_ways(n, m):
 "Count the number of moves to climb stairs"	"You are climbing stairs. You can advance 1 to k steps at a time. Your destination is exactly n steps up.
 Write a program which takes as inputs n and k and returns the number of ways in which you can get to your destination.
 For example, if n = 4 and k = 2, there are five ways in which to get to the destination:
-• four single stair advances,
-• two single stair advances followed by a double stair advance,
-• a single stair advance followed by a double stair advance followed by a single stair advance,
-• a double stair advance followed by two single stairs advances, and • two double stair advances."	"numberOfWaysToTop"	"-
+* four single stair advances,
+* two single stair advances followed by a double stair advance,
+* a single stair advance followed by a double stair advance followed by a single stair advance,
+* a double stair advance followed by two single stairs advances, and * two double stair advances."	"numberOfWaysToTop"	"-
 ### Java
 ```java
 public class Solution {
@@ -15150,7 +15151,7 @@ def number_of_ways_to_top(top, maximum_step):
 39;2;102334155
 "
 "Pick up coins for maximum gain"	"In the pick-up-coins game, an even number of coins are placed in a line. Two players take turns at choosing one coin
-each—they can only choose from the two coins at the ends of the line. The game ends when all the coins have been picked
+each they can only choose from the two coins at the ends of the line. The game ends when all the coins have been picked
 up. The player whose coins have the higher total value wins. A player cannot pass his turn.
 Design an efficient algorithm for computing the maximum total value for the starting player in the pick-up-coins game."	"pickUpCoins"	"-
 ### Java

@@ -1488,11 +1488,11 @@ Description:
 Write a program to find the node at which the intersection of two singly linked 
 lists begins. 
 For example, the following two linked lists: 
-A:          a1 → a2 
-                   ↘ 
-                    c1 → c2 → c3 
-                  ↗
-B:     b1 → b2 → b3 
+A:          a1 - a2 
+                   \ 
+                    c1 - c2 - c3 
+                  /
+B:     b1 - b2 - b3 
 begin to intersect at node c1. 
 Notes: 
 If the two linked lists have no intersection at all, return null. 
@@ -2093,9 +2093,9 @@ Description:
  
 Given a binary search tree (BST), find the lowest common ancestor (LCA) of two 
 given nodes in the BST. 
-According to the definition of LCA on Wikipedia: “The lowest common ancestor 
+According to the definition of LCA on Wikipedia: ""The lowest common ancestor 
 is defined between two nodes v and w as the lowest node in T that has both 
-v and w as descendants (where we allow a node to be a descendant of itself).” 
+v and w as descendants (where we allow a node to be a descendant of itself)."" 
      _______6______
     /              \
  ___2__          ___8__

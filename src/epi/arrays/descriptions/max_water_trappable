@@ -1,2 +1,2 @@
-A one-dimensional container is specified by an array of n nonnegative integers, specifying the height of each
+A one-dimensional container is specified by an array of n non-negative integers, specifying the height of each
 unit-width rectangle. Design an algorithm for computing the capacity of the container.

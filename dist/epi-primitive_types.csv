@@ -1,6 +1,6 @@
 "Find the closest integer with same weight."	"The count of ones in binary representation of integer number is called the weight of that number.
 The following algorithm finds the closest integer with the same weight.
-For example, for 123 (0111 1011)₂, the closest integer number is 125 (0111 1101)₂."	"closestIntSameBitCount"	"### Java
+For example, for 123 (0111 1011)2, the closest integer number is 125 (0111 1101)2."	"closestIntSameBitCount"	"### Java
 ```java
 public class Solution {
     public long closestIntSameBitCount(long x) {

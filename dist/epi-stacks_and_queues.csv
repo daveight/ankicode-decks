@@ -1,9 +1,9 @@
 "Normalize Pathnames"	"A file or directory can be specified via a string called the pathname. This string may specify an absolute path,
 starting from the root, e.g., /usr/bin/gcc, or a path relative to the current working directory, e.g.,
-scripts/awkscripts. The same directory may be specified by multiple directory paths. For exam¬ ple,
+scripts/awkscripts. The same directory may be specified by multiple directory paths. For example,
 /usr/lib/../bin/gcc and scripts//./,./scripts/awkscripts/././ specify equivalent absolute and relative pathnames.
 
-Write a program which takes a pathname, and returns the shortest equivalent path¬ name."	"shortestEquivalentPath"	"### Java
+Write a program which takes a pathname, and returns the shortest equivalent pathname."	"shortestEquivalentPath"	"### Java
 ```java
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -395,7 +395,7 @@ def shortest_equivalent_path(path):
 "
 "Evaluate RPN expressions"	"A string is said to be an arithmetical expression in Reverse Polish notation (RPN) if:
 - It is a single digit or a sequence of digits, prefixed with an option -, e.g., ""6"", ""123"", ""-42"".
-- It is of the form“A,B,o"" where A and B are RPN expressions and o is one of +/-/X, /•
+- It is of the form""A,B,o"" where A and B are RPN expressions and o is one of +/-/X, /*
 For example, the following strings satisfy these rules: ""1729"", ""3,4,+,2,X,1,+"", ""1,1,+,-2,x"",""-641,6,/,28,/"".
 Write a program that takes an arithmetical expression in RPN and returns the number that the expression evaluates to."	"eval"	"### Java
 ```java

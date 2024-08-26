@@ -1,4 +1,4 @@
-Often data is almost-sorted—for example, a server receives timestamped stock quotes and earlier quotes may arrive
+Often data is almost sorted for example, a server receives timestamped stock quotes and earlier quotes may arrive
 slightly after later quotes because of differences in server loads and network routes. In this problem we address
 efficient ways to sort such data.
 Write a program which takes as input a very long sequence of numbers and prints the numbers in sorted order.

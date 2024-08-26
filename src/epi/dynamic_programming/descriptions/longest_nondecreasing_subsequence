@@ -1,2 +1,2 @@
-Write a program that takes as input an array of numbers and returns the length of a longest nondecreasing subsequence in
+Write a program that takes as input an array of numbers and returns the length of a longest non-decreasing subsequence in
 the array.

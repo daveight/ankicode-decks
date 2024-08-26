@@ -1,2 +1,2 @@
-Call a 2D array sorted if its rows and its columns are nondecreasing.
+Call a 2D array sorted if its rows and its columns are non-decreasing.
 Design an algorithm that takes a 2D sorted array and a number and checks whether that number appears in the array.

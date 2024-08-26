@@ -2,7 +2,7 @@ You need to test the design of a protective case. Specifically, the case can pro
 from up to some number of floors, and you want to determine what that number of floors is. You can assume the following:
 • All cases have identical physical properties. In particular, if one breaks when falling from a particular level, all
   of them will break when falling from that level.
-• A case that survives a fall can be used again, and a broken case must be dis¬ carded.
+• A case that survives a fall can be used again, and a broken case must be discarded.
 • If a case breaks when dropped, then it would break if dropped from a higher floor, and if a case survives a fall,
   then it would survive a shorter fall.
 
